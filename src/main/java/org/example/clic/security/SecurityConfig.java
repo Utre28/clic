@@ -19,11 +19,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // 1. Permitir acceso libre a los recursos estáticos y tu login.html
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/login.html").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
+                // 2. Configurar OAuth2 con tu loginPage y successUrl
                 .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login.html")                                  // tu página custom
+                        .defaultSuccessUrl("/panel.html", true)                    // ir siempre al panel
                         .userInfoEndpoint(userInfo ->
                                 userInfo.oidcUserService(customOidcUserService)
                         )
@@ -32,4 +37,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }

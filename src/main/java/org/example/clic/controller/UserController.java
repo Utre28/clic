@@ -4,11 +4,13 @@ import jakarta.validation.Valid;
 import org.example.clic.dto.UserDTO;
 import org.example.clic.mapper.UserMapper;
 import org.example.clic.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,10 +38,21 @@ public class UserController {
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return userService.findById(id)
                 .map(userMapper::toDto)
-                .map(dto -> ResponseEntity.ok(dto))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Devuelve los datos del usuario autenticado.
+     */
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
+        // principal.getName() es el sub (googleId), así que buscamos por ese campo
+        return userService.findByGoogleId(principal.getName())
+                .map(userMapper::toDto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+    }
     @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDto, BindingResult result) {
         if (result.hasErrors()) {

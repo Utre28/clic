@@ -3,45 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panel de Control - Fotógrafo Profesional</title>
+  <title>Panel de Control – Fotógrafo Profesional</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-<header>
-  <div class="header-left">
-    <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
-    <span class="branding">Clic Y Color</span>
-  </div>
-  <span class="site-title">Panel de Control</span>
-    <nav>
-       <a href="index.html">Cerrar Sesión</a>
-    </nav>
-  </header>
+<header>…</header>
 
-  <section class="panel">
-    <h2>Bienvenido al Panel de Control</h2>
-    <p>Aquí puedes gestionar tus fotos, clientes y estadísticas.</p>
-    <ul>
-      <li><a href="#">Subir Fotos</a></li>
-      <li><a href="#">Ver Estadísticas</a></li>
-      <li><a href="#">Gestionar enlaces</a></li>
-    </ul>
-  </section>
+<section class="panel">
+     <h2>Bienvenido al Panel de Control</h2>
+     <p>Aquí puedes gestionar tus fotos, clientes y estadísticas.</p>
+     <h2>Bienvenido, <span id="user-name">...</span></h2>
+     <p>Email: <span id="user-email">...</span></p>
+     <p>Aquí puedes gestionar tus fotos, clientes y estadísticas.</p>
 
-  <!-- Footer -->
-  <footer>
-    <div class="footer-content">
-      <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
-      <a href="#terms" class="terms-link">Términos y Condiciones</a>
-    </div>
-  </footer>
+  <ul>
+    <li><a href="#">Subir Fotos</a></li>
+    <li><a href="#">Ver Estadísticas</a></li>
+    <li><a href="#">Gestionar enlaces</a></li>
+  </ul>
+</section>
 
-  <!-- Modal de Términos y Condiciones -->
-  <div id="terms" class="terms-container">
-    <h2>Términos y Condiciones</h2>
-    <p>Aquí van los términos y condiciones de uso...</p>
-    <button onclick="closeTerms()">Cerrar</button>
-  </div>
-  <script src="js/script.js"></script>
+<footer>…</footer>
+
+<script src="js/script.js"></script>
+ <script>
+     // Al cargar la página, pedimos los datos del usuario autenticado
+     window.addEventListener('DOMContentLoaded', async () => {
+     const resp = await fetch('/api/users/me', {
+         credentials: 'include'   // en vez de 'same-origin'
+     });
+     if (!resp.ok) {
+         window.location.href = '/login.html';
+         return;
+     }
+     const user = await resp.json();
+     document.getElementById('user-name').textContent = user.name;
+     document.getElementById('user-email').textContent = user.email;
+     });
+   </script>
 </body>
 </html>

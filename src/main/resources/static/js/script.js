@@ -1,41 +1,46 @@
 document.addEventListener('DOMContentLoaded', function () {
   console.log('Página cargada correctamente');
-});
-// Función para mostrar los Términos y Condiciones
-document.querySelector('.terms-link').addEventListener('click', function() {
-  document.querySelector('.terms-container').style.display = 'block';
-});
 
-// Función para cerrar el modal
-function closeTerms() {
-  document.querySelector('.terms-container').style.display = 'none';
-}
-// Función que maneja el inicio de sesión exitoso
-function onSignIn(googleUser) {
-  var profile = googleUser.getBasicProfile();
-  var id_token = googleUser.getAuthResponse().id_token;
+  // —————— 1. Términos y Condiciones ——————
+  const termsLink = document.querySelector('.terms-link');
+  const termsContainer = document.querySelector('.terms-container');
+  const closeTermsBtn = document.querySelector('.terms-close-btn');
 
-  // Muestra el nombre del usuario (para pruebas)
-  document.getElementById('status').innerHTML = 'Hola, ' + profile.getName();
-
-  // Redirige al panel del cliente o donde quieras redirigir al usuario
-  window.location.href = 'panel.html'; // Puedes cambiar a otra página de tu elección
-}
-function signOut() {
-  var auth2 = gapi.auth2.getAuthInstance();
-  auth2.signOut().then(function () {
-    console.log('Usuario desconectado.');
-    document.getElementById('access-panel-btn').style.display = 'none';  // Esconde el botón cuando cierre sesión
-  });
-}
-// Este script se debe ejecutar después de que el fotógrafo haya iniciado sesión con Google
-function onSignIn(googleUser) {
-  // Si el usuario es un fotógrafo autenticado, mostramos el botón
-  var profile = googleUser.getBasicProfile();
-  var email = profile.getEmail();  // Aquí puedes comparar el correo electrónico del fotógrafo
-  if (email === 'sayaline.ik@gmail.com') {  // Reemplaza esto con el correo del fotógrafo
-    document.getElementById('access-panel-btn').style.display = 'block';  // Muestra el botón
+  if (termsLink && termsContainer) {
+    termsLink.addEventListener('click', () => {
+      termsContainer.style.display = 'block';
+    });
   }
-}
-// Temporariamente mostrar el botón sin autenticación de Google
-document.getElementById('access-panel-btn').style.display = 'block';  // Muestra el botón
+  if (closeTermsBtn && termsContainer) {
+    closeTermsBtn.addEventListener('click', () => {
+      termsContainer.style.display = 'none';
+    });
+  }
+
+  // —————— 2. Carga del panel (/panel.html) ——————
+  // Solo ejecuta esto si el span existe en la página
+  const userNameEl = document.getElementById('user-name');
+  const userEmailEl = document.getElementById('user-email');
+
+  if (userNameEl && userEmailEl) {
+    fetch('/api/users/me', {
+      credentials: 'include'  // fuerza envío de la cookie de sesión
+    })
+        .then(resp => {
+          if (!resp.ok) {
+            // Si no está autenticado, vuelve al login
+            window.location.href = '/login.html';
+            throw new Error('No autenticado');
+          }
+          return resp.json();
+        })
+        .then(user => {
+          userNameEl.textContent = user.name;
+          userEmailEl.textContent = user.email;
+        })
+        .catch(err => console.error(err));
+  }
+
+  // —————— 3. (Opcional) Otros handlers de UI ——————
+  // Aquí puedes añadir más listeners específicos de otras páginas
+});

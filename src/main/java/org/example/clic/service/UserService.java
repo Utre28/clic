@@ -1,4 +1,3 @@
-// src/main/java/org/example/clic/service/UserService.java
 package org.example.clic.service;
 
 import org.example.clic.model.User;
@@ -12,6 +11,9 @@ public interface UserService {
     void deleteById(Long id);
     boolean existsById(Long id);
 
-    // <-- Aquí añade este método:
+    // Búsqueda por Google ID (ya existente)
     Optional<User> findByGoogleId(String googleId);
+
+    // Nueva búsqueda por email para el endpoint /me
+    Optional<User> findByEmail(String email);
 }

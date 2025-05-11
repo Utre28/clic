@@ -3,92 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - Fotógrafo Profesional</title>
+  <title>Login – Fotógrafo Profesional</title>
   <link rel="stylesheet" href="css/style.css" />
-  <!-- Cargar la API de Google -->
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
+   <!-- Cargar la API de Google -->
 </head>
 <body>
-<header>
-  <div class="header-left">
-    <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
-    <span class="branding">Clic Y Color</span>
-  </div>
-
-  <span class="site-title">Fotógrafo Profesional</span>
-
-  <nav>
-    <ul>
-      <li><a href="index.html">Inicio</a></li>
-      <li class="dropdown">
-        <a href="portafolio.html">Portafolio ▾</a>
-        <ul class="dropdown-menu">
-          <li><a href="categoria-bodas.html">Bodas</a></li>
-          <li><a href="categoria-bautizos.html">Bautizos</a></li>
-          <li><a href="categoria-comuniones.html">Comuniones</a></li>
-          <li><a href="categoria-retratos.html">Retratos</a></li>
-          <li><a href="categoria-conciertos.html">Conciertos</a></li>
-        </ul>
-      </li>
-      <li><a href="login.html">Clientes</a></li>
-      <li><a href="contacto.html">Contacto</a></li>
-    </ul>
-  </nav>
-</header>
+<header>…</header>
 
 <section class="login">
   <div class="login-container">
-    <h1>Acceso para Clientes</h1>
-    <p>Inicia sesión usando tu cuenta de Google:</p>
+         <h1>Acceso para Clientes</h1>
+         <p>Inicia sesión usando tu cuenta de Google:</p>
 
-    <!-- Botón de inicio de sesión con Google -->
-    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+         <!-- Botón de inicio de sesión con Google -->
+         <div class="g-signin2" data-onsuccess="onSignIn"></div>
+         <h1>Acceso para Clientes</h1>
+         <p>Pulsa el botón para iniciar sesión con Google:</p>
+         <a href="/oauth2/authorization/google">
+           <button type="button">Iniciar sesión con Google</button>
+         </a>
 
-    <!-- Mensaje de estado de la autenticación -->
-    <p id="status"></p>
-    <!-- Mostrar el botón de acceso al panel solo si el fotógrafo ha iniciado sesión -->
-    <button id="access-panel-btn" style="display: none;" onclick="location.href='panel.html'">Acceder al Panel de Control</button>
+        <!-- Mensaje de estado de la autenticación -->
+        <p id="status"></p>
+        <!-- Mostrar el botón de acceso al panel solo si el fotógrafo ha iniciado sesión -->
+        <button id="access-panel-btn" style="display: none;" onclick="location.href='panel.html'">Acceder al Panel de Control</button>
+        <!-- (Opcional) puedes mostrar un spinner o mensaje aquí mientras carga -->
   </div>
 </section>
 
-<!-- Footer -->
-<footer>
-  <div class="footer-content">
-    <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
-    <a href="#terms" class="terms-link">Términos y Condiciones</a>
-  </div>
-</footer>
+<footer>…</footer>
 
-<!-- Modal de Términos y Condiciones -->
-<div id="terms" class="terms-container">
-  <h2>Términos y Condiciones</h2>
-  <p>Aquí van los términos y condiciones de uso...</p>
-  <button onclick="closeTerms()">Cerrar</button>
-</div>
+ <!-- Script para manejar la respuesta de Google -->
+ <script>
+    // Función que maneja el inicio de sesión exitoso
+             function onSignIn(googleUser) {
+                 var profile = googleUser.getBasicProfile();
+                 var id_token = googleUser.getAuthResponse().id_token;
 
+                         // Muestra el nombre del usuario (para pruebas)
+                                document.getElementById('status').innerHTML = 'Hola, ' + profile.getName();
+
+                        // Redirige al panel del cliente o donde quieras redirigir al usuario
+                                window.location.href = 'panel.html';
+               }
+
+    // Si el usuario ya está autenticado, puedes hacer algo como:
+             function signOut() {
+                 var auth2 = gapi.auth2.getAuthInstance();
+                 auth2.signOut().then(function () {
+                     console.log('Usuario desconectado.');
+                   });
+               }
+   </script>
 <script src="js/script.js"></script>
-
-<!-- Script para manejar la respuesta de Google -->
-<script>
-  // Función que maneja el inicio de sesión exitoso
-  function onSignIn(googleUser) {
-    var profile = googleUser.getBasicProfile();
-    var id_token = googleUser.getAuthResponse().id_token;
-
-    // Muestra el nombre del usuario (para pruebas)
-    document.getElementById('status').innerHTML = 'Hola, ' + profile.getName();
-
-    // Redirige al panel del cliente o donde quieras redirigir al usuario
-    window.location.href = 'panel.html';
-  }
-
-  // Si el usuario ya está autenticado, puedes hacer algo como:
-  function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('Usuario desconectado.');
-    });
-  }
-</script>
 </body>
 </html>
