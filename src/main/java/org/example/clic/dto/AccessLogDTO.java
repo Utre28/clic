@@ -1,13 +1,21 @@
 package org.example.clic.dto;
 
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class AccessLogDTO {
     private Long id;
+
+    @NotNull(message = "User ID is mandatory")
     private Long userId;
+
+    @NotNull(message = "Photo ID is mandatory")
     private Long photoId;
+
+    @NotNull(message = "Access timestamp is mandatory")
     private LocalDateTime accessedAt;
-    // getters / setters
+
+    // getters & setters...
 
 
     public Long getId() {

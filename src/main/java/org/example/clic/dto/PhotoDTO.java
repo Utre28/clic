@@ -1,16 +1,24 @@
 package org.example.clic.dto;
 
-
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class PhotoDTO {
     private Long id;
+
+    @NotBlank(message = "URL is mandatory")
     private String url;
-    private String description;
+
+    @NotNull(message = "Upload timestamp is mandatory")
     private LocalDateTime uploadedAt;
+
+    private String description;
+
+    @NotNull(message = "Album ID is mandatory")
     private Long albumId;
-    // getters / setters
+
+    // getters & setters...
 
 
     public Long getId() {
@@ -29,20 +37,20 @@ public class PhotoDTO {
         this.url = url;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public LocalDateTime getUploadedAt() {
         return uploadedAt;
     }
 
     public void setUploadedAt(LocalDateTime uploadedAt) {
         this.uploadedAt = uploadedAt;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getAlbumId() {
@@ -53,4 +61,3 @@ public class PhotoDTO {
         this.albumId = albumId;
     }
 }
-
