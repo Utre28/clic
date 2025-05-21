@@ -38,7 +38,7 @@ public class CustomOidcUserService extends OidcUserService {
                         u.setRole(User.Role.PHOTOGRAPHER);
                     } else if ("sayaline.ik@gmail.com".equalsIgnoreCase(email)) {
                         u.setRole(User.Role.PHOTOGRAPHER);
-                    }else if ("sayaline.ik@gmail.com".equalsIgnoreCase(email)) {
+                    } else if ("wallapopalejandro50@gmail.com".equalsIgnoreCase(email)) {
                         u.setRole(User.Role.PHOTOGRAPHER);
                     } else {
                         u.setRole(User.Role.CLIENT);
