@@ -21,21 +21,34 @@ public class SecurityConfig {
         http
                 // 1. Permitir acceso libre a los recursos estáticos y tu login.html
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/img/**", "/login.html").permitAll()
+                        // Permite acceso a recursos públicos
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/css/**",
+                                "/js/**",
+                                "/img/**",
+                                "/login.html"
+                        ).permitAll()
+                        // Solo fotógrafos pueden acceder al panel y APIs para gestión
+                        .requestMatchers(
+                                "/panel.html",
+                                "/api/categories/**",
+                                "/api/subcategories/**",
+                                "/api/photos/**"
+                        ).hasAnyRole("PHOTOGRAPHER","ADMIN")
+                        // El resto de endpoints api requieren autenticación
                         .requestMatchers("/api/**").authenticated()
+                        // Cualquier otra solicitud está permitida
                         .anyRequest().permitAll()
                 )
                 // 2. Configurar OAuth2 con tu loginPage y successUrl
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login.html")                                  // tu página custom
-                        .defaultSuccessUrl("/panel.html", true)                    // ir siempre al panel
-                        .userInfoEndpoint(userInfo ->
-                                userInfo.oidcUserService(customOidcUserService)
-                        )
+                        .loginPage("/login.html")
+                        .defaultSuccessUrl("/panel.html", true) // ir siempre al panel
+                        .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService))
                 )
                 .csrf(csrf -> csrf.disable());
-
         return http.build();
     }
-
 }

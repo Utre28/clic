@@ -1,3 +1,4 @@
+/* Fuentes, variables y reset básico*/
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Open+Sans:wght@400;600&display=swap');
 
 :root {
@@ -16,7 +17,7 @@
   box-sizing: border-box;
   font-family: var(--fuente-texto);
 }
-
+/*   Estilos básicos del body y texto*/
 body {
   background-color: var(--color-secundario);
   color: var(--color-gris);
@@ -179,13 +180,22 @@ button:hover {
 }
 
 /* Contacto y Formularios */
+/* Estilo base para formularios */
 form {
   max-width: 600px;
-  margin: auto;
+  margin: 2rem auto;
   background: white;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Etiquetas de formulario */
+form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--color-gris);
 }
 .contacto h1 {
   font-family: var(--fuente-titulo);
@@ -193,21 +203,18 @@ form {
   color: var(--color-primario);
   margin-bottom: 1rem;
 }
-
-form label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
+/* Inputs y textarea */
 form input, form textarea {
   width: 100%;
   padding: 0.8rem;
   margin-bottom: 1.5rem;
   border: 1px solid #ccc;
   border-radius: 6px;
+  font-size: 1rem;
+  font-family: var(--fuente-texto);
+  box-sizing: border-box;
 }
-
+/* Botones dentro de formularios */
 form button {
   background-color: var(--color-primario);
   color: white;
@@ -216,12 +223,140 @@ form button {
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
 form button:hover {
   background-color: #004494;
 }
+/*   Formulario específico: Crear evento */
+/* Limitamos ancho y damos estilo propio */
+form#createEventForm {
+  max-width: 320px; /* más estrecho para formulario sencillo */
+  margin: 2rem auto;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
 
+/* Etiquetas del formulario Crear evento */
+form#createEventForm label {
+  margin-top: 0.8rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Inputs Crear evento */
+form#createEventForm input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Botón Crear evento */
+form#createEventForm button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.6rem;
+  background-color: #0078d4;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form#createEventForm button:hover {
+  background-color: #005a9e;
+}
+
+/* Formulario específico: Crear álbum*/
+
+form#createAlbumForm {
+  max-width: 320px;
+  margin: 2rem auto;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+form#createAlbumForm label {
+  margin-top: 0.8rem;
+  font-weight: 600;
+  color: #333;
+}
+
+form#createAlbumForm input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+form#createAlbumForm button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.6rem;
+  background-color: #28a745; /* verde para diferenciar */
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form#createAlbumForm button:hover {
+  background-color: #1e7e34;
+}
+
+/* Formulario específico: Subir fotos */
+form#uploadForm {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+form#uploadForm label {
+  font-weight: 600;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+form#uploadForm input[type="file"] {
+  margin-top: 0.3rem;
+  width: 100%;
+}
+
+/* Botón para subir fotos */
+form#uploadForm button {
+  margin-top: 1rem;
+  background-color: #0078d4;
+  color: white;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form#uploadForm button:hover {
+  background-color: #005a9e;
+}
 /* Panel */
 .panel {
   max-width: 800px;
@@ -464,4 +599,62 @@ nav ul li.dropdown:hover .dropdown-menu {
 
 #access-panel-btn:hover {
   background-color: var(--color-acento);
+}
+/* Estilos para el formulario de creación de eventos */
+form#createEventForm {
+  max-width: 320px;
+  margin: 1rem auto;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+form#createEventForm label {
+  display: block;
+  margin-top: 0.8rem;
+  font-weight: 600;
+  color: #333;
+}
+
+form#createEventForm input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+form#createEventForm button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.6rem;
+  background-color: #0078d4;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form#createEventForm button:hover {
+  background-color: #005a9e;
+}
+
+.upload-section h1 {
+  font-family: var(--fuente-titulo);
+  font-size: 2rem;
+  color: var(--color-primario);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.upload-section h2 {
+  font-family: var(--fuente-titulo);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem; /* Mayor separación entre el título y el contenido */
+  color: var(--color-primario);
+  text-align: center;  /* Centrado del texto */
 }

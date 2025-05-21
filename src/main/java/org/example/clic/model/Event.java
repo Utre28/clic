@@ -2,6 +2,7 @@ package org.example.clic.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,13 +17,15 @@ public class Event {
 
     private LocalDate date;
     private String location;
+    //campo para clasificar el evento
+    private String category;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "client_id")
     private User client;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Album> albums;
+    private List<Album> albums = new ArrayList<>();
 
     // getters & setters
 
@@ -73,4 +76,13 @@ public class Event {
     public void setAlbums(List<Album> albums) {
         this.albums = albums;
     }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
 }

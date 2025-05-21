@@ -19,9 +19,10 @@ public class Photo {
 
     private String description;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "album_id")
     private Album album;
+
 
     @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccessLog> accessLogs;
@@ -75,5 +76,7 @@ public class Photo {
     public void setAccessLogs(List<AccessLog> accessLogs) {
         this.accessLogs = accessLogs;
     }
+
 }
+
 

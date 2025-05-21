@@ -7,14 +7,15 @@ import java.time.LocalDateTime;
 public class AlbumDTO {
     private Long id;
 
-    @NotBlank(message = "Album name is mandatory")
+    @NotBlank(message = "El nombre del álbum es obligatorio")
     private String name;
 
-    @NotNull(message = "Event ID is mandatory")
+    @NotNull(message = "El evento es obligatorio")
     private Long eventId;
 
-    @NotNull(message = "Creation timestamp is mandatory")
     private LocalDateTime createdAt;
+    // imagen principal
+    private String mainPhotoUrl;
 
     // getters & setters...
 
@@ -49,5 +50,12 @@ public class AlbumDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+    public String getMainPhotoUrl() {
+        return mainPhotoUrl;
+    }
+
+    public void setMainPhotoUrl(String mainPhotoUrl) {
+        this.mainPhotoUrl = mainPhotoUrl;
     }
 }

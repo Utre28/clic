@@ -21,6 +21,10 @@ public class PhotoServiceImpl implements PhotoService {
     public List<Photo> findAll() {
         return photoRepository.findAll();
     }
+    @Override
+    public List<Photo> findByAlbumId(Long albumId) {
+        return photoRepository.findByAlbumId(albumId);
+    }
 
     @Override
     public Optional<Photo> findById(Long id) {

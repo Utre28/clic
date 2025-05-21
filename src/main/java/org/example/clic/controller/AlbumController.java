@@ -3,12 +3,18 @@ package org.example.clic.controller;
 import jakarta.validation.Valid;
 import org.example.clic.dto.AlbumDTO;
 import org.example.clic.mapper.AlbumMapper;
+import org.example.clic.model.Album;
+import org.example.clic.model.Event;
 import org.example.clic.service.AlbumService;
+import org.example.clic.service.EventService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,10 +23,12 @@ import java.util.stream.Collectors;
 public class AlbumController {
     private final AlbumService albumService;
     private final AlbumMapper albumMapper;
+    private final EventService eventService;
 
-    public AlbumController(AlbumService albumService, AlbumMapper albumMapper) {
+    public AlbumController(AlbumService albumService, AlbumMapper albumMapper, EventService eventService) {
         this.albumService = albumService;
         this.albumMapper = albumMapper;
+        this.eventService = eventService;
     }
 
     @GetMapping
@@ -37,6 +45,13 @@ public class AlbumController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/by-event/{eventId}")
+    public ResponseEntity<List<AlbumDTO>> getAlbumsByEvent(@PathVariable Long eventId) {
+        List<AlbumDTO> albums = albumService.findByEventId(eventId).stream()
+                .map(albumMapper::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(albums);
+    }
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody AlbumDTO dto, BindingResult br) {
@@ -46,9 +61,18 @@ public class AlbumController {
                     .collect(Collectors.toList());
             return ResponseEntity.badRequest().body(errors);
         }
-        var saved = albumService.save(albumMapper.toEntity(dto));
-        var out = albumMapper.toDto(saved);
-        return ResponseEntity.created(URI.create("/api/albums/" + out.getId())).body(out);
+
+        Event event = eventService.findById(dto.getEventId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento no encontrado"));
+
+        Album album = new Album();
+        album.setName(dto.getName());
+        album.setEvent(event);
+        album.setCreatedAt(LocalDateTime.now());
+
+        Album saved = albumService.save(album);
+        return ResponseEntity.created(URI.create("/api/albums/" + saved.getId()))
+                .body(albumMapper.toDto(saved));
     }
 
     @PutMapping("/{id}")
@@ -63,9 +87,12 @@ public class AlbumController {
         }
         return albumService.findById(id)
                 .map(existing -> {
-                    var toUpdate = albumMapper.toEntity(dto);
-                    toUpdate.setId(id);
-                    var updated = albumService.save(toUpdate);
+                    existing.setName(dto.getName());
+                    // Opcional: actualizar event si tienes la entidad Event lista
+                    // Event event = eventService.findById(dto.getEventId()).orElse(null);
+                     //if (event != null) existing.setEvent(event);
+
+                    var updated = albumService.save(existing);
                     return ResponseEntity.ok(albumMapper.toDto(updated));
                 })
                 .orElse(ResponseEntity.notFound().build());

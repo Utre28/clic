@@ -7,17 +7,16 @@ import java.time.LocalDate;
 public class EventDTO {
     private Long id;
 
-    @NotBlank(message = "Event name is mandatory")
+    @NotBlank(message = "El nombre del evento es obligatorio")
     private String name;
 
-    @NotNull(message = "Date is mandatory")
+    @NotNull(message = "La fecha es obligatoria")
     private LocalDate date;
 
-    @NotBlank(message = "Location is mandatory")
+    @NotBlank(message = "La ubicación es obligatoria")
     private String location;
-
-    @NotNull(message = "Client ID is mandatory")
     private Long clientId;
+    private String category;
 
     // getters & setters...
 
@@ -59,5 +58,12 @@ public class EventDTO {
 
     public void setClientId(Long clientId) {
         this.clientId = clientId;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

@@ -3,6 +3,8 @@ package org.example.clic.controller;
 import jakarta.validation.Valid;
 import org.example.clic.dto.EventDTO;
 import org.example.clic.mapper.EventMapper;
+import org.example.clic.model.Event;
+import org.example.clic.model.User;
 import org.example.clic.service.EventService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -24,8 +26,14 @@ public class EventController {
     }
 
     @GetMapping
-    public List<EventDTO> getAll() {
-        return eventService.findAll().stream()
+    public List<EventDTO> getAll(@RequestParam(required = false) String category) {
+        List<Event> events;
+        if (category == null || category.isEmpty()) {
+            events = eventService.findAll();
+        } else {
+            events = eventService.findByCategory(category);
+        }
+        return events.stream()
                 .map(eventMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -46,10 +54,14 @@ public class EventController {
                     .collect(Collectors.toList());
             return ResponseEntity.badRequest().body(errors);
         }
-        var entity = eventMapper.toEntity(dto);
-        var saved = eventService.save(entity);
-        var out = eventMapper.toDto(saved);
-        return ResponseEntity.created(URI.create("/api/events/" + out.getId())).body(out);
+        Event event = new Event();
+        event.setName(dto.getName());
+        event.setDate(dto.getDate());
+        event.setLocation(dto.getLocation());
+
+        Event saved = eventService.save(event);
+        return ResponseEntity.created(URI.create("/api/events/" + saved.getId()))
+                .body(eventMapper.toDto(saved));
     }
 
     @PutMapping("/{id}")
@@ -64,13 +76,15 @@ public class EventController {
         }
         return eventService.findById(id)
                 .map(existing -> {
-                    var toUpdate = eventMapper.toEntity(dto);
-                    toUpdate.setId(id);
-                    var updated = eventService.save(toUpdate);
+                    existing.setName(dto.getName());
+                    existing.setDate(dto.getDate());
+                    existing.setLocation(dto.getLocation());
+                    var updated = eventService.save(existing);
                     return ResponseEntity.ok(eventMapper.toDto(updated));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {

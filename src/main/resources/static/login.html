@@ -8,19 +8,43 @@
    <!-- Cargar la API de Google -->
 </head>
 <body>
-<header>…</header>
+<header>
+    <div class="header-left">
+        <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
+        <span class="branding">Clic Y Color</span>
+    </div>
+
+    <span class="site-title">Fotógrafo Profesional</span>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li class="dropdown">
+                <a href="portafolio.html">Portafolio ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="categoria-bodas.html">Bodas</a></li>
+                    <li><a href="categoria-bautizos.html">Bautizos</a></li>
+                    <li><a href="categoria-comuniones.html">Comuniones</a></li>
+                    <li><a href="categoria-retratos.html">Retratos</a></li>
+                    <li><a href="categoria-conciertos.html">Conciertos</a></li>
+                </ul>
+            </li>
+            <li><a href="login.html">Clientes</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+    </nav>
+</header>
 
 <section class="login">
   <div class="login-container">
+         <!-- Botón de inicio de sesión con Google -->
+
          <h1>Acceso para Clientes</h1>
          <p>Inicia sesión usando tu cuenta de Google:</p>
-
-         <!-- Botón de inicio de sesión con Google -->
-         <div class="g-signin2" data-onsuccess="onSignIn"></div>
-         <h1>Acceso para Clientes</h1>
-         <p>Pulsa el botón para iniciar sesión con Google:</p>
          <a href="/oauth2/authorization/google">
-           <button type="button">Iniciar sesión con Google</button>
+             <div class="g-signin2" data-onsuccess="onSignIn">
+                Iniciar sesión con Google
+             </div>
          </a>
 
         <!-- Mensaje de estado de la autenticación -->
@@ -31,7 +55,13 @@
   </div>
 </section>
 
-<footer>…</footer>
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
+        <a href="#terms" class="terms-link">Términos y Condiciones</a>
+    </div>
+</footer>
 
  <!-- Script para manejar la respuesta de Google -->
  <script>

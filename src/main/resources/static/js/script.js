@@ -1,3 +1,5 @@
+// script.js (ajustado para eventos y álbumes con formularios separados y validación completa)
+
 document.addEventListener('DOMContentLoaded', function () {
   console.log('Página cargada correctamente');
 
@@ -18,17 +20,13 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // —————— 2. Carga del panel (/panel.html) ——————
-  // Solo ejecuta esto si el span existe en la página
   const userNameEl = document.getElementById('user-name');
   const userEmailEl = document.getElementById('user-email');
 
   if (userNameEl && userEmailEl) {
-    fetch('/api/users/me', {
-      credentials: 'include'  // fuerza envío de la cookie de sesión
-    })
+    fetch('/api/users/me', { credentials: 'include' })
         .then(resp => {
           if (!resp.ok) {
-            // Si no está autenticado, vuelve al login
             window.location.href = '/login.html';
             throw new Error('No autenticado');
           }
@@ -41,6 +39,151 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(err => console.error(err));
   }
 
-  // —————— 3. (Opcional) Otros handlers de UI ——————
-  // Aquí puedes añadir más listeners específicos de otras páginas
+  // —————— 3. Funciones para cargar eventos y álbumes ——————
+  async function loadEvents() {
+    const resp = await fetch('/api/events');
+    const events = await resp.json();
+    const eventSelect = document.getElementById('eventSelect');
+    eventSelect.innerHTML = '';
+    events.forEach(evt => {
+      const option = document.createElement('option');
+      option.value = evt.id;
+      option.textContent = evt.name;
+      eventSelect.appendChild(option);
+    });
+    if (events.length > 0) loadAlbums(events[0].id);
+  }
+
+  async function loadAlbums(eventId) {
+    const resp = await fetch(`/api/albums/by-event/${eventId}`);
+    const albums = await resp.json();
+    const albumSelect = document.getElementById('albumSelect');
+    albumSelect.innerHTML = '';
+    albums.forEach(album => {
+      const option = document.createElement('option');
+      option.value = album.id;
+      option.textContent = album.name;
+      albumSelect.appendChild(option);
+    });
+    document.getElementById('uploadAlbumId').value = albums.length > 0 ? albums[0].id : '';
+  }
+
+  document.getElementById('eventSelect')?.addEventListener('change', (e) => {
+    loadAlbums(e.target.value);
+  });
+
+  document.getElementById('albumSelect')?.addEventListener('change', (e) => {
+    document.getElementById('uploadAlbumId').value = e.target.value;
+  });
+
+  // —————— 4. Crear nuevo evento ——————
+  document.getElementById('createEventForm').addEventListener('submit', async e => {
+    e.preventDefault();
+
+    const name = document.getElementById('eventName').value.trim();
+    const date = document.getElementById('eventDate').value;
+    const location = document.getElementById('eventLocation').value.trim();
+    const clientIdValue = document.getElementById('eventClientId').value.trim();
+    const clientId = clientIdValue ? Number(clientIdValue) : null;
+
+    if (!name || !date || !location) {
+      alert('Por favor, completa todos los campos obligatorios');
+      return;
+    }
+
+    const eventData = {
+      name,
+      date,        // debe estar en formato 'YYYY-MM-DD'
+      location,
+      clientId     // puede ser null
+    };
+
+    try {
+      const resp = await fetch('/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(eventData)
+      });
+
+      if (resp.ok) {
+        alert('Evento creado con éxito');
+        document.getElementById('createEventForm').reset();
+        loadEvents(); // recarga eventos para actualizar select
+      } else {
+        const errorData = await resp.json();
+        alert('Error creando evento: ' + (errorData.message || resp.statusText));
+      }
+    } catch (error) {
+      alert('Error de red: ' + error.message);
+    }
+  });
+
+
+  // —————— 5. Crear nuevo álbum ——————
+  document.getElementById('createAlbumForm').addEventListener('submit', async e => {
+    e.preventDefault();
+
+    const name = document.getElementById('newAlbum').value.trim();
+    const eventId = document.getElementById('eventSelect').value;
+
+    if (!name) {
+      alert('Introduce un nombre válido para el álbum');
+      return;
+    }
+
+    try {
+      const resp = await fetch('/api/albums', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, eventId: Number(eventId) })
+      });
+
+      if (resp.ok) {
+        alert('Álbum creado con éxito');
+        document.getElementById('createAlbumForm').reset();
+        loadAlbums(eventId); // recarga álbumes para ese evento
+      } else {
+        const errorData = await resp.json();
+        alert('Error creando álbum: ' + (errorData.message || resp.statusText));
+      }
+    } catch (error) {
+      alert('Error de red: ' + error.message);
+    }
+  });
+
+
+  // —————— 6. Subir fotos ——————
+  const uploadForm = document.getElementById('uploadForm');
+  uploadForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const files = document.getElementById('files').files;
+    const albumId = document.getElementById('uploadAlbumId').value;
+
+    if (!albumId || files.length === 0) {
+      alert('Selecciona un álbum y al menos una foto');
+      return;
+    }
+
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('files', file);
+    }
+    formData.append('albumId', albumId);
+
+    const resp = await fetch('/api/photos/upload-multiple', {
+      method: 'POST',
+      body: formData
+    });
+
+    const status = document.getElementById('uploadStatus');
+    if (resp.ok) {
+      status.textContent = 'Fotos subidas correctamente.';
+      uploadForm.reset();
+    } else {
+      status.textContent = 'Error al subir fotos.';
+    }
+  });
+
+  // —————— 7. Inicialización ——————
+  loadEvents();
 });

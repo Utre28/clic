@@ -7,23 +7,51 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-<header>…</header>
+<header>
+    <div class="header-left">
+        <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
+        <span class="branding">Clic Y Color</span>
+    </div>
+
+    <span class="site-title">Fotógrafo Profesional</span>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li class="dropdown">
+                <a href="portafolio.html">Portafolio ▾</a>
+                <ul class="dropdown-menu">
+                    <li><a href="categoria-bodas.html">Bodas</a></li>
+                    <li><a href="categoria-bautizos.html">Bautizos</a></li>
+                    <li><a href="categoria-comuniones.html">Comuniones</a></li>
+                    <li><a href="categoria-retratos.html">Retratos</a></li>
+                    <li><a href="categoria-conciertos.html">Conciertos</a></li>
+                </ul>
+            </li>
+            <li><a href="login.html">Clientes</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+    </nav>
+</header>
 
 <section class="panel">
-     <h2>Bienvenido al Panel de Control</h2>
-     <p>Aquí puedes gestionar tus fotos, clientes y estadísticas.</p>
-     <h2>Bienvenido, <span id="user-name">...</span></h2>
+     <h2>Bienvenido al Panel de Control, <span id="user-name">...</span></h2>
      <p>Email: <span id="user-email">...</span></p>
      <p>Aquí puedes gestionar tus fotos, clientes y estadísticas.</p>
 
   <ul>
-    <li><a href="#">Subir Fotos</a></li>
+    <li><a href="panel-subir-fotos.html" target="_blank">Subir Fotos</a></li>
     <li><a href="#">Ver Estadísticas</a></li>
     <li><a href="#">Gestionar enlaces</a></li>
   </ul>
 </section>
-
-<footer>…</footer>
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
+        <a href="#terms" class="terms-link">Términos y Condiciones</a>
+    </div>
+</footer>
 
 <script src="js/script.js"></script>
  <script>

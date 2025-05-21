@@ -41,4 +41,12 @@ public class EventServiceImpl implements EventService {
     public boolean existsById(Long id) {
         return eventRepository.existsById(id);
     }
+    @Override
+    public List<Event> findByCategory(String category) {
+        if (category == null || category.isEmpty()) {
+            return eventRepository.findAll();
+        }
+        return eventRepository.findByCategory(category);
+    }
+
 }

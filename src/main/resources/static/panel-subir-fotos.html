@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Subir Fotos - Fotógrafo Profesional</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
+    <span class="branding">Clic Y Color</span>
+  </div>
+
+  <span class="site-title">Gestión de eventos y álbumes</span>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li class="dropdown">
+        <a href="portafolio.html">Portafolio ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="categoria-bodas.html">Bodas</a></li>
+          <li><a href="categoria-bautizos.html">Bautizos</a></li>
+          <li><a href="categoria-comuniones.html">Comuniones</a></li>
+          <li><a href="categoria-retratos.html">Retratos</a></li>
+          <li><a href="categoria-conciertos.html">Conciertos</a></li>
+        </ul>
+      </li>
+      <li><a href="login.html">Clientes</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="upload-section">
+    <form>
+  <!-- Crear nuevo evento -->
+  <h2>Crear nuevo evento</h2>
+  <form id="createEventForm">
+    <label for="eventName">Nombre del evento:</label>
+    <input type="text" id="eventName" required />
+
+    <label for="eventDate">Fecha del evento:</label>
+    <input type="date" id="eventDate" required />
+
+    <label for="eventLocation">Lugar del evento:</label>
+    <input type="text" id="eventLocation" required />
+
+    <label for="eventClientId">ID Cliente:</label>
+    <input type="number" id="eventClientId" required />
+
+    <button type="submit" id="createEventBtn">Crear evento</button>
+  </form>
+  </form>
+  <div id="eventMessage"></div>
+  <form>
+  <!-- Crear nuevo álbum -->
+  <h2>Crear nuevo álbum</h2>
+  <form id="createAlbumForm">
+    <label for="newAlbum">Nombre del álbum</label>
+    <input type="text" id="newAlbum" required />
+
+    <label for="eventSelect">Seleccionar evento</label>
+    <select id="eventSelect" required></select>
+
+    <button type="submit" id="createAlbumBtn">Crear álbum</button>
+  </form>
+  </form>
+  <div id="albumMessage"></div>
+  <form>
+  <!-- Subir fotos -->
+  <h2>Subir fotos al álbum</h2>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <label for="albumSelect">Seleccionar álbum</label>
+    <select id="albumSelect" required></select>
+
+    <input type="hidden" name="albumId" id="uploadAlbumId" />
+
+    <label for="files">Selecciona las fotos</label>
+    <input type="file" name="files" id="files" multiple accept="image/*" required />
+
+    <button type="submit">Subir fotos</button>
+  </form>
+  </form>
+  <div id="uploadStatus"></div>
+
+</section>
+
+
+<script>
+  async function loadEvents() {
+    const resp = await fetch('/api/events');
+    const events = await resp.json();
+    const select = document.getElementById('eventSelect');
+    select.innerHTML = '';
+    events.forEach(cat => {
+      const option = document.createElement('option');
+      option.value = cat.id;
+      option.textContent = cat.name;
+      select.appendChild(option);
+    });
+    if (events.length > 0) {
+      loadAlbums(events[0].id);
+    }
+  }
+
+  async function loadAlbums(eventId) {
+    const resp = await fetch(`/api/albums/by-event/${eventId}`);
+    const subs = await resp.json();
+    const select = document.getElementById('albumSelect');
+    select.innerHTML = '';
+    subs.forEach(sub => {
+      const option = document.createElement('option');
+      option.value = sub.id;
+      option.textContent = sub.name;
+      select.appendChild(option);
+    });
+    if (subs.length > 0) {
+      document.getElementById('uploadAlbumId').value = subs[0].id;
+    } else {
+      document.getElementById('uploadAlbumId').value = '';
+    }
+  }
+
+  document.getElementById('eventSelect').addEventListener('change', e => {
+    loadAlbums(e.target.value);
+  });
+
+  document.getElementById('albumSelect').addEventListener('change', e => {
+    document.getElementById('uploadAlbumId').value = e.target.value;
+  });
+
+  document.getElementById('createEventBtn').addEventListener('click', async () => {
+    const name = document.getElementById('newEvent').value.trim();
+    if (!name) {
+      alert('Introduce un nombre válido');
+      return;
+    }
+    const resp = await fetch('/api/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name })
+    });
+    if (resp.ok) {
+      alert('Evento creado');
+      document.getElementById('newEvent').value = '';
+      loadEvents();
+    } else {
+      alert('Error creando evento');
+    }
+  });
+
+  document.getElementById('createAlbumBtn').addEventListener('click', async () => {
+    const name = document.getElementById('newAlbum').value.trim();
+    const eventId = document.getElementById('eventSelect').value;
+    if (!name) {
+      alert('Introduce un nombre válido');
+      return;
+    }
+    const resp = await fetch(`/api/albums?eventId=${eventId}&name=${encodeURIComponent(name)}`, {
+      method: 'POST'
+    });
+    if (resp.ok) {
+      alert('Album creado');
+      document.getElementById('newAlbum').value = '';
+      loadAlbums(eventId);
+    } else {
+      alert('Error creando album');
+    }
+  });
+
+  document.getElementById('uploadForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const files = document.getElementById('files').files;
+    const albumId = document.getElementById('uploadAlbumId').value;
+
+    if (!albumId) {
+      alert('Selecciona o crea un album primero');
+      return;
+    }
+    if (files.length === 0) {
+      alert('Selecciona al menos una foto');
+      return;
+    }
+
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('files', file);
+    }
+    formData.append('albumId', albumId);
+
+    const resp = await fetch('/api/photos/upload-multiple', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (resp.ok) {
+      document.getElementById('uploadStatus').textContent = 'Fotos subidas correctamente.';
+      document.getElementById('files').value = '';
+    } else {
+      document.getElementById('uploadStatus').textContent = 'Error al subir fotos.';
+    }
+  });
+
+  // Inicialización
+  loadEvents();
+</script>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-content">
+    <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
+    <a href="#terms" class="terms-link">Términos y Condiciones</a>
+  </div>
+</footer>
+</body>
+</html>

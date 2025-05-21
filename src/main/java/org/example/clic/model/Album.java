@@ -2,6 +2,7 @@ package org.example.clic.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,15 +15,15 @@ public class Album {
 
     private String name;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
-
+    // Fotos asociadas
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Photo> photos;
+    private List<Photo> photos = new ArrayList<>();
 
     // getters & setters
 

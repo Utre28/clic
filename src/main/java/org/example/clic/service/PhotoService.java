@@ -6,6 +6,7 @@ import java.util.Optional;
 
 public interface PhotoService {
     List<Photo> findAll();
+    List<Photo> findByAlbumId(Long albumId);
     Optional<Photo> findById(Long id);
     Photo save(Photo photo);
     void deleteById(Long id);

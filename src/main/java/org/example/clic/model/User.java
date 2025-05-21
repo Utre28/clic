@@ -8,7 +8,9 @@ import java.util.List;
 public class User {
 
     public enum Role {
-        PHOTOGRAPHER, CLIENT
+        ADMIN,// Administrador con permisos totales
+        PHOTOGRAPHER,// Fotógrafo con permisos para panel y gestión
+        CLIENT   // Usuario normal
     }
 
     @Id

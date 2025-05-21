@@ -41,4 +41,10 @@ public class AlbumServiceImpl implements AlbumService {
     public boolean existsById(Long id) {
         return albumRepository.existsById(id);
     }
+
+    @Override
+    public List<Album> findByEventId(Long eventId) {
+        return albumRepository.findByEventId(eventId);
+    }
+
 }

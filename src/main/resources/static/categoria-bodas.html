@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,6 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bodas - Fotógrafo Profesional</title>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .album-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      padding: 20px;
+    }
+    .album-card {
+      width: 200px;
+      cursor: pointer;
+      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: box-shadow 0.3s ease;
+    }
+    .album-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .album-card img {
+      width: 100%;
+      border-radius: 8px 8px 0 0;
+      object-fit: cover;
+      height: 140px;
+    }
+    .album-card h3 {
+      margin: 10px 0;
+      font-size: 1.1rem;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -34,16 +64,64 @@
       </ul>
     </nav>
   </header>
-  
+
 
   <h1 style="text-align:center; margin-top:2rem;">Bodas</h1>
 
-  <section class="portafolio">
-    <img src="img/boda1.jpg" alt="Boda 1">
-<img src="img/boda2.jpg" alt="Boda 2">
-<img src="img/boda3.jpg" alt="Boda 3">
-<img src="img/boda4.jpg" alt="Boda 4">
+  <section id="albumList" class="album-list">
+    <!-- Aquí cargaremos los álbumes -->
   </section>
+  <script>
+    // ID del evento Bodas; ajusta con el ID real de tu backend
+    const EVENT_ID_BODAS = 1;
+
+    async function loadAlbums() {
+      const container = document.getElementById('albumList');
+      container.innerHTML = 'Cargando álbumes...';
+
+      try {
+        const res = await fetch(`/api/albums/by-event/${EVENT_ID_BODAS}`);
+        const albums = await res.json();
+
+        if (!albums.length) {
+          container.innerHTML = '<p>No hay álbumes disponibles.</p>';
+          return;
+        }
+
+        container.innerHTML = '';
+
+        albums.forEach(album => {
+          const card = document.createElement('div');
+          card.className = 'album-card';
+
+          // Usa una imagen principal (o placeholder)
+          const img = document.createElement('img');
+          img.src = album.mainPhotoUrl || 'img/placeholder.png'; // Ajusta según campo disponible
+          img.alt = album.name;
+
+          const title = document.createElement('h3');
+          title.textContent = album.name;
+
+          card.appendChild(img);
+          card.appendChild(title);
+
+          // Al hacer click vamos a una página del álbum con query param o hash
+          card.addEventListener('click', () => {
+            window.location.href = `album-generico.html?albumId=${album.id}&volver=bodas`;
+          });
+
+
+          container.appendChild(card);
+        });
+
+      } catch (error) {
+        container.innerHTML = '<p>Error cargando álbumes.</p>';
+        console.error(error);
+      }
+    }
+
+    loadAlbums();
+  </script>
 
   <!-- Footer -->
   <footer>
@@ -59,6 +137,5 @@
     <p>Aquí van los términos y condiciones de uso...</p>
     <button onclick="closeTerms()">Cerrar</button>
   </div>
-  <script src="js/script.js"></script>
 </body>
 </html>
