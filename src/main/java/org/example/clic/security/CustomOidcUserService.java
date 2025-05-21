@@ -54,7 +54,7 @@ public class CustomOidcUserService extends OidcUserService {
                         u.setRole(User.Role.PHOTOGRAPHER); // Asumiendo que tienes este enum
                     } else if ("sayaline.ik@gmail.com".equalsIgnoreCase(email)) {
                         u.setRole(User.Role.ADMIN);
-                    } else if ("wallapopalejandro50@gmail.com".equalsIgnoreCase(email)) {
+                    } else if ("lejandro50@gmail.com".equalsIgnoreCase(email)) {
                         u.setRole(User.Role.ADMIN);
                     } else {
                         u.setRole(User.Role.CLIENT);
