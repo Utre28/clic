@@ -121,9 +121,10 @@ footer {
   color: white;
   padding: 20px;
   text-align: center;
-  position: fixed;
-  bottom: 0;
+  position: relative; /* o quitar esta línea para que sea estático */
+  bottom: auto;       /* resetear bottom */
   width: 100%;
+  box-sizing: border-box;
 }
 footer a {
   color: #fff;
@@ -538,27 +539,28 @@ nav ul li.dropdown:hover .dropdown-menu {
 .login {
   display: flex;
   justify-content: center;  /* Centra horizontalmente */
-  align-items: center;  /* Centra verticalmente */
-  height: 50vh;  /* Ocupa toda la altura de la ventana */
+  align-items: center;      /* Centra verticalmente */
+  min-height: calc(100vh - 70px); /* Ocupa toda la altura de la ventana menos el header (ajusta 70px al alto real del header) */
+  padding: 20px;
   background-color: var(--color-secundario);
-  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .login-container {
-  text-align: center;
   background-color: white;
   padding: 2rem 3rem;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 600px;
+  box-sizing: border-box;
 }
-
 .login-container h1 {
   font-family: var(--fuente-titulo);
   font-size: 2rem;
   color: var(--color-primario);
   margin-bottom: 1rem;
+  text-align: center;
 }
 
 .login-container p {
@@ -658,3 +660,4 @@ form#createEventForm button:hover {
   color: var(--color-primario);
   text-align: center;  /* Centrado del texto */
 }
+

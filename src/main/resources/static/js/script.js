@@ -1,5 +1,3 @@
-// script.js (ajustado para eventos y álbumes con formularios separados y validación completa)
-
 document.addEventListener('DOMContentLoaded', function () {
   console.log('Página cargada correctamente');
 
@@ -44,6 +42,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const resp = await fetch('/api/events');
     const events = await resp.json();
     const eventSelect = document.getElementById('eventSelect');
+    if (!eventSelect) return;
+
     eventSelect.innerHTML = '';
     events.forEach(evt => {
       const option = document.createElement('option');
@@ -58,6 +58,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const resp = await fetch(`/api/albums/by-event/${eventId}`);
     const albums = await resp.json();
     const albumSelect = document.getElementById('albumSelect');
+    if (!albumSelect) return;
+
     albumSelect.innerHTML = '';
     albums.forEach(album => {
       const option = document.createElement('option');
@@ -65,124 +67,143 @@ document.addEventListener('DOMContentLoaded', function () {
       option.textContent = album.name;
       albumSelect.appendChild(option);
     });
-    document.getElementById('uploadAlbumId').value = albums.length > 0 ? albums[0].id : '';
+
+    const uploadAlbumId = document.getElementById('uploadAlbumId');
+    if (uploadAlbumId) {
+      uploadAlbumId.value = albums.length > 0 ? albums[0].id : '';
+    }
   }
 
-  document.getElementById('eventSelect')?.addEventListener('change', (e) => {
-    loadAlbums(e.target.value);
-  });
+  const eventSelect = document.getElementById('eventSelect');
+  if (eventSelect) {
+    eventSelect.addEventListener('change', (e) => {
+      loadAlbums(e.target.value);
+    });
+  }
 
-  document.getElementById('albumSelect')?.addEventListener('change', (e) => {
-    document.getElementById('uploadAlbumId').value = e.target.value;
-  });
+  const albumSelect = document.getElementById('albumSelect');
+  if (albumSelect) {
+    albumSelect.addEventListener('change', (e) => {
+      const uploadAlbumId = document.getElementById('uploadAlbumId');
+      if (uploadAlbumId) {
+        uploadAlbumId.value = e.target.value;
+      }
+    });
+  }
 
   // —————— 4. Crear nuevo evento ——————
-  document.getElementById('createEventForm').addEventListener('submit', async e => {
-    e.preventDefault();
+  const createEventForm = document.getElementById('createEventForm');
+  if (createEventForm) {
+    createEventForm.addEventListener('submit', async e => {
+      e.preventDefault();
 
-    const name = document.getElementById('eventName').value.trim();
-    const date = document.getElementById('eventDate').value;
-    const location = document.getElementById('eventLocation').value.trim();
-    const clientIdValue = document.getElementById('eventClientId').value.trim();
-    const clientId = clientIdValue ? Number(clientIdValue) : null;
+      const name = document.getElementById('eventName').value.trim();
+      const date = document.getElementById('eventDate').value;
+      const location = document.getElementById('eventLocation').value.trim();
+      const clientIdValue = document.getElementById('eventClientId').value.trim();
+      const clientId = clientIdValue ? Number(clientIdValue) : null;
 
-    if (!name || !date || !location) {
-      alert('Por favor, completa todos los campos obligatorios');
-      return;
-    }
-
-    const eventData = {
-      name,
-      date,        // debe estar en formato 'YYYY-MM-DD'
-      location,
-      clientId     // puede ser null
-    };
-
-    try {
-      const resp = await fetch('/api/events', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(eventData)
-      });
-
-      if (resp.ok) {
-        alert('Evento creado con éxito');
-        document.getElementById('createEventForm').reset();
-        loadEvents(); // recarga eventos para actualizar select
-      } else {
-        const errorData = await resp.json();
-        alert('Error creando evento: ' + (errorData.message || resp.statusText));
+      if (!name || !date || !location) {
+        alert('Por favor, completa todos los campos obligatorios');
+        return;
       }
-    } catch (error) {
-      alert('Error de red: ' + error.message);
-    }
-  });
 
+      const eventData = {
+        name,
+        date,        // debe estar en formato 'YYYY-MM-DD'
+        location,
+        clientId     // puede ser null
+      };
+
+      try {
+        const resp = await fetch('/api/events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(eventData)
+        });
+
+        if (resp.ok) {
+          alert('Evento creado con éxito');
+          createEventForm.reset();
+          loadEvents(); // recarga eventos para actualizar select
+        } else {
+          const errorData = await resp.json();
+          alert('Error creando evento: ' + (errorData.message || resp.statusText));
+        }
+      } catch (error) {
+        alert('Error de red: ' + error.message);
+      }
+    });
+  }
 
   // —————— 5. Crear nuevo álbum ——————
-  document.getElementById('createAlbumForm').addEventListener('submit', async e => {
-    e.preventDefault();
+  const createAlbumForm = document.getElementById('createAlbumForm');
+  if (createAlbumForm) {
+    createAlbumForm.addEventListener('submit', async e => {
+      e.preventDefault();
 
-    const name = document.getElementById('newAlbum').value.trim();
-    const eventId = document.getElementById('eventSelect').value;
+      const name = document.getElementById('newAlbum').value.trim();
+      const eventId = document.getElementById('eventSelect') ? document.getElementById('eventSelect').value : null;
 
-    if (!name) {
-      alert('Introduce un nombre válido para el álbum');
-      return;
-    }
-
-    try {
-      const resp = await fetch('/api/albums', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, eventId: Number(eventId) })
-      });
-
-      if (resp.ok) {
-        alert('Álbum creado con éxito');
-        document.getElementById('createAlbumForm').reset();
-        loadAlbums(eventId); // recarga álbumes para ese evento
-      } else {
-        const errorData = await resp.json();
-        alert('Error creando álbum: ' + (errorData.message || resp.statusText));
+      if (!name) {
+        alert('Introduce un nombre válido para el álbum');
+        return;
       }
-    } catch (error) {
-      alert('Error de red: ' + error.message);
-    }
-  });
 
+      try {
+        const resp = await fetch('/api/albums', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, eventId: Number(eventId) })
+        });
+
+        if (resp.ok) {
+          alert('Álbum creado con éxito');
+          createAlbumForm.reset();
+          if (eventId) loadAlbums(eventId); // recarga álbumes para ese evento
+        } else {
+          const errorData = await resp.json();
+          alert('Error creando álbum: ' + (errorData.message || resp.statusText));
+        }
+      } catch (error) {
+        alert('Error de red: ' + error.message);
+      }
+    });
+  }
 
   // —————— 6. Subir fotos ——————
   const uploadForm = document.getElementById('uploadForm');
-  uploadForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const files = document.getElementById('files').files;
-    const albumId = document.getElementById('uploadAlbumId').value;
+  if (uploadForm) {
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const files = document.getElementById('files').files;
+      const albumId = document.getElementById('uploadAlbumId') ? document.getElementById('uploadAlbumId').value : null;
 
-    if (!albumId || files.length === 0) {
-      alert('Selecciona un álbum y al menos una foto');
-      return;
-    }
+      if (!albumId || files.length === 0) {
+        alert('Selecciona un álbum y al menos una foto');
+        return;
+      }
 
-    const formData = new FormData();
-    for (const file of files) {
-      formData.append('files', file);
-    }
-    formData.append('albumId', albumId);
+      const formData = new FormData();
+      for (const file of files) {
+        formData.append('files', file);
+      }
+      formData.append('albumId', albumId);
 
-    const resp = await fetch('/api/photos/upload-multiple', {
-      method: 'POST',
-      body: formData
+      const resp = await fetch('/api/photos/upload-multiple', {
+        method: 'POST',
+        body: formData
+      });
+
+      const status = document.getElementById('uploadStatus');
+      if (resp.ok) {
+        if(status) status.textContent = 'Fotos subidas correctamente.';
+        uploadForm.reset();
+      } else {
+        if(status) status.textContent = 'Error al subir fotos.';
+      }
     });
-
-    const status = document.getElementById('uploadStatus');
-    if (resp.ok) {
-      status.textContent = 'Fotos subidas correctamente.';
-      uploadForm.reset();
-    } else {
-      status.textContent = 'Error al subir fotos.';
-    }
-  });
+  }
 
   // —————— 7. Inicialización ——————
   loadEvents();

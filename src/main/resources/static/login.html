@@ -9,7 +9,7 @@
 </head>
 <body>
 <header>
-    <div class="header-left">
+    <div class="main-content">
         <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
         <span class="branding">Clic Y Color</span>
     </div>
@@ -29,17 +29,18 @@
                     <li><a href="categoria-conciertos.html">Conciertos</a></li>
                 </ul>
             </li>
-            <li><a href="login.html">Clientes</a></li>
+            <li><a href="login.html">Iniciar sesión</a></li>
             <li><a href="contacto.html">Contacto</a></li>
         </ul>
     </nav>
 </header>
 
 <section class="login">
-  <div class="login-container">
-         <!-- Botón de inicio de sesión con Google -->
 
-         <h1>Acceso para Clientes</h1>
+  <div class="login-container">
+      <h1>Acceso para Clientes</h1>
+      <form>        <!-- Botón de inicio de sesión con Google -->
+
          <p>Inicia sesión usando tu cuenta de Google:</p>
          <a href="/oauth2/authorization/google">
              <div class="g-signin2" data-onsuccess="onSignIn">
@@ -49,6 +50,19 @@
 
         <!-- Mensaje de estado de la autenticación -->
         <p id="status"></p>
+      </form>
+      <!-- Login con formulario email + password -->
+      <form method="post" action="/login">
+          <label for="username">Email:</label>
+          <input type="email" id="username" name="username" required />
+
+          <label for="password">Contraseña:</label>
+          <input type="password" id="password" name="password" required />
+
+          <button type="submit">Iniciar sesión</button>
+
+      </form>
+      <p>¿No tienes cuenta? <a href="/register">Regístrate aquí</a></p>
         <!-- Mostrar el botón de acceso al panel solo si el fotógrafo ha iniciado sesión -->
         <button id="access-panel-btn" style="display: none;" onclick="location.href='panel.html'">Acceder al Panel de Control</button>
         <!-- (Opcional) puedes mostrar un spinner o mensaje aquí mientras carga -->

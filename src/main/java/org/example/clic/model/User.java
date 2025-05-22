@@ -21,6 +21,8 @@ public class User {
 
     @Column(unique = true, nullable = false)
     private String email;
+    @Column(nullable = false)
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -81,6 +83,14 @@ public class User {
 
     public void setEvents(List<Event> events) {
         this.events = events;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
 
