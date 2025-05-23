@@ -5,15 +5,19 @@ import org.example.clic.model.Event;
 import org.example.clic.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
+// Mapper para convertir entre Event y EventDTO
 @Mapper(componentModel = "spring")
 public interface EventMapper {
+
+    // Mapea client.id a clientId en el DTO
     @Mapping(source = "client.id", target = "clientId")
     EventDTO toDto(Event event);
 
+    // Crea el objeto User con solo el ID al mapear de DTO a entidad
     @Mapping(target = "client", expression = "java(createUser(dto.getClientId()))")
     Event toEntity(EventDTO dto);
 
+    // Método auxiliar para construir User con ID
     default User createUser(Long id) {
         if (id == null) return null;
         User u = new User();

@@ -6,6 +6,7 @@ import org.example.clic.model.Album;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+// Mapper para Photo <-> PhotoDTO
 @Mapper(componentModel = "spring")
 public interface PhotoMapper {
     @Mapping(source = "album.id", target = "albumId")
@@ -14,6 +15,7 @@ public interface PhotoMapper {
     @Mapping(target = "album", expression = "java(createAlbum(dto.getAlbumId()))")
     Photo toEntity(PhotoDTO dto);
 
+    // Crea Album con solo ID para establecer la relación
     default Album createAlbum(Long id) {
         if (id == null) return null;
         Album a = new Album();
