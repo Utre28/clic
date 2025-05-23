@@ -4,17 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registro – Fotógrafo Profesional</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <!-- Enlace a estilos globales -->
+  <link rel="stylesheet" href="css/styleinicio.css" />
 </head>
 <body>
+<!-- Header con logo y navegación principal -->
 <header>
   <div class="header-left">
     <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
     <span class="branding">Clic Y Color</span>
   </div>
-
   <span class="site-title">Registro de Usuario</span>
-
   <nav>
     <ul>
       <li><a href="index.html">Inicio</a></li>
@@ -34,10 +34,12 @@
   </nav>
 </header>
 
+<!-- Sección de registro de usuario -->
 <section class="register">
   <div class="register-container">
     <h1>Crear cuenta nueva</h1>
 
+    <!-- Formulario de registro: envía datos vía POST a /register -->
     <form method="post" action="/register">
       <label for="name">Nombre:</label>
       <input type="text" id="name" name="name" required />
@@ -55,7 +57,7 @@
   </div>
 </section>
 
-<!-- Footer -->
+<!-- Footer con derechos y términos -->
 <footer>
   <div class="footer-content">
     <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>

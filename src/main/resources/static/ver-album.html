@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Álbum - Fotógrafo Profesional</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/styleinicio.css" />
   <style>
+    /* Galería de fotos */
     .photo-gallery {
       display: flex;
       flex-wrap: wrap;
@@ -23,12 +24,37 @@
     .photo-gallery img:hover {
       transform: scale(1.05);
     }
+    /* Botón volver */
     #backBtn {
       margin: 20px;
       display: inline-block;
-      cursor: pointer;
       color: blue;
       text-decoration: underline;
+      cursor: pointer;
+    }
+    /* Modal de términos */
+    .terms-container {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+    .terms-container h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+    .terms-container button {
+      margin-top: 20px;
+      padding: 0.8rem 1.2rem;
+      background: #0056b3;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -38,9 +64,7 @@
     <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
     <span class="branding">Clic Y Color</span>
   </div>
-
   <span class="site-title">Fotógrafo Profesional</span>
-
   <nav>
     <ul>
       <li><a href="index.html">Inicio</a></li>
@@ -65,95 +89,72 @@
   <h1 id="albumTitle" style="text-align:center;"></h1>
 </header>
 
-<section id="photoGallery" class="photo-gallery">
-  <!-- Fotos se cargarán aquí -->
-</section>
+<section id="photoGallery" class="photo-gallery"></section>
 
 <script>
-  // Función para obtener params URL
   function getQueryParam(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
+    return new URLSearchParams(window.location.search).get(param);
   }
-
   const albumId = getQueryParam('albumId');
+  const volverA = getQueryParam('volver') || 'bodas';
+  document.getElementById('backBtn').href = `categoria-${volverA}.html`;
 
   if (!albumId) {
     alert('No se ha especificado un álbum');
-    window.location.href = 'categoria-bodas.html';
+    location.href = `categoria-${volverA}.html`;
   }
 
   async function loadAlbumPhotos() {
     try {
-      // Opcional: obtener info del álbum para mostrar el nombre
-      const albumRes = await fetch(`/api/albums/${albumId}`);
-      const album = await albumRes.json();
+      const album = await (await fetch(`/api/albums/${albumId}`)).json();
       document.getElementById('albumTitle').textContent = album.name || 'Álbum';
 
-      const photosRes = await fetch(`/api/photos/by-album/${albumId}`);
-      const photos = await photosRes.json();
-
+      const photos = await (await fetch(`/api/photos/by-album/${albumId}`)).json();
       const gallery = document.getElementById('photoGallery');
-      gallery.innerHTML = '';
-
-      if (!photos.length) {
-        gallery.innerHTML = '<p>No hay fotos en este álbum.</p>';
-        return;
-      }
-
-      photos.forEach(photo => {
-        const img = document.createElement('img');
-        img.src = photo.url;
-        img.alt = photo.description || 'Foto';
-        gallery.appendChild(img);
-      });
-
-    } catch (error) {
-      console.error(error);
+      gallery.innerHTML = photos.length
+              ? photos.map(p => `<img src="${p.url}" alt="${p.description||'Foto'}"/>`).join('')
+              : '<p>No hay fotos en este álbum.</p>';
+    } catch (e) {
+      console.error(e);
       document.getElementById('photoGallery').innerHTML = '<p>Error cargando fotos.</p>';
     }
   }
-
   loadAlbumPhotos();
 </script>
 
-<!-- Modal para mostrar imagen ampliada -->
-<div id="modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh;
-    background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:1000;">
-  <img id="modalImg" src="" alt="" style="max-width:90vw; max-height:90vh; border-radius:8px;"/>
+<!-- Modal para ampliar imagen -->
+<div id="modal" style="
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  ">
+  <img id="modalImg" style="max-width:90vw; max-height:90vh; border-radius:8px;" />
 </div>
-
 <script>
   const modal = document.getElementById('modal');
   const modalImg = document.getElementById('modalImg');
-
   document.body.addEventListener('click', e => {
-    // Solo abrir modal si la imagen está dentro de la galería de fotos
-    if (e.target.tagName === 'IMG' && e.target.parentElement.classList.contains('photo-gallery')) {
+    if (e.target.tagName === 'IMG' && e.target.parentElement.id === 'photoGallery') {
       modalImg.src = e.target.src;
       modal.style.display = 'flex';
     }
   });
-
-  modal.addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
+  modal.addEventListener('click', () => modal.style.display = 'none');
 </script>
-<!-- Footer -->
+
 <footer>
-  <div class="footer-content">
-    <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
-    <a href="#terms" class="terms-link">Términos y Condiciones</a>
-  </div>
+  <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
+  <a href="#terms" class="terms-link">Términos y Condiciones</a>
 </footer>
 
-<!-- Modal de Términos y Condiciones -->
 <div id="terms" class="terms-container">
   <h2>Términos y Condiciones</h2>
   <p>Aquí van los términos y condiciones de uso...</p>
-  <button onclick="closeTerms()">Cerrar</button>
+  <button onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
 </div>
-
-
 </body>
 </html>

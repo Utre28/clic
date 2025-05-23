@@ -1,63 +1,67 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bautizos - Fotógrafo Profesional</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <title>Bautizos – Fotógrafo Profesional</title>
+  <!-- Enlace a estilos generales -->
+  <link rel="stylesheet" href="css/styleinicio.css" />
 </head>
 <body>
-  <header>
-    <div class="header-left">
-      <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
-      <span class="branding">Clic Y Color</span>
-    </div>
-  
-    <span class="site-title">Fotógrafo Profesional</span>
-  
-    <nav>
-      <ul>
-        <li><a href="index.html">Inicio</a></li>
-        <li class="dropdown">
-          <a href="portafolio.html">Portafolio ▾</a>
-          <ul class="dropdown-menu">
-            <li><a href="categoria-bodas.html">Bodas</a></li>
-            <li><a href="categoria-bautizos.html">Bautizos</a></li>
-            <li><a href="categoria-comuniones.html">Comuniones</a></li>
-            <li><a href="categoria-retratos.html">Retratos</a></li>
-            <li><a href="categoria-conciertos.html">Conciertos</a></li>
-          </ul>
-        </li>
-        <li><a href="login.html">Iniciar sesión</a></li>
-        <li><a href="contacto.html">Contacto</a></li>
-      </ul>
-    </nav>
-  </header>
-  
-
-  <h1 style="text-align:center; margin-top:2rem;">Bautizos</h1>
-
-  <section class="portafolio">
-    <img src="img/bautizo1.jpg" alt="Bautizo 1">
-<img src="img/bautizo2.jpg" alt="Bautizo 2">
-<img src="img/bautizo3.jpg" alt="Bautizo 3">
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <div class="footer-content">
-      <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
-      <a href="#terms" class="terms-link">Términos y Condiciones</a>
-    </div>
-  </footer>
-
-  <!-- Modal de Términos y Condiciones -->
-  <div id="terms" class="terms-container">
-    <h2>Términos y Condiciones</h2>
-    <p>Aquí van los términos y condiciones de uso...</p>
-    <button onclick="closeTerms()">Cerrar</button>
+<!-- Header con logo y navegación principal -->
+<header>
+  <div class="header-left">
+    <img src="img/logo.png" alt="Logo Clic y Color" class="logo" />
+    <span class="branding">Clic Y Color</span>
   </div>
-  <script src="js/script.js"></script>
+  <span class="site-title">Fotógrafo Profesional</span>
+  <nav>
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li class="dropdown">
+        <a href="portafolio.html">Portafolio ▾</a>
+        <ul class="dropdown-menu">
+          <!-- Listado de categorías -->
+          <li><a href="categoria-bodas.html">Bodas</a></li>
+          <li><a href="categoria-bautizos.html">Bautizos</a></li>
+          <li><a href="categoria-comuniones.html">Comuniones</a></li>
+          <li><a href="categoria-retratos.html">Retratos</a></li>
+          <li><a href="categoria-conciertos.html">Conciertos</a></li>
+        </ul>
+      </li>
+      <li><a href="login.html">Iniciar sesión</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Título de la sección Bautizos -->
+<h1 style="text-align:center; margin-top:2rem;">Bautizos</h1>
+
+<!-- Galería de imágenes de bautizos -->
+<section class="portafolio">
+  <!-- Cada img refleja una sesión de bautizo -->
+  <img src="img/bautizo1.jpg" alt="Bautizo 1" />
+  <img src="img/bautizo2.jpg" alt="Bautizo 2" />
+  <img src="img/bautizo3.jpg" alt="Bautizo 3" />
+</section>
+
+<!-- Footer con información de derechos y enlace a términos -->
+<footer>
+  <div class="footer-content">
+    <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
+    <a href="#terms" class="terms-link">Términos y Condiciones</a>
+  </div>
+</footer>
+
+<!-- Modal de Términos y Condiciones (oculto inicialmente) -->
+<div id="terms" class="terms-container">
+  <h2>Términos y Condiciones</h2>
+  <p>Contenido de los términos y condiciones...</p>
+  <button onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
+</div>
+
+<!-- Script global para manejar interacciones (modal, menú) -->
+<script src="js/script.js"></script>
 </body>
 </html>

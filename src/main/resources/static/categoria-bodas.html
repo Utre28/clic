@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bodas - Fotógrafo Profesional</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <title>Bodas – Fotógrafo Profesional</title>
+  <!-- Enlace a estilos globales -->
+  <link rel="stylesheet" href="css/styleinicio.css" />
   <style>
+    /* Contenedor de tarjetas de álbum */
     .album-list {
       display: flex;
       flex-wrap: wrap;
@@ -13,6 +15,7 @@
       justify-content: center;
       padding: 20px;
     }
+    /* Tarjeta de álbum individual */
     .album-card {
       width: 200px;
       cursor: pointer;
@@ -38,104 +41,92 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-left">
-      <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
-      <span class="branding">Clic Y Color</span>
-    </div>
-  
-    <span class="site-title">Fotógrafo Profesional</span>
-  
-    <nav>
-      <ul>
-        <li><a href="index.html">Inicio</a></li>
-        <li class="dropdown">
-          <a href="portafolio.html">Portafolio ▾</a>
-          <ul class="dropdown-menu">
-            <li><a href="categoria-bodas.html">Bodas</a></li>
-            <li><a href="categoria-bautizos.html">Bautizos</a></li>
-            <li><a href="categoria-comuniones.html">Comuniones</a></li>
-            <li><a href="categoria-retratos.html">Retratos</a></li>
-            <li><a href="categoria-conciertos.html">Conciertos</a></li>
-          </ul>
-        </li>
-        <li><a href="login.html">Iniciar sesión</a></li>
-        <li><a href="contacto.html">Contacto</a></li>
-      </ul>
-    </nav>
-  </header>
-
-
-  <h1 style="text-align:center; margin-top:2rem;">Bodas</h1>
-
-  <section id="albumList" class="album-list">
-    <!-- Aquí cargaremos los álbumes -->
-  </section>
-  <script>
-    // ID del evento Bodas; ajusta con el ID real de tu backend
-    const EVENT_ID_BODAS = 1;
-
-    async function loadAlbums() {
-      const container = document.getElementById('albumList');
-      container.innerHTML = 'Cargando álbumes...';
-
-      try {
-        const res = await fetch(`/api/albums/by-event/${EVENT_ID_BODAS}`);
-        const albums = await res.json();
-
-        if (!albums.length) {
-          container.innerHTML = '<p>No hay álbumes disponibles.</p>';
-          return;
-        }
-
-        container.innerHTML = '';
-
-        albums.forEach(album => {
-          const card = document.createElement('div');
-          card.className = 'album-card';
-
-          // Usa una imagen principal (o placeholder)
-          const img = document.createElement('img');
-          img.src = album.mainPhotoUrl || 'img/placeholder.png'; // Ajusta según campo disponible
-          img.alt = album.name;
-
-          const title = document.createElement('h3');
-          title.textContent = album.name;
-
-          card.appendChild(img);
-          card.appendChild(title);
-
-          // Al hacer click vamos a una página del álbum con query param o hash
-          card.addEventListener('click', () => {
-            window.location.href = `album-generico.html?albumId=${album.id}&volver=bodas`;
-          });
-
-
-          container.appendChild(card);
-        });
-
-      } catch (error) {
-        container.innerHTML = '<p>Error cargando álbumes.</p>';
-        console.error(error);
-      }
-    }
-
-    loadAlbums();
-  </script>
-
-  <!-- Footer -->
-  <footer>
-    <div class="footer-content">
-      <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
-      <a href="#terms" class="terms-link">Términos y Condiciones</a>
-    </div>
-  </footer>
-
-  <!-- Modal de Términos y Condiciones -->
-  <div id="terms" class="terms-container">
-    <h2>Términos y Condiciones</h2>
-    <p>Aquí van los términos y condiciones de uso...</p>
-    <button onclick="closeTerms()">Cerrar</button>
+<!-- Header con logo y navegación principal -->
+<header>
+  <div class="header-left">
+    <img src="img/logo.png" alt="Logo Clic y Color" class="logo" />
+    <span class="branding">Clic Y Color</span>
   </div>
+  <span class="site-title">Fotógrafo Profesional</span>
+  <nav>
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li class="dropdown">
+        <a href="portafolio.html">Portafolio ▾</a>
+        <ul class="dropdown-menu">
+          <!-- Enlaces a categorías -->
+          <li><a href="categoria-bodas.html">Bodas</a></li>
+          <li><a href="categoria-bautizos.html">Bautizos</a></li>
+          <li><a href="categoria-comuniones.html">Comuniones</a></li>
+          <li><a href="categoria-retratos.html">Retratos</a></li>
+          <li><a href="categoria-conciertos.html">Conciertos</a></li>
+        </ul>
+      </li>
+      <li><a href="login.html">Iniciar sesión</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Título de la sección Bodas -->
+<h1 style="text-align:center; margin-top:2rem;">Bodas</h1>
+
+<!-- Listado de álbumes de bodas cargados por JavaScript -->
+<section id="albumList" class="album-list"></section>
+
+<script>
+  // ID fijo del evento "Bodas"; ajusta al ID real del backend
+  const EVENT_ID_BODAS = 1;
+
+  async function loadAlbums() {
+    const container = document.getElementById('albumList');
+    container.textContent = 'Cargando álbumes...';
+    try {
+      // Petición al backend para obtener álbumes del evento
+      const res = await fetch(`/api/albums/by-event/${EVENT_ID_BODAS}`);
+      const albums = await res.json();
+      if (!albums.length) {
+        container.innerHTML = '<p>No hay álbumes disponibles.</p>';
+        return;
+      }
+      container.innerHTML = '';
+      // Crear tarjeta por cada álbum
+      albums.forEach(album => {
+        const card = document.createElement('div');
+        card.className = 'album-card';
+        const img = document.createElement('img');
+        img.src = album.mainPhotoUrl || 'img/placeholder.png';
+        img.alt = album.name;
+        const title = document.createElement('h3');
+        title.textContent = album.name;
+        card.append(img, title);
+        // Al hacer clic, navegar a la vista del álbum
+        card.addEventListener('click', () => {
+          window.location.href = `ver-album.html?albumId=${album.id}&volver=bodas`;
+        });
+        container.appendChild(card);
+      });
+    } catch (error) {
+      console.error(error);
+      container.innerHTML = '<p>Error cargando álbumes.</p>';
+    }
+  }
+  loadAlbums();
+</script>
+
+<!-- Footer con derechos y términos -->
+<footer>
+  <div class="footer-content">
+    <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
+    <a href="#terms" class="terms-link">Términos y Condiciones</a>
+  </div>
+</footer>
+
+<!-- Modal de Términos y Condiciones -->
+<div id="terms" class="terms-container">
+  <h2>Términos y Condiciones</h2>
+  <p>Contenido de los términos y condiciones...</p>
+  <button onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
+</div>
 </body>
 </html>

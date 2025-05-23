@@ -3,71 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Inicio - Fotógrafo Profesional</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Inicio – Fotógrafo Profesional</title>
+  <!-- Enlace al CSS principal -->
+  <link rel="stylesheet" href="css/styleinicio.css" />
 </head>
 <body>
-  <header>
-    <div class="header-left">
-      <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
-      <span class="branding">Clic Y Color</span>
-    </div>
-  
-    <span class="site-title">Fotógrafo Profesional</span>
-  
-    <nav>
-      <ul>
-        <li><a href="index.html">Inicio</a></li>
-        <li class="dropdown">
-          <a href="portafolio.html">Portafolio ▾</a>
-          <ul class="dropdown-menu">
-            <li><a href="categoria-bodas.html">Bodas</a></li>
-            <li><a href="categoria-bautizos.html">Bautizos</a></li>
-            <li><a href="categoria-comuniones.html">Comuniones</a></li>
-            <li><a href="categoria-retratos.html">Retratos</a></li>
-            <li><a href="categoria-conciertos.html">Conciertos</a></li>
-          </ul>
-        </li>
-
-
-        <li><a href="login.html">Iniciar sesión</a></li>
-        <li><a href="contacto.html">Contacto</a></li>
-      </ul>
-    </nav>
-  </header>
-  
-  <section class="hero">
-    <h1>Capturando Momentos Únicos</h1>
-    <p>Fotografía profesional para cada ocasión</p>
-    <a href="portafolio.html" class="btn">Ver Portafolio</a>
-  </section>
-  
-  <section class="sobre-mi">
-    <div class="contenedor">
-      <img src="img/fotografo.jpg" alt="Foto del fotógrafo">
-      <div>
-        <h2>Sobre mí</h2>
-        <p>¡Hola! Soy Edward, fotógrafo profesional apasionado por capturar momentos únicos que cuentan historias auténticas. Me encanta trabajar con personas, emociones y luz natural para crear recuerdos inolvidables a través de mi cámara.</p>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- Footer -->
-  <footer>
-    <div class="footer-content">
-      <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
-      <a href="#terms" class="terms-link">Términos y Condiciones</a>
-    </div>
-  </footer>
-
-  <!-- Modal de Términos y Condiciones -->
-  <div id="terms" class="terms-container">
-    <h2>Términos y Condiciones</h2>
-    <p>Aquí van los términos y condiciones de uso...</p>
-    <button onclick="closeTerms()">Cerrar</button>
+<!-- Header: logo y navegación principal -->
+<header>
+  <div class="header-left">
+    <img src="img/logo.png" alt="Logo Clic y Color" class="logo" />
+    <span class="branding">Clic Y Color</span>
   </div>
-  <script src="js/script.js"></script>
+  <span class="site-title">Fotógrafo Profesional</span>
+  <nav>
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li class="dropdown">
+        <a href="portafolio.html">Portafolio ▾</a>
+        <ul class="dropdown-menu">
+          <!-- Enlaces a categorías de portafolio -->
+          <li><a href="categoria-bodas.html">Bodas</a></li>
+          <li><a href="categoria-bautizos.html">Bautizos</a></li>
+          <li><a href="categoria-comuniones.html">Comuniones</a></li>
+          <li><a href="categoria-retratos.html">Retratos</a></li>
+          <li><a href="categoria-conciertos.html">Conciertos</a></li>
+        </ul>
+      </li>
+      <li><a href="login.html">Iniciar sesión</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Sección Hero: mensaje destacado y botón al portafolio -->
+<section class="hero">
+  <h1>Capturando Momentos Únicos</h1>
+  <p>Fotografía profesional para cada ocasión</p>
+  <a href="portafolio.html" class="btn">Ver Portafolio</a>
+</section>
+
+<!-- Sección "Sobre mí" con imagen y descripción -->
+<section class="sobre-mi">
+  <div class="contenedor">
+    <img src="img/fotografo.jpg" alt="Foto del fotógrafo" />
+    <div>
+      <h2>Sobre mí</h2>
+      <p>
+        ¡Hola! Soy Edward, fotógrafo profesional apasionado por capturar momentos únicos
+        que cuentan historias auténticas. Me encanta trabajar con personas, emociones y
+        luz natural para crear recuerdos inolvidables a través de mi cámara.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer: información de derechos y términos -->
+<footer>
+  <div class="footer-content">
+    <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
+    <a href="#terms" class="terms-link">Términos y Condiciones</a>
+  </div>
+</footer>
+
+<!-- Modal de Términos y Condiciones (oculto por defecto) -->
+<div id="terms" class="terms-container">
+  <h2>Términos y Condiciones</h2>
+  <p>Aquí van los términos y condiciones de uso...</p>
+  <button onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
+</div>
+
+<!-- Script principal de la aplicación -->
+<script src="js/script.js"></script>
 </body>
 </html>

@@ -1,210 +1,174 @@
-document.addEventListener('DOMContentLoaded', function () {
-  console.log('Página cargada correctamente');
+// JavaScript principal para manejar interacciones de la página
+// Se inicia cuando el DOM está listo
 
-  // —————— 1. Términos y Condiciones ——————
+// 1. Mostrar y ocultar Términos y Condiciones
+function initTerms() {
   const termsLink = document.querySelector('.terms-link');
   const termsContainer = document.querySelector('.terms-container');
-  const closeTermsBtn = document.querySelector('.terms-close-btn');
+  const closeBtn = document.querySelector('.terms-close-btn');
 
   if (termsLink && termsContainer) {
     termsLink.addEventListener('click', () => {
       termsContainer.style.display = 'block';
     });
   }
-  if (closeTermsBtn && termsContainer) {
-    closeTermsBtn.addEventListener('click', () => {
+  if (closeBtn && termsContainer) {
+    closeBtn.addEventListener('click', () => {
       termsContainer.style.display = 'none';
     });
   }
+}
 
-  // —————— 2. Carga del panel (/panel.html) ——————
-  const userNameEl = document.getElementById('user-name');
-  const userEmailEl = document.getElementById('user-email');
+// 2. Cargar datos del usuario en el panel o redirigir si no está autenticado
+async function loadUserPanel() {
+  const nameEl = document.getElementById('user-name');
+  const emailEl = document.getElementById('user-email');
+  if (!nameEl || !emailEl) return;
 
-  if (userNameEl && userEmailEl) {
-    fetch('/api/users/me', { credentials: 'include' })
-        .then(resp => {
-          if (!resp.ok) {
-            window.location.href = '/login.html';
-            throw new Error('No autenticado');
-          }
-          return resp.json();
-        })
-        .then(user => {
-          userNameEl.textContent = user.name;
-          userEmailEl.textContent = user.email;
-        })
-        .catch(err => console.error(err));
+  const resp = await fetch('/api/users/me', { credentials: 'include' });
+  if (!resp.ok) {
+    window.location.href = '/login.html';
+    return;
   }
+  const user = await resp.json();
+  nameEl.textContent = user.name;
+  emailEl.textContent = user.email;
+}
 
-  // —————— 3. Funciones para cargar eventos y álbumes ——————
-  async function loadEvents() {
-    const resp = await fetch('/api/events');
-    const events = await resp.json();
-    const eventSelect = document.getElementById('eventSelect');
-    if (!eventSelect) return;
+// 3. Cargar select de eventos y álbumes relacionados
+async function loadEvents() {
+  const resp = await fetch('/api/events');
+  const events = await resp.json();
+  const sel = document.getElementById('eventSelect');
+  if (!sel) return;
 
-    eventSelect.innerHTML = '';
-    events.forEach(evt => {
-      const option = document.createElement('option');
-      option.value = evt.id;
-      option.textContent = evt.name;
-      eventSelect.appendChild(option);
-    });
-    if (events.length > 0) loadAlbums(events[0].id);
-  }
+  sel.innerHTML = '';
+  events.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = e.id;
+    opt.textContent = e.name;
+    sel.appendChild(opt);
+  });
+  if (events.length) loadAlbums(events[0].id);
+}
+async function loadAlbums(eventId) {
+  const resp = await fetch(`/api/albums/by-event/${eventId}`);
+  const albums = await resp.json();
+  const sel = document.getElementById('albumSelect');
+  if (!sel) return;
+  sel.innerHTML = '';
+  albums.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a.id;
+    opt.textContent = a.name;
+    sel.appendChild(opt);
+  });
+  const uploadId = document.getElementById('uploadAlbumId');
+  if (uploadId) uploadId.value = albums[0]?.id || '';
+}
 
-  async function loadAlbums(eventId) {
-    const resp = await fetch(`/api/albums/by-event/${eventId}`);
-    const albums = await resp.json();
-    const albumSelect = document.getElementById('albumSelect');
-    if (!albumSelect) return;
-
-    albumSelect.innerHTML = '';
-    albums.forEach(album => {
-      const option = document.createElement('option');
-      option.value = album.id;
-      option.textContent = album.name;
-      albumSelect.appendChild(option);
-    });
-
-    const uploadAlbumId = document.getElementById('uploadAlbumId');
-    if (uploadAlbumId) {
-      uploadAlbumId.value = albums.length > 0 ? albums[0].id : '';
+// 4. Manejar formulario de creación de eventos
+function initCreateEvent() {
+  const form = document.getElementById('createEventForm');
+  if (!form) return;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = form.eventName.value.trim();
+    const date = form.eventDate.value;
+    const loc = form.eventLocation.value.trim();
+    const client = form.eventClientId.value.trim() || null;
+    if (!name || !date || !loc) {
+      alert('Completa todos los campos obligatorios');
+      return;
     }
-  }
-
-  const eventSelect = document.getElementById('eventSelect');
-  if (eventSelect) {
-    eventSelect.addEventListener('change', (e) => {
-      loadAlbums(e.target.value);
-    });
-  }
-
-  const albumSelect = document.getElementById('albumSelect');
-  if (albumSelect) {
-    albumSelect.addEventListener('change', (e) => {
-      const uploadAlbumId = document.getElementById('uploadAlbumId');
-      if (uploadAlbumId) {
-        uploadAlbumId.value = e.target.value;
-      }
-    });
-  }
-
-  // —————— 4. Crear nuevo evento ——————
-  const createEventForm = document.getElementById('createEventForm');
-  if (createEventForm) {
-    createEventForm.addEventListener('submit', async e => {
-      e.preventDefault();
-
-      const name = document.getElementById('eventName').value.trim();
-      const date = document.getElementById('eventDate').value;
-      const location = document.getElementById('eventLocation').value.trim();
-      const clientIdValue = document.getElementById('eventClientId').value.trim();
-      const clientId = clientIdValue ? Number(clientIdValue) : null;
-
-      if (!name || !date || !location) {
-        alert('Por favor, completa todos los campos obligatorios');
-        return;
-      }
-
-      const eventData = {
-        name,
-        date,        // debe estar en formato 'YYYY-MM-DD'
-        location,
-        clientId     // puede ser null
-      };
-
-      try {
-        const resp = await fetch('/api/events', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(eventData)
-        });
-
-        if (resp.ok) {
-          alert('Evento creado con éxito');
-          createEventForm.reset();
-          loadEvents(); // recarga eventos para actualizar select
-        } else {
-          const errorData = await resp.json();
-          alert('Error creando evento: ' + (errorData.message || resp.statusText));
-        }
-      } catch (error) {
-        alert('Error de red: ' + error.message);
-      }
-    });
-  }
-
-  // —————— 5. Crear nuevo álbum ——————
-  const createAlbumForm = document.getElementById('createAlbumForm');
-  if (createAlbumForm) {
-    createAlbumForm.addEventListener('submit', async e => {
-      e.preventDefault();
-
-      const name = document.getElementById('newAlbum').value.trim();
-      const eventId = document.getElementById('eventSelect') ? document.getElementById('eventSelect').value : null;
-
-      if (!name) {
-        alert('Introduce un nombre válido para el álbum');
-        return;
-      }
-
-      try {
-        const resp = await fetch('/api/albums', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, eventId: Number(eventId) })
-        });
-
-        if (resp.ok) {
-          alert('Álbum creado con éxito');
-          createAlbumForm.reset();
-          if (eventId) loadAlbums(eventId); // recarga álbumes para ese evento
-        } else {
-          const errorData = await resp.json();
-          alert('Error creando álbum: ' + (errorData.message || resp.statusText));
-        }
-      } catch (error) {
-        alert('Error de red: ' + error.message);
-      }
-    });
-  }
-
-  // —————— 6. Subir fotos ——————
-  const uploadForm = document.getElementById('uploadForm');
-  if (uploadForm) {
-    uploadForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const files = document.getElementById('files').files;
-      const albumId = document.getElementById('uploadAlbumId') ? document.getElementById('uploadAlbumId').value : null;
-
-      if (!albumId || files.length === 0) {
-        alert('Selecciona un álbum y al menos una foto');
-        return;
-      }
-
-      const formData = new FormData();
-      for (const file of files) {
-        formData.append('files', file);
-      }
-      formData.append('albumId', albumId);
-
-      const resp = await fetch('/api/photos/upload-multiple', {
+    try {
+      const resp = await fetch('/api/events', {
         method: 'POST',
-        body: formData
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, date, location: loc, clientId: client ? Number(client) : null })
       });
-
-      const status = document.getElementById('uploadStatus');
       if (resp.ok) {
-        if(status) status.textContent = 'Fotos subidas correctamente.';
-        uploadForm.reset();
+        alert('Evento creado');
+        form.reset();
+        loadEvents();
       } else {
-        if(status) status.textContent = 'Error al subir fotos.';
+        const err = await resp.json();
+        alert('Error: ' + (err.message || resp.statusText));
       }
-    });
-  }
+    } catch (err) {
+      alert('Error de red: ' + err.message);
+    }
+  });
+}
 
-  // —————— 7. Inicialización ——————
+// 5. Manejar formulario de creación de álbumes
+function initCreateAlbum() {
+  const form = document.getElementById('createAlbumForm');
+  if (!form) return;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = form.newAlbum.value.trim();
+    const eventId = document.getElementById('eventSelect')?.value;
+    if (!name) {
+      alert('Nombre de álbum obligatorio');
+      return;
+    }
+    try {
+      const resp = await fetch('/api/albums', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, eventId: Number(eventId) })
+      });
+      if (resp.ok) {
+        alert('Álbum creado');
+        form.reset();
+        if (eventId) loadAlbums(eventId);
+      } else {
+        const err = await resp.json();
+        alert('Error: ' + (err.message || resp.statusText));
+      }
+    } catch (err) {
+      alert('Error de red: ' + err.message);
+    }
+  });
+}
+
+// 6. Manejar subida de múltiples fotos
+function initUploadPhotos() {
+  const form = document.getElementById('uploadForm');
+  if (!form) return;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const files = document.getElementById('files').files;
+    const albumId = document.getElementById('uploadAlbumId')?.value;
+    if (!albumId || !files.length) {
+      alert('Selecciona un álbum y al menos una foto');
+      return;
+    }
+    const fd = new FormData();
+    for (const f of files) fd.append('files', f);
+    fd.append('albumId', albumId);
+    const resp = await fetch('/api/photos/upload-multiple', { method: 'POST', body: fd });
+    const status = document.getElementById('uploadStatus');
+    if (resp.ok) {
+      status.textContent = 'Fotos subidas correctamente.';
+      form.reset();
+    } else {
+      status.textContent = 'Error al subir fotos.';
+    }
+  });
+}
+
+// 7. Inicializar todas las funciones cuando carga la página
+function init() {
+  console.log('Init página');
+  initTerms();
+  loadUserPanel();
   loadEvents();
-});
+  document.getElementById('eventSelect')?.addEventListener('change', e => loadAlbums(e.target.value));
+  document.getElementById('albumSelect')?.addEventListener('change', e => document.getElementById('uploadAlbumId').value = e.target.value);
+  initCreateEvent();
+  initCreateAlbum();
+  initUploadPhotos();
+}
+document.addEventListener('DOMContentLoaded', init);

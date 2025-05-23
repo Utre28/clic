@@ -1,663 +1,307 @@
-/* Fuentes, variables y reset básico*/
+/* Fuentes y variables globales */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Open+Sans:wght@400;600&display=swap');
 
 :root {
-  --color-primario: #0056b3;
-  --color-secundario: #f5f5f5;
-  --color-gris: #444;
-  --color-claro: #ffffff;
-  --color-acento: #0056b3;
-  --fuente-titulo: 'Playfair Display', serif;
-  --fuente-texto: 'Open Sans', sans-serif;
+    --color-primario: #0056b3;
+    --color-secundario: #f5f5f5;
+    --color-gris: #444;
+    --color-claro: #ffffff;
+    --color-acento: #0056b3;
+    --fuente-titulo: 'Playfair Display', serif;
+    --fuente-texto: 'Open Sans', sans-serif;
 }
 
+/* Reset básico */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: var(--fuente-texto);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--fuente-texto);
 }
-/*   Estilos básicos del body y texto*/
+
+/* Estilos del body */
 body {
-  background-color: var(--color-secundario);
-  color: var(--color-gris);
-  line-height: 1.6;
+    background-color: var(--color-secundario);
+    color: var(--color-gris);
+    line-height: 1.6;
 }
 
 /* Header */
 header {
-  background-color: var(--color-claro);
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  padding: 1rem 5%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+    background-color: var(--color-claro);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 1rem 5%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
+
+/* Branding e imagen de logo */
 header .logo {
-  max-width: 40px;
-  height: auto;
+    max-width: 40px;
+    height: auto;
 }
 
 .header-left {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .branding {
-  margin-left: 0.5rem;
-  font-family: var(--fuente-titulo);
-  font-size: 1.5rem;
-  color: var(--color-primario);
+    margin-left: 0.5rem;
+    font-family: var(--fuente-titulo);
+    font-size: 1.5rem;
+    color: var(--color-primario);
 }
 
 .site-title {
-  text-align: center;
-  font-family: var(--fuente-titulo);
-  font-size: 1.5rem;
-  color: var(--color-primario);
-  font-weight: 600;
+    text-align: center;
+    font-family: var(--fuente-titulo);
+    font-size: 1.5rem;
+    color: var(--color-primario);
+    font-weight: 600;
 }
 
+/* Navegación */
 nav ul {
-  display: flex;
-  list-style: none;
-  gap: 1.5rem;
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
 }
 
 nav a {
-  font-family: var(--fuente-texto);
-  font-weight: 400;
-  font-size: 1rem;
-  text-decoration: none;
-  color: var(--color-primario);
-  transition: color 0.3s ease;
+    font-weight: 400;
+    font-size: 1rem;
+    text-decoration: none;
+    color: var(--color-primario);
+    transition: color 0.3s ease;
 }
 
 nav a:hover {
-  color: var(--color-acento);
+    color: var(--color-acento);
 }
 
-/* Hero Section */
+/* Hero */
 .hero {
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(252, 252, 252, 0.6)),
-  url('../img/negativo.png') no-repeat center/cover;
-  color: rgb(0, 0, 0);
-  text-align: center;
-  padding: 10rem 5%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(252,252,252,0.6)), url('../img/negativo.png') no-repeat center/cover;
+    color: #000;
+    text-align: center;
+    padding: 10rem 5%;
 }
 
 .hero h1 {
-  font-family: var(--fuente-titulo);
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
+    font-family: var(--fuente-titulo);
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
 }
 
 .hero p {
-  font-size: 1.3rem;
-  margin-bottom: 2rem;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
 }
 
 .btn {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background-color: var(--color-acento);
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: var(--color-acento);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
 }
 
 .btn:hover {
-  background-color: #ccc;
+    background-color: #ccc;
 }
 
-/* Estilo del Footer */
+/* Footer */
 footer {
-  background-color: var(--color-primario);
-  color: white;
-  padding: 20px;
-  text-align: center;
-  position: relative; /* o quitar esta línea para que sea estático */
-  bottom: auto;       /* resetear bottom */
-  width: 100%;
-  box-sizing: border-box;
+    background-color: var(--color-primario);
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 footer a {
-  color: #fff;
-  font-weight: bold;
-  text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
 }
-
 footer a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
+
+/* Términos y Condiciones */
 .terms-link {
-  color: #000000;
-  text-decoration: none;
-  font-weight: bold;
-  cursor: pointer;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
 }
-
 .terms-link:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
-
-/* Estilo para la sección de Términos y Condiciones */
 .terms-container {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 20px;
-  overflow-y: auto;
-  z-index: 1000;
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 1000;
 }
-
 .terms-container h2 {
-  margin-top: 0;
-  text-align: center;
+    margin-top: 0;
+    text-align: center;
 }
 
-button {
-  background-color: var(--color-primario);
-  color: #333;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  display: block;
-  margin: 0 auto;
-}
-
-button:hover {
-  background-color: var(--color-primario);
-}
-
-/* Contacto y Formularios */
-/* Estilo base para formularios */
+/* Formulario base */
 form {
-  max-width: 600px;
-  margin: 2rem auto;
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-
-/* Etiquetas de formulario */
 form label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: var(--color-gris);
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
 }
-.contacto h1 {
-  font-family: var(--fuente-titulo);
-  font-size: 2rem;
-  color: var(--color-primario);
-  margin-bottom: 1rem;
-}
-/* Inputs y textarea */
 form input, form textarea {
-  width: 100%;
-  padding: 0.8rem;
-  margin-bottom: 1.5rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-family: var(--fuente-texto);
-  box-sizing: border-box;
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
 }
-/* Botones dentro de formularios */
 form button {
-  background-color: var(--color-primario);
-  color: white;
-  border: none;
-  padding: 0.8rem 2rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
+    background-color: var(--color-primario);
+    color: #fff;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
 }
-
 form button:hover {
-  background-color: #004494;
-}
-/*   Formulario específico: Crear evento */
-/* Limitamos ancho y damos estilo propio */
-form#createEventForm {
-  max-width: 320px; /* más estrecho para formulario sencillo */
-  margin: 2rem auto;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fafafa;
+    background-color: #004494;
 }
 
-/* Etiquetas del formulario Crear evento */
-form#createEventForm label {
-  margin-top: 0.8rem;
-  font-weight: 600;
-  color: #333;
-}
-
-/* Inputs Crear evento */
-form#createEventForm input {
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.3rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-
-/* Botón Crear evento */
-form#createEventForm button {
-  margin-top: 1rem;
-  width: 100%;
-  padding: 0.6rem;
-  background-color: #0078d4;
-  color: white;
-  font-weight: 600;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-form#createEventForm button:hover {
-  background-color: #005a9e;
-}
-
-/* Formulario específico: Crear álbum*/
-
+/* Formularios específicos: eventos, álbumes, subida */
+/* Adaptar ancho y estilos según ID */
+form#createEventForm,
 form#createAlbumForm {
-  max-width: 320px;
-  margin: 2rem auto;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fafafa;
+    max-width: 320px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
 }
-
+form#createEventForm label,
 form#createAlbumForm label {
-  margin-top: 0.8rem;
-  font-weight: 600;
-  color: #333;
+    margin-top: 0.8rem;
 }
-
+form#createEventForm input,
 form#createAlbumForm input {
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.3rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-  box-sizing: border-box;
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
-
+form#createEventForm button {
+    background-color: #0078d4;
+}
+form#createEventForm button:hover {
+    background-color: #005a9e;
+}
 form#createAlbumForm button {
-  margin-top: 1rem;
-  width: 100%;
-  padding: 0.6rem;
-  background-color: #28a745; /* verde para diferenciar */
-  color: white;
-  font-weight: 600;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    background-color: #28a745;
 }
-
 form#createAlbumForm button:hover {
-  background-color: #1e7e34;
+    background-color: #1e7e34;
 }
 
-/* Formulario específico: Subir fotos */
-form#uploadForm {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-}
-
-form#uploadForm label {
-  font-weight: 600;
-  margin-top: 0.5rem;
-  display: block;
-}
-
-form#uploadForm input[type="file"] {
-  margin-top: 0.3rem;
-  width: 100%;
-}
-
-/* Botón para subir fotos */
-form#uploadForm button {
-  margin-top: 1rem;
-  background-color: #0078d4;
-  color: white;
-  padding: 0.7rem 1.2rem;
-  border: none;
-  border-radius: 5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-form#uploadForm button:hover {
-  background-color: #005a9e;
-}
 /* Panel */
 .panel {
-  max-width: 800px;
-  margin: 40px auto;  /* Añadido margen superior para separación */
-  padding: 2rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  margin-top: 3rem; /* Espacio adicional en la parte superior */
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-
 .panel h2 {
-  font-family: var(--fuente-titulo);
-  font-size: 2rem;
-  margin-bottom: 1.5rem; /* Mayor separación entre el título y el contenido */
-  color: var(--color-primario);
-  text-align: center;  /* Centrado del texto */
+    font-family: var(--fuente-titulo);
+    font-size: 2rem;
+    color: var(--color-primario);
+    text-align: center;
+    margin-bottom: 1.5rem;
 }
-
-
-
 .panel ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+    list-style: none;
+    padding: 0;
 }
-
 .panel ul li {
-  margin: 1rem 0;
-  padding: 0.5rem 0; /* Añadido padding para mejorar la separación */
-  text-align: center;  /* Centramos el contenido de los elementos */
+    margin: 1rem 0;
+    text-align: center;
 }
-
 .panel ul a {
-  color: var(--color-acento);
-  font-weight: 600;
-  text-decoration: none;
-  padding: 0.5rem 2rem; /* Añadido padding para mejorar la apariencia del enlace */
-  border-radius: 5px;
-  transition: background-color 0.3s ease; /* Efecto de transición */
+    color: var(--color-acento);
+    padding: 0.5rem 2rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
 }
-.panel p {
-  font-size: 1.3rem;
-  margin-bottom: 2rem;
-  text-align: center;  /* Centrado del texto */
-}
-
-
 .panel ul a:hover {
-  text-decoration: underline;
-  background-color: rgba(0, 86, 179, 0.1); /* Fondo suave al hacer hover */
-}
-
-.panel ul a:active {
-  background-color: rgba(0, 86, 179, 0.2); /* Efecto visual al hacer clic */
+    background-color: rgba(0,86,179,0.1);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  nav ul {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .hero h1 {
-    font-size: 2.5rem;
-  }
-
-  .hero {
-    padding: 6rem 2rem;
-  }
-
-  form, .panel {
-    padding: 1rem;
-  }
-}
-.sobre-mi {
-  padding: 4rem 5%;
-  background-color: #fff;
-  color: var(--color-gris);
+    nav ul { flex-direction: column; }
+    .hero { padding: 6rem 2rem; }
+    .hero h1 { font-size: 2.5rem; }
+    form, .panel { padding: 1rem; }
+    .sobre-mi .contenedor { grid-template-columns: 1fr; text-align: center; }
+    .sobre-mi img { margin-bottom: 2rem; }
 }
 
-.sobre-mi .contenedor {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 2rem;
-  align-items: center;
-  max-width: 1200px;
-  margin: auto;
-}
+/* Secciones adicionales: sobre-mi, portafolio, dropdown, login */
+.sobre-mi { padding: 4rem 5%; background: #fff; color: var(--color-gris); }
+.sobre-mi .contenedor { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; align-items: center; max-width: 1200px; margin: auto; }
+.sobre-mi img { max-width: 300px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); justify-self: center; }
+.sobre-mi h2 { color: var(--color-primario); font-size: 2.2rem; margin-bottom: 1rem; }
+.sobre-mi p { font-size: 1.1rem; line-height: 1.6; }
 
-.sobre-mi img {
-  width: 100%;
-  max-width: 300px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  justify-self: center;
-}
+.portafolio { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1rem; padding: 2rem 5%; }
+.portafolio img { width: 100%; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 
-.sobre-mi h2 {
-  color: var(--color-primario);
-  font-size: 2.2rem;
-  margin-bottom: 1rem;
-}
+nav ul li { position: relative; }
+.dropdown-menu { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: var(--color-claro); box-shadow:0 4px 8px rgba(0,0,0,0.1); padding:0.5rem 0; border-radius:6px; }
+.dropdown-menu a { display:block; padding:0.5rem 1rem; color:var(--color-primario); }
+nav ul li.dropdown:hover .dropdown-menu { display:block; }
 
-.sobre-mi p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-}
+.login { display:flex; justify-content:center; align-items:center; min-height:calc(100vh - 70px); background: var(--color-secundario); padding:20px; }
+.login-container { background:#fff; padding:2rem 3rem; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1); max-width:600px; width:100%; }
+.login-container h1 { font-family: var(--fuente-titulo); font-size:2rem; color:var(--color-primario); margin-bottom:1rem; text-align:center; }
+.login-container p { font-size:1.1rem; margin-bottom:1.5rem; color:var(--color-gris); }
 
-/* Responsive para móviles */
-@media (max-width: 768px) {
-  .sobre-mi .contenedor {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
+.g-signin2 { margin:20px auto; padding:12px 25px; display:inline-block; background:#4285F4; color:#fff; border-radius:4px; text-align:center; max-width:320px; width:100%; }
+.g-signin2:hover { background:#3367D6; }
 
-  .sobre-mi img {
-    margin-bottom: 2rem;
-  }
-}
+#access-panel-btn { display:none; margin-top:20px; padding:1rem 2rem; background:var(--color-primario); color:#fff; border:none; border-radius:8px; cursor:pointer; }
+#access-panel-btn:hover { background:var(--color-acento); }
 
-/* Galería común para todas las categorías */
-.portafolio {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  padding: 2rem 5%;
-}
-
-.portafolio img {
-  width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-/* Dropdown nav */
-nav ul li {
-  position: relative;
-}
-
-.dropdown-menu {
-  display: none;  /* Ocultamos el menú por defecto */
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: var(--color-claro);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  list-style: none;
-  padding: 0.5rem 0;
-  border-radius: 6px;
-  min-width: 150px;
-  z-index: 1000;
-}
-
-.dropdown-menu li {
-  margin: 0;
-}
-
-.dropdown-menu a {
-  display: block;
-  padding: 0.5rem 1rem;
-  font-family: var(--fuente-texto);
-  color: var(--color-primario);
-  text-decoration: none;
-}
-
-.dropdown-menu a:hover {
-  background-color: var(--color-secundario);
-}
-
-/* Mostrar el dropdown cuando el mouse pasa sobre "Portafolio" */
-nav ul li.dropdown:hover .dropdown-menu {
-  display: block;  /* El menú se muestra cuando se pasa el mouse */
-}
-
-/* Sección de Login */
-.login {
-  display: flex;
-  justify-content: center;  /* Centra horizontalmente */
-  align-items: center;      /* Centra verticalmente */
-  min-height: calc(100vh - 70px); /* Ocupa toda la altura de la ventana menos el header (ajusta 70px al alto real del header) */
-  padding: 20px;
-  background-color: var(--color-secundario);
-  box-sizing: border-box;
-}
-
-.login-container {
-  background-color: white;
-  padding: 2rem 3rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 600px;
-  box-sizing: border-box;
-}
-.login-container h1 {
-  font-family: var(--fuente-titulo);
-  font-size: 2rem;
-  color: var(--color-primario);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.login-container p {
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-  color: var(--color-gris);
-}
-
-/* Estilos para el botón de Google */
-.g-signin2 {
-  margin: 20px auto;
-  padding: 12px 25px;
-  display: inline-block;
-  background-color: #4285F4; /* Color del botón de Google */
-  color: white;
-  font-size: 14px;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-  max-width: 320px;
-  text-align: center;
-}
-
-.g-signin2:hover {
-  background-color: #3367D6;
-}
-
-#access-panel-btn {
-  display: none; /* El botón está oculto por defecto */
-  margin-top: 20px;
-  padding: 1rem 2rem;
-  background-color: var(--color-primario);
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-}
-
-#access-panel-btn:hover {
-  background-color: var(--color-acento);
-}
-/* Estilos para el formulario de creación de eventos */
-form#createEventForm {
-  max-width: 320px;
-  margin: 1rem auto;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fafafa;
-}
-
-form#createEventForm label {
-  display: block;
-  margin-top: 0.8rem;
-  font-weight: 600;
-  color: #333;
-}
-
-form#createEventForm input {
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.3rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-
-form#createEventForm button {
-  margin-top: 1rem;
-  width: 100%;
-  padding: 0.6rem;
-  background-color: #0078d4;
-  color: white;
-  font-weight: 600;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-form#createEventForm button:hover {
-  background-color: #005a9e;
-}
-
-.upload-section h1 {
-  font-family: var(--fuente-titulo);
-  font-size: 2rem;
-  color: var(--color-primario);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-.upload-section h2 {
-  font-family: var(--fuente-titulo);
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem; /* Mayor separación entre el título y el contenido */
-  color: var(--color-primario);
-  text-align: center;  /* Centrado del texto */
-}
-
+.upload-section h1,
+.upload-section h2 { text-align:center; font-family: var(--fuente-titulo); color: var(--color-primario); }
+.upload-section h1 { font-size:2rem; margin-bottom:1rem; }
+.upload-section h2 { font-size:1.5rem; margin-bottom:1.5rem; }

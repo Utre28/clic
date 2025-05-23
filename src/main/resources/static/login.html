@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login – Fotógrafo Profesional</title>
-  <link rel="stylesheet" href="css/style.css" />
-   <!-- Cargar la API de Google -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login – Fotógrafo Profesional</title>
+    <!-- Estilos globales -->
+    <link rel="stylesheet" href="css/styleinicio.css" />
 </head>
 <body>
+<!-- Header con logo y navegación principal -->
 <header>
     <div class="main-content">
         <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
         <span class="branding">Clic Y Color</span>
     </div>
-
     <span class="site-title">Fotógrafo Profesional</span>
-
     <nav>
         <ul>
             <li><a href="index.html">Inicio</a></li>
@@ -35,41 +34,39 @@
     </nav>
 </header>
 
+<!-- Sección de login -->
 <section class="login">
+    <div class="login-container">
+        <h1>Acceso para Clientes</h1>
 
-  <div class="login-container">
-      <h1>Acceso para Clientes</h1>
-      <form>        <!-- Botón de inicio de sesión con Google -->
+        <!-- Login con Google via OAuth2 -->
+        <p>Inicia sesión usando tu cuenta de Google:</p>
+        <a href="/oauth2/authorization/google">
+            <div class="g-signin2" data-onsuccess="onSignIn">Iniciar sesión con Google</div>
+        </a>
+        <p id="status"></p> <!-- Mensaje de estado -->
 
-         <p>Inicia sesión usando tu cuenta de Google:</p>
-         <a href="/oauth2/authorization/google">
-             <div class="g-signin2" data-onsuccess="onSignIn">
-                Iniciar sesión con Google
-             </div>
-         </a>
+        <!-- Login tradicional con email y contraseña -->
+        <form method="post" action="/login">
+            <label for="username">Email:</label>
+            <input type="email" id="username" name="username" required />
 
-        <!-- Mensaje de estado de la autenticación -->
-        <p id="status"></p>
-      </form>
-      <!-- Login con formulario email + password -->
-      <form method="post" action="/login">
-          <label for="username">Email:</label>
-          <input type="email" id="username" name="username" required />
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required />
 
-          <label for="password">Contraseña:</label>
-          <input type="password" id="password" name="password" required />
+            <button type="submit">Iniciar sesión</button>
+        </form>
 
-          <button type="submit">Iniciar sesión</button>
+        <p>¿No tienes cuenta? <a href="/register">Regístrate aquí</a></p>
 
-      </form>
-      <p>¿No tienes cuenta? <a href="/register">Regístrate aquí</a></p>
-        <!-- Mostrar el botón de acceso al panel solo si el fotógrafo ha iniciado sesión -->
-        <button id="access-panel-btn" style="display: none;" onclick="location.href='panel.html'">Acceder al Panel de Control</button>
-        <!-- (Opcional) puedes mostrar un spinner o mensaje aquí mientras carga -->
-  </div>
+        <!-- Botón de acceso al panel, visible solo si está autenticado -->
+        <button id="access-panel-btn" style="display:none;" onclick="location.href='panel.html'">
+            Acceder al Panel de Control
+        </button>
+    </div>
 </section>
 
-<!-- Footer -->
+<!-- Footer con derechos y enlace a términos -->
 <footer>
     <div class="footer-content">
         <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
@@ -77,28 +74,17 @@
     </div>
 </footer>
 
- <!-- Script para manejar la respuesta de Google -->
- <script>
-    // Función que maneja el inicio de sesión exitoso
-             function onSignIn(googleUser) {
-                 var profile = googleUser.getBasicProfile();
-                 var id_token = googleUser.getAuthResponse().id_token;
+<!-- Script de respuesta de Google -->
+<script>
+    function onSignIn(googleUser) {
+        const profile = googleUser.getBasicProfile();
+        document.getElementById('status').textContent = 'Hola, ' + profile.getName();
+        window.location.href = 'panel.html';
+    }
+    function signOut() { gapi.auth2.getAuthInstance().signOut(); }
+</script>
 
-                         // Muestra el nombre del usuario (para pruebas)
-                                document.getElementById('status').innerHTML = 'Hola, ' + profile.getName();
-
-                        // Redirige al panel del cliente o donde quieras redirigir al usuario
-                                window.location.href = 'panel.html';
-               }
-
-    // Si el usuario ya está autenticado, puedes hacer algo como:
-             function signOut() {
-                 var auth2 = gapi.auth2.getAuthInstance();
-                 auth2.signOut().then(function () {
-                     console.log('Usuario desconectado.');
-                   });
-               }
-   </script>
+<!-- Script global de la aplicación -->
 <script src="js/script.js"></script>
 </body>
 </html>
