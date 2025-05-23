@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +22,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import org.example.clic.model.Album;
 import org.example.clic.model.Photo;
 import org.springframework.http.HttpStatus;
@@ -33,39 +31,53 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/api/photos")
 public class PhotoController {
-    private final PhotoService photoService;
-    private final PhotoMapper photoMapper;
+    private final PhotoService photoService; // Servicio de fotos
+    private final PhotoMapper photoMapper;// Mapper entre entidad y DTO
 
+    // Inyección por constructor de servicios y mappers
     public PhotoController(PhotoService photoService, PhotoMapper photoMapper) {
         this.photoService = photoService;
         this.photoMapper = photoMapper;
     }
-    @Autowired
+    @Autowired // Inyecta repositorios si los necesitas directamente
     private AlbumRepository albumRepository;
 
     @Autowired
     private PhotoRepository photoRepository;
+
+    /**
+     * Obtiene todas las fotos.
+     */
     @GetMapping
     public List<PhotoDTO> getAll() {
         return photoService.findAll().stream()
                 .map(photoMapper::toDto)
                 .collect(Collectors.toList());
     }
+    /**
+     * Obtiene las fotos de un álbum específico.
+     */
     @GetMapping("/by-album/{albumId}")
     public List<PhotoDTO> getPhotosByAlbum(@PathVariable Long albumId) {
         return photoService.findByAlbumId(albumId).stream()
                 .map(photoMapper::toDto)
                 .collect(Collectors.toList());
     }
-
+    /**
+     * Obtiene una foto por su ID.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<PhotoDTO> getById(@PathVariable Long id) {
         return photoService.findById(id)
-                .map(photoMapper::toDto)
+                .map(photoMapper::toDto)// Convierte entidad a DTO
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Crea una foto a partir de un DTO.
+     * Valida y devuelve 201 Created con ubicación.
+     */
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody PhotoDTO dto, BindingResult br) {
         if (br.hasErrors()) {
@@ -74,11 +86,14 @@ public class PhotoController {
                     .collect(Collectors.toList());
             return ResponseEntity.badRequest().body(errors);
         }
+        // Guarda usando el servicio y mapea a DTO
         var saved = photoService.save(photoMapper.toEntity(dto));
         var out = photoMapper.toDto(saved);
         return ResponseEntity.created(URI.create("/api/photos/" + out.getId())).body(out);
     }
-
+    /**
+     * Actualiza una foto existente.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id,
                                     @Valid @RequestBody PhotoDTO dto,
@@ -91,6 +106,7 @@ public class PhotoController {
         }
         return photoService.findById(id)
                 .map(existing -> {
+                    // Mapea DTO a entidad, conserva el ID
                     var toUpdate = photoMapper.toEntity(dto);
                     toUpdate.setId(id);
                     var updated = photoService.save(toUpdate);
@@ -98,7 +114,9 @@ public class PhotoController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
-
+    /**
+     * Elimina una foto por ID.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (photoService.existsById(id)) {
@@ -107,6 +125,9 @@ public class PhotoController {
         }
         return ResponseEntity.notFound().build();
     }
+    /**
+     * Sube una foto a un directorio y guarda metadatos en BD.
+     */
     @PostMapping("/upload")
     public ResponseEntity<?> uploadPhoto(
             @RequestParam("file") MultipartFile file,
@@ -129,6 +150,7 @@ public class PhotoController {
             Album album = new Album();
             album.setId(albumId);
             photo.setAlbum(album);
+            // URL relativa para servir estáticos
             photo.setUrl("/" + filePath.toString().replace("\\", "/"));
             photo.setUploadedAt(LocalDateTime.now());
             photo.setDescription(description);
@@ -137,14 +159,18 @@ public class PhotoController {
             return ResponseEntity.ok(photoMapper.toDto(saved));
 
         } catch (IOException e) {
+            // Error de I/O, devuelve 500
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar la imagen.");
         }
     }
+    /**
+     * Sube múltiples fotos y guarda en BD.
+     */
     @PostMapping("/upload-multiple")
     public ResponseEntity<?> uploadMultiplePhotos(
             @RequestParam("files") MultipartFile[] files,
             @RequestParam("albumId") Long albumId) {
-
+        // Verifica existencia de álbum
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Álbum no encontrado"));
 
@@ -157,19 +183,20 @@ public class PhotoController {
                     Path filePath = uploadPath.resolve(filename);
                     Files.write(filePath, file.getBytes());
 
-                    // Crear entidad Photo
+                    // Guarda entidad Photo con URL y álbum asociado
                     Photo photo = new Photo();
                     photo.setUrl("/uploads/" + filename);
                     photo.setAlbum(album);
                     photoRepository.save(photo);
                 } catch (IOException e) {
+                    // Si falla una, responde error
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                             .body("Error al guardar: " + file.getOriginalFilename());
                 }
             }
         }
 
-
+        // Si todas subieron bien
         return ResponseEntity.ok("Fotos subidas correctamente");
     }
 

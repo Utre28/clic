@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class AuthController {
 
-    private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;// Servicio para gestión de usuarios
+    private final PasswordEncoder passwordEncoder;// Cifrador de contraseñas
 
     public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
@@ -25,18 +25,23 @@ public class AuthController {
 
     @GetMapping("/login")
     public String login() {
-        return "login"; // login.html
+        // Devuelve la vista login.html para que el usuario inicie sesión
+        return "login";
     }
 
     @GetMapping("/register")
     public String registerForm(Model model) {
+        // Añade un objeto User vacío al modelo para enlazar el formulario
         model.addAttribute("user", new User());
-        return "register"; // register.html
+        // Devuelve la vista register.html para el formulario de registro
+        return "register";
     }
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user, Model model) {
+        // Comprueba si el email ya está registrado
         if (userService.findByEmail(user.getEmail()).isPresent()) {
+            // Si existe, añade error al modelo y devuelve la misma vista
             model.addAttribute("error", "Email ya registrado");
             return "register";
         }
@@ -45,7 +50,7 @@ public class AuthController {
 
         // Asigna el rol CLIENT, usando el enum anidado dentro de User
         user.setRole(User.Role.CLIENT);
-
+        // Guarda el usuario en la base de datos
         userService.save(user);
 
         // Redirige al login con un parámetro para mostrar mensaje si quieres

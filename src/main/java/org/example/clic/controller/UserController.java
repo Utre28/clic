@@ -18,22 +18,31 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService;
-    private final UserMapper userMapper;
+    private final UserService userService; // Servicio de usuarios
+    private final UserMapper userMapper;// Mapper entre User y UserDTO
 
+    // Inyección de dependencias vía constructor
     public UserController(UserService userService, UserMapper userMapper) {
         this.userService = userService;
         this.userMapper = userMapper;
     }
-
+    /**
+     * Lista todos los usuarios.
+     * @return Lista de UserDTO.
+     */
     @GetMapping
     public List<UserDTO> getAllUsers() {
-        return userService.findAll()
+        return userService.findAll()// Obtiene todas las entidades User
                 .stream()
-                .map(userMapper::toDto)
-                .collect(Collectors.toList());
+                .map(userMapper::toDto) // Convierte cada User a UserDTO
+                .collect(Collectors.toList());// Recoge en lista
     }
 
+    /**
+     * Obtiene un usuario por ID.
+     * @param id Identificador del usuario.
+     * @return 200 OK con UserDTO o 404 Not Found.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return userService.findById(id)
@@ -53,6 +62,13 @@ public class UserController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
+
+    /**
+     * Crea un nuevo usuario.
+     * @param userDto DTO con datos del nuevo usuario.
+     * @param result Resultado de la validación.
+     * @return 201 Created con UserDTO o 400 Bad Request con errores.
+     */
     @PostMapping
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDto, BindingResult result) {
         if (result.hasErrors()) {
@@ -63,6 +79,7 @@ public class UserController {
                             .collect(Collectors.toList())
             );
         }
+        // Convierte DTO a entidad, guarda y vuelve a mapear a DTO
         var user = userMapper.toEntity(userDto);
         var saved = userService.save(user);
         var dto = userMapper.toDto(saved);
@@ -71,6 +88,13 @@ public class UserController {
                 .body(dto);
     }
 
+    /**
+     * Actualiza un usuario existente.
+     * @param id ID del usuario a actualizar.
+     * @param userDto DTO con datos actualizados.
+     * @param result Resultado de la validación.
+     * @return 200 OK con UserDTO actualizado o 404/400 según corresponda.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id,
                                         @Valid @RequestBody UserDTO userDto,
@@ -93,6 +117,11 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Elimina un usuario por su ID.
+     * @param id ID del usuario.
+     * @return 204 No Content o 404 Not Found.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         if (userService.existsById(id)) {
