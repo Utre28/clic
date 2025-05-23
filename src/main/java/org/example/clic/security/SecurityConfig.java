@@ -36,13 +36,15 @@ public class SecurityConfig {
                                 "/img/**",
                                 "/login.html",
                                 "/register.html",
-                                "/api/public/**"
+                                "/api/public/**",
+                                "/uploads/**",
+                                "/error"
                         ).permitAll()
                         // Rutas para fotógrafos y admins
                         .requestMatchers(
-                                "/panel.html",
-                                "/api/categories/**",
-                                "/api/subcategories/**",
+                                "/panel",
+                                "/api/events/**",
+                                "/api/albums/**",
                                 "/api/photos/**"
                         ).hasAnyRole("PHOTOGRAPHER","ADMIN")
                         // Resto de API requiere autenticación
@@ -53,13 +55,13 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login.html")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/panel.html", true)
+                        .defaultSuccessUrl("/panel", true)
                         .permitAll()
                 )
                 // Configuración de OAuth2 con Google
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login.html")
-                        .defaultSuccessUrl("/panel.html", true)
+                        .defaultSuccessUrl("/panel", true)
                         .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService))
                 )
                 .csrf(csrf -> csrf.disable()) // Desactiva CSRF para API REST

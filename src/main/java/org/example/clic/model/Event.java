@@ -18,10 +18,10 @@ public class Event {
     private LocalDate date;// Fecha del evento
     private String location; // Ubicación del evento
     //campo para clasificar el evento
+    @Column(nullable = true)
     private String category;
-
-    @ManyToOne
-    @JoinColumn(name = "client_id")
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "client_id",nullable = true)
     private User client;// Cliente organizador
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)

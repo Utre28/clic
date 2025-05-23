@@ -5,31 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Subir Fotos – Fotógrafo Profesional</title>
   <!-- Estilos globales -->
-  <link rel="stylesheet" href="css/styleinicio.css" />
+  <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
 </head>
 <body>
 <!-- Header con logo y navegación -->
 <header>
   <div class="header-left">
-    <img src="img/logo.png" alt="Logo Fotógrafo" class="logo" />
+    <img class="logo"
+         th:src="@{/img/logo.png}"
+         src="/img/logo.png"
+         alt="Logo Fotógrafo"/>
     <span class="branding">Clic Y Color</span>
   </div>
   <span class="site-title">Gestión de eventos y álbumes</span>
   <nav>
     <ul>
-      <li><a href="index.html">Inicio</a></li>
+      <li><a href="../static/index.html">Inicio</a></li>
       <li class="dropdown">
-        <a href="portafolio.html">Portafolio ▾</a>
+        <a href="../static/portafolio.html">Portafolio ▾</a>
         <ul class="dropdown-menu">
-          <li><a href="categoria-bodas.html">Bodas</a></li>
-          <li><a href="categoria-bautizos.html">Bautizos</a></li>
-          <li><a href="categoria-comuniones.html">Comuniones</a></li>
-          <li><a href="categoria-retratos.html">Retratos</a></li>
-          <li><a href="categoria-conciertos.html">Conciertos</a></li>
+          <li><a href="../static/categoria-bodas.html">Bodas</a></li>
+          <li><a href="../static/categoria-bautizos.html">Bautizos</a></li>
+          <li><a href="../static/categoria-comuniones.html">Comuniones</a></li>
+          <li><a href="../static/categoria-retratos.html">Retratos</a></li>
+          <li><a href="../static/categoria-conciertos.html">Conciertos</a></li>
         </ul>
       </li>
-      <li><a href="login.html">Iniciar sesión</a></li>
-      <li><a href="contacto.html">Contacto</a></li>
+      <li><a href="../static/login.html">Iniciar sesión</a></li>
+      <li><a href="../static/contacto.html">Contacto</a></li>
     </ul>
   </nav>
 </header>
@@ -76,6 +79,7 @@
 </section>
 
 <!-- Lógica JavaScript para cargar datos y manejar formularios -->
+
 <script>
   // Carga lista de eventos para <select>
   async function loadEvents() {
