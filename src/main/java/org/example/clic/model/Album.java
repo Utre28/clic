@@ -11,21 +11,21 @@ public class Album {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;  // Clave primaria
 
-    private String name;
+    private String name;  // Nombre del álbum
 
     @ManyToOne
     @JoinColumn(name = "event_id")
-    private Event event;
+    private Event event;  // Evento asociado
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt; // Fecha de creación
     // Fotos asociadas
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Photo> photos = new ArrayList<>();
+    private List<Photo> photos = new ArrayList<>(); // Fotos del álbum
 
-    // getters & setters
+    // getters y setters
 
     public Long getId() {
         return id;

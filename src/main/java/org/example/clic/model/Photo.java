@@ -4,30 +4,30 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
+@Entity // Mapea la clase a la tabla 'photos'
 @Table(name = "photos")
 public class Photo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Clave primaria
 
-    private String url;
+    private String url; // URL de la foto
 
     @Column(name = "uploaded_at", nullable = false)
-    private LocalDateTime uploadedAt;
+    private LocalDateTime uploadedAt; // Fecha de subida
 
-    private String description;
+    private String description; // Descripción opcional
 
     @ManyToOne
     @JoinColumn(name = "album_id")
-    private Album album;
+    private Album album; // Álbum asociado
 
 
     @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AccessLog> accessLogs;
+    private List<AccessLog> accessLogs; // Historial de accesos
 
-    // getters & setters
+    // getters y setters
 
     public Long getId() {
         return id;

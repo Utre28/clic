@@ -5,29 +5,29 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity // Entidad JPA para tabla 'events'
 @Table(name = "events")
 public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Clave primaria autogenerada
 
-    private String name;
+    private String name;// Nombre del evento
 
-    private LocalDate date;
-    private String location;
+    private LocalDate date;// Fecha del evento
+    private String location; // Ubicación del evento
     //campo para clasificar el evento
     private String category;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
-    private User client;
+    private User client;// Cliente organizador
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Album> albums = new ArrayList<>();
+    private List<Album> albums = new ArrayList<>();  // Álbumes asociados
 
-    // getters & setters
+    // getters y setters
 
     public Long getId() {
         return id;

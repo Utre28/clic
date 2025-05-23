@@ -20,21 +20,21 @@ public class User {
     private String name;
 
     @Column(unique = true, nullable = false)
-    private String email;
+    private String email;// Correo único obligatoria
     @Column(nullable = false)
-    private String password;
+    private String password; // Contraseña cifrada obligatoria
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private Role role;  // Rol del usuario
 
     @Column(name = "google_id")
-    private String googleId;
+    private String googleId;  // ID de Google para OAuth (opcional)
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Event> events;
+    private List<Event> events;  // Eventos organizados por el cliente
 
-    // getters & setters
+    // getters y setters
 
 
     public Long getId() {

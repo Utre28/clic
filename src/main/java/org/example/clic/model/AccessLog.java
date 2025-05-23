@@ -3,26 +3,26 @@ package org.example.clic.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "access_log")
+@Entity // Marca la clase como entidad JPA
+@Table(name = "access_log")// Mapea a la tabla "access_log"
 public class AccessLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Clave primaria autogenerada
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user;  // Usuario que realiza el acceso
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "photo_id")
-    private Photo photo;
+    private Photo photo;  // Foto accedida
 
     @Column(name = "accessed_at", nullable = false)
-    private LocalDateTime accessedAt;
+    private LocalDateTime accessedAt; // Fecha y hora del acceso
 
-    // getters & setters
+    // getters y setters
 
 
     public Long getId() {
