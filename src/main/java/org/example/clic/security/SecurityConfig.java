@@ -9,13 +9,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
-@EnableWebSecurity
+@Configuration  // Clase de configuración de Spring
+@EnableWebSecurity // Activa la seguridad web de Spring Security
 public class SecurityConfig {
 
     private final CustomOidcUserService customOidcUserService;
     private final CustomUserDetailsService customUserDetailsService;
 
+    // Inyección de servicios personalizados para OAuth2 y detalles de usuario
     public SecurityConfig(CustomOidcUserService customOidcUserService,
                           CustomUserDetailsService customUserDetailsService) {
         this.customOidcUserService = customOidcUserService;
@@ -26,6 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        // Rutas públicas sin autenticación
                         .requestMatchers(
                                 "/",
                                 "/index.html",
@@ -36,34 +38,38 @@ public class SecurityConfig {
                                 "/register.html",
                                 "/api/public/**"
                         ).permitAll()
+                        // Rutas para fotógrafos y admins
                         .requestMatchers(
                                 "/panel.html",
                                 "/api/categories/**",
                                 "/api/subcategories/**",
                                 "/api/photos/**"
                         ).hasAnyRole("PHOTOGRAPHER","ADMIN")
+                        // Resto de API requiere autenticación
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
+                // Configuración de login vía formulario
                 .formLogin(form -> form
                         .loginPage("/login.html")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/panel.html", true)
                         .permitAll()
                 )
+                // Configuración de OAuth2 con Google
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login.html")
                         .defaultSuccessUrl("/panel.html", true)
                         .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService))
                 )
-                .csrf(csrf -> csrf.disable())
-                .userDetailsService(customUserDetailsService);
+                .csrf(csrf -> csrf.disable()) // Desactiva CSRF para API REST
+                .userDetailsService(customUserDetailsService); // Gestiona usuarios y roles
 
         return http.build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); // Cifra contraseñas con BCrypt
     }
 }
