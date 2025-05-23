@@ -11,7 +11,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+    private final UserRepository userRepository;// Repositorio para acceso a datos de User
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -19,36 +19,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAll(); // Devuelve todos los usuarios
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+        return userRepository.findById(id);  // Busca usuario por ID
     }
 
     @Override
     public User save(User user) {
-        return userRepository.save(user);
+        return userRepository.save(user); // Inserta o actualiza usuario
     }
 
     @Override
     public void deleteById(Long id) {
-        userRepository.deleteById(id);
+        userRepository.deleteById(id); // Elimina usuario por ID
     }
 
     @Override
     public boolean existsById(Long id) {
-        return userRepository.existsById(id);
+        return userRepository.existsById(id); // Verifica existencia
     }
 
     @Override
     public Optional<User> findByGoogleId(String googleId) {
-        return userRepository.findByGoogleId(googleId);
+        return userRepository.findByGoogleId(googleId);  // Busca usuario por Google ID
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email);  // Busca usuario por email
     }
 }

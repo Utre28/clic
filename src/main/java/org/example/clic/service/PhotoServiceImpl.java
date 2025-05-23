@@ -11,7 +11,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class PhotoServiceImpl implements PhotoService {
-    private final PhotoRepository photoRepository;
+    private final PhotoRepository photoRepository; // Repositorio para acceso a datos de Photo
 
     public PhotoServiceImpl(PhotoRepository photoRepository) {
         this.photoRepository = photoRepository;

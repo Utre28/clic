@@ -19,34 +19,35 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Event> findAll() {
-        return eventRepository.findAll();
+        return eventRepository.findAll(); // Devuelve todos los eventos
     }
 
     @Override
     public Optional<Event> findById(Long id) {
-        return eventRepository.findById(id);
+        return eventRepository.findById(id); // Busca un evento por ID
     }
 
     @Override
     public Event save(Event event) {
-        return eventRepository.save(event);
+        return eventRepository.save(event); // Crea o actualiza un evento
     }
 
     @Override
     public void deleteById(Long id) {
-        eventRepository.deleteById(id);
+        eventRepository.deleteById(id);// Elimina un evento por ID
     }
 
     @Override
     public boolean existsById(Long id) {
-        return eventRepository.existsById(id);
+        return eventRepository.existsById(id); // Verifica si existe un evento
     }
     @Override
     public List<Event> findByCategory(String category) {
+        // Si no hay categoría, devuelve todos los eventos
         if (category == null || category.isEmpty()) {
             return eventRepository.findAll();
         }
-        return eventRepository.findByCategory(category);
+        return eventRepository.findByCategory(category);  // Filtra por categoría
     }
 
 }
