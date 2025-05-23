@@ -3,20 +3,22 @@ package org.example.clic.dto;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+/**
+ * DTO para registrar accesos de usuarios a fotos.
+ */
 public class AccessLogDTO {
-    private Long id;
+    private Long id;// Identificador único del registro de acceso
 
-    @NotNull(message = "User ID is mandatory")
-    private Long userId;
+    @NotNull(message = "El ID del usuario es obligatorio")
+    private Long userId; // ID del usuario que accede
 
-    @NotNull(message = "Photo ID is mandatory")
-    private Long photoId;
+    @NotNull(message = "El ID de la foto es obligatorio")
+    private Long photoId; // ID de la foto accedida
 
-    @NotNull(message = "Access timestamp is mandatory")
-    private LocalDateTime accessedAt;
+    @NotNull(message = "La fecha y hora de acceso es obligatoria")
+    private LocalDateTime accessedAt;  // Fecha y hora del acceso
 
-    // getters & setters...
-
+    // getters & setters
 
     public Long getId() {
         return id;

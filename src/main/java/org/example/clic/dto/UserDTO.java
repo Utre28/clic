@@ -4,18 +4,18 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.example.clic.model.User.Role;
-
+// DTO para transferir datos de usuario
 public class UserDTO {
     private Long id;
 
-    @NotBlank(message = "Name is mandatory")
+    @NotBlank(message = "El nombre es obligatorio")
     private String name;
 
-    @Email(message = "Email should be valid")
-    @NotBlank(message = "Email is mandatory")
+    @Email(message =  "El correo debe ser válido")
+    @NotBlank(message ="El correo es obligatorio")
     private String email;
 
-    @NotNull(message = "Role is mandatory")
+    @NotNull(message = "El rol es obligatorio")
     private Role role;
 
     // getters & setters

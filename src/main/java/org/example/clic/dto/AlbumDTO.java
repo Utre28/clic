@@ -3,7 +3,7 @@ package org.example.clic.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-
+// DTO para transferir datos de Álbum
 public class AlbumDTO {
     private Long id;
 
@@ -17,7 +17,7 @@ public class AlbumDTO {
     // imagen principal
     private String mainPhotoUrl;
 
-    // getters & setters...
+    // getters & setters
 
 
     public Long getId() {

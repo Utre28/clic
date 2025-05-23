@@ -3,23 +3,22 @@ package org.example.clic.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-
+// DTO para transferir datos de Foto
 public class PhotoDTO {
     private Long id;
 
-    @NotBlank(message = "URL is mandatory")
-    private String url;
+    @NotBlank(message ="La URL es obligatoria")
+    private String url; // Ruta de la foto
 
-    @NotNull(message = "Upload timestamp is mandatory")
-    private LocalDateTime uploadedAt;
+    @NotNull(message =  "La fecha de subida es obligatoria")
+    private LocalDateTime uploadedAt; // Fecha de subida
 
     private String description;
 
-    @NotNull(message = "Album ID is mandatory")
-    private Long albumId;
+    @NotNull(message = "El ID del álbum es obligatorio")
+    private Long albumId;  // Álbum asociado
 
-    // getters & setters...
-
+    // getters y setters
 
     public Long getId() {
         return id;

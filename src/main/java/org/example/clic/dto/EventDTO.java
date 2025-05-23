@@ -3,7 +3,7 @@ package org.example.clic.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-
+// DTO para transferencia de datos de Evento
 public class EventDTO {
     private Long id;
 
@@ -15,10 +15,10 @@ public class EventDTO {
 
     @NotBlank(message = "La ubicación es obligatoria")
     private String location;
-    private Long clientId;
-    private String category;
+    private Long clientId;// ID del cliente relacionado (opcional)
+    private String category;// Categoría del evento (opcional)
 
-    // getters & setters...
+    // getters y setters
 
     public Long getId() {
         return id;
