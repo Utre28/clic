@@ -1,3 +1,4 @@
+// src/main/java/org/example/clic/security/SecurityConfig.java
 package org.example.clic.security;
 
 import org.example.clic.service.CustomUserDetailsService;
@@ -9,69 +10,57 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration  // Clase de configuración de Spring
-@EnableWebSecurity // Activa la seguridad web de Spring Security
+@Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomOidcUserService customOidcUserService;
     private final CustomUserDetailsService customUserDetailsService;
+    private final CustomAuthenticationSuccessHandler successHandler;
 
-    // Inyección de servicios personalizados para OAuth2 y detalles de usuario
-    public SecurityConfig(CustomOidcUserService customOidcUserService,
-                          CustomUserDetailsService customUserDetailsService) {
-        this.customOidcUserService = customOidcUserService;
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService,
+                          CustomAuthenticationSuccessHandler successHandler) {
         this.customUserDetailsService = customUserDetailsService;
+        this.successHandler = successHandler;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        // Rutas públicas sin autenticación
                         .requestMatchers(
-                                "/",
-                                "/index.html",
-                                "/css/**",
-                                "/js/**",
-                                "/img/**",
-                                "/login.html",
-                                "/register.html",
-                                "/api/public/**",
-                                "/uploads/**",
-                                "/error"
+                                "/", "/index",
+                                "/css/**", "/js/**", "/img/**",
+                                "/login", "/register", "/error",
+                                "/oauth2/**",
+                                "/portafolio", "/portafolio/**",
+                                "/eventos", "/contacto", "/subir-fotos"
                         ).permitAll()
-                        // Rutas para fotógrafos y admins
-                        .requestMatchers(
-                                "/panel",
-                                "/api/events/**",
-                                "/api/albums/**",
-                                "/api/photos/**"
-                        ).hasAnyRole("PHOTOGRAPHER","ADMIN")
-                        // Resto de API requiere autenticación
-                        .requestMatchers("/api/**").authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/panel/**").hasRole("PHOTOGRAPHER")
+                        .anyRequest().authenticated()
                 )
-                // Configuración de login vía formulario
                 .formLogin(form -> form
-                        .loginPage("/login.html")
+                        .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/panel", true)
+                        .successHandler(successHandler)
                         .permitAll()
                 )
-                // Configuración de OAuth2 con Google
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login.html")
-                        .defaultSuccessUrl("/panel", true)
-                        .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService))
+                        .loginPage("/login")
+                        .successHandler(successHandler)
                 )
-                .csrf(csrf -> csrf.disable()) // Desactiva CSRF para API REST
-                .userDetailsService(customUserDetailsService); // Gestiona usuarios y roles
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                )
+                .csrf(csrf -> csrf.disable())
+                .userDetailsService(customUserDetailsService);
 
         return http.build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Cifra contraseñas con BCrypt
+        return new BCryptPasswordEncoder();
     }
 }

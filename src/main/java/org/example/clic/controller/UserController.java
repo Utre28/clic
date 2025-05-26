@@ -3,9 +3,13 @@ package org.example.clic.controller;
 import jakarta.validation.Valid;
 import org.example.clic.dto.UserDTO;
 import org.example.clic.mapper.UserMapper;
+import org.example.clic.model.User;
 import org.example.clic.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,36 +18,69 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/users")
+@Controller
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService; // Servicio de usuarios
-    private final UserMapper userMapper;// Mapper entre User y UserDTO
+    private final UserMapper userMapper;   // Mapper entre User y UserDTO
+    private final PasswordEncoder passwordEncoder; // Para encriptar contraseña
 
-    // Inyección de dependencias vía constructor
-    public UserController(UserService userService, UserMapper userMapper) {
+    public UserController(UserService userService, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.userMapper = userMapper;
-    }
-    /**
-     * Lista todos los usuarios.
-     * @return Lista de UserDTO.
-     */
-    @GetMapping
-    public List<UserDTO> getAllUsers() {
-        return userService.findAll()// Obtiene todas las entidades User
-                .stream()
-                .map(userMapper::toDto) // Convierte cada User a UserDTO
-                .collect(Collectors.toList());// Recoge en lista
+        this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * Obtiene un usuario por ID.
-     * @param id Identificador del usuario.
-     * @return 200 OK con UserDTO o 404 Not Found.
-     */
-    @GetMapping("/{id}")
+    // --- Vistas MVC ---
+
+    // Mostrar formulario de registro
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("userDto", new UserDTO());
+        return "registro"; // nombre de tu plantilla Thymeleaf para registro
+    }
+
+    // Procesar formulario de registro
+    @PostMapping("/register")
+    public String processRegistration(@Valid @ModelAttribute("userDto") UserDTO userDto,
+                                      BindingResult bindingResult,
+                                      Model model) {
+        if (bindingResult.hasErrors()) {
+            return "registro"; // vuelve a mostrar el formulario con errores
+        }
+
+        if (userService.existsByEmail(userDto.getEmail())) {
+            model.addAttribute("emailError", "El email ya está registrado");
+            return "registro";
+        }
+
+        User user = userMapper.toEntity(userDto);
+
+        // Asignar rol CLIENT por defecto
+        user.setRole(User.Role.CLIENT);
+
+        // Encriptar contraseña antes de guardar
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        userService.save(user);
+
+        return "redirect:/login?registered"; // redirige a login con mensaje de éxito
+    }
+
+    // --- REST API ---
+
+    @GetMapping("/api")
+    @ResponseBody
+    public List<UserDTO> getAllUsers() {
+        return userService.findAll()
+                .stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/api/{id}")
+    @ResponseBody
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return userService.findById(id)
                 .map(userMapper::toDto)
@@ -51,25 +88,17 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Devuelve los datos del usuario autenticado.
-     */
-    @GetMapping("/me")
+    @GetMapping("/api/me")
+    @ResponseBody
     public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
-        // principal.getName() es el sub (googleId), así que buscamos por ese campo
         return userService.findByGoogleId(principal.getName())
                 .map(userMapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
-    /**
-     * Crea un nuevo usuario.
-     * @param userDto DTO con datos del nuevo usuario.
-     * @param result Resultado de la validación.
-     * @return 201 Created con UserDTO o 400 Bad Request con errores.
-     */
-    @PostMapping
+    @PostMapping("/api")
+    @ResponseBody
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDto, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(
@@ -79,7 +108,6 @@ public class UserController {
                             .collect(Collectors.toList())
             );
         }
-        // Convierte DTO a entidad, guarda y vuelve a mapear a DTO
         var user = userMapper.toEntity(userDto);
         var saved = userService.save(user);
         var dto = userMapper.toDto(saved);
@@ -88,14 +116,8 @@ public class UserController {
                 .body(dto);
     }
 
-    /**
-     * Actualiza un usuario existente.
-     * @param id ID del usuario a actualizar.
-     * @param userDto DTO con datos actualizados.
-     * @param result Resultado de la validación.
-     * @return 200 OK con UserDTO actualizado o 404/400 según corresponda.
-     */
-    @PutMapping("/{id}")
+    @PutMapping("/api/{id}")
+    @ResponseBody
     public ResponseEntity<?> updateUser(@PathVariable Long id,
                                         @Valid @RequestBody UserDTO userDto,
                                         BindingResult result) {
@@ -117,12 +139,8 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Elimina un usuario por su ID.
-     * @param id ID del usuario.
-     * @return 204 No Content o 404 Not Found.
-     */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/{id}")
+    @ResponseBody
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         if (userService.existsById(id)) {
             userService.deleteById(id);

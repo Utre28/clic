@@ -23,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null; // Como usamos OAuth2, no necesitas password aquí
+        return user.getPassword(); // DEVUELVE la contraseña cifrada de la entidad User
     }
 
     @Override

@@ -1,0 +1,36 @@
+<!-- src/main/resources/templates/navbar.html -->
+<nav th:fragment="navbar" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <ul>
+        <li><a th:href="@{/}">Inicio</a></li>
+        <li><a th:href="@{/portafolio}">Portafolio</a></li>
+        <li><a th:href="@{/eventos}">Eventos</a></li>
+        <li><a th:href="@{/contacto}">Contacto</a></li>
+
+        <!-- Solo para ANÓNIMOS -->
+        <li sec:authorize="isAnonymous()">
+            <a th:href="@{/login}">Iniciar sesión</a>
+        </li>
+        <li sec:authorize="isAnonymous()">
+            <a th:href="@{/register}">Registrarse</a>
+        </li>
+
+        <!-- Solo para CLIENTES -->
+        <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')">
+            <a th:href="@{/perfil}">Mi perfil</a>
+        </li>
+        <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')">
+            <a th:href="@{/logout}">Cerrar sesión</a>
+        </li>
+
+        <!-- Solo para FOTÓGRAFOS -->
+        <li sec:authorize="hasRole('PHOTOGRAPHER')">
+            <a th:href="@{/perfil}">Mi perfil</a>
+        </li>
+        <li sec:authorize="hasRole('PHOTOGRAPHER')">
+            <a th:href="@{/panel}">Panel</a>
+        </li>
+        <li sec:authorize="hasRole('PHOTOGRAPHER')">
+            <a th:href="@{/logout}">Cerrar sesión</a>
+        </li>
+    </ul>
+</nav>

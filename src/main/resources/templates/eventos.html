@@ -3,30 +3,25 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Panel de Control - Fotógrafo Profesional</title>
+    <title>Eventos - Fotógrafo Profesional</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
 </head>
 <body>
-
-<!-- Navbar incluido vía Thymeleaf -->
 <div th:replace="navbar :: navbar"></div>
+<header>
+    <div class="header-left">
+        <img th:src="@{/img/logo.png}" src="/img/logo.png" alt="Logo Fotógrafo" class="logo" />
+        <span class="branding">Clic Y Color</span>
+    </div>
+    <span class="site-title">Eventos</span>
+</header>
 
-<main class="panel">
-    <h1>Panel de control del fotógrafo/admin</h1>
-    <p>Bienvenido, aquí podrás gestionar tus eventos y fotos.</p>
+<section class="eventos">
+    <!-- Aquí va el contenido específico de eventos -->
+    <h1>Eventos</h1>
+    <p>Gestiona y visualiza tus eventos aquí.</p>
+</section>
 
-    <section>
-        <h2>Bienvenido al Panel de Control</h2>
-        <p>Aquí puedes gestionar tus fotos, clientes y estadísticas.</p>
-        <ul>
-            <li><a th:href="@{/subir-fotos}">Subir Fotos</a></li>
-            <li><a href="#">Ver Estadísticas</a></li>
-            <li><a href="#">Gestionar enlaces</a></li>
-        </ul>
-    </section>
-</main>
-
-<!-- Footer -->
 <footer>
     <div class="footer-content">
         <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
@@ -34,14 +29,12 @@
     </div>
 </footer>
 
-<!-- Modal de Términos y Condiciones -->
 <div id="terms" class="terms-container" style="display:none;">
     <h2>Términos y Condiciones</h2>
     <p>Aquí van los términos y condiciones de uso...</p>
     <button onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
 </div>
 
-<script th:src="@{/js/script.js}" src="/js/script.js"></script>
-
+<script src="/js/script.js"></script>
 </body>
 </html>

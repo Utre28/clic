@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bodas – Fotógrafo Profesional</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
+    <style>
+        .album-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+        .album-card {
+            width: 200px;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        .album-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .album-card img {
+            width: 100%;
+            border-radius: 8px 8px 0 0;
+            object-fit: cover;
+            height: 140px;
+        }
+        .album-card h3 {
+            margin: 10px 0;
+            font-size: 1.1rem;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-left">
+        <img th:src="@{/img/logo.png}" src="/img/logo.png" alt="Logo Clic y Color" class="logo" />
+        <span class="branding">Clic Y Color</span>
+    </div>
+    <span class="site-title">Fotógrafo Profesional</span>
+    <div th:replace="navbar :: navbar"></div>
+</header>
+
+<h1 style="text-align:center; margin-top:2rem;">Bodas</h1>
+
+<section id="albumList" class="album-list"></section>
+
+<script>
+    // ID fijo del evento "Bodas" según tu backend (ajusta si es necesario)
+    const EVENT_ID_BODAS = 1;
+
+    async function loadAlbums() {
+        const container = document.getElementById('albumList');
+        container.textContent = 'Cargando álbumes...';
+        try {
+            // Petición al backend para obtener álbumes del evento
+            const res = await fetch(`/api/albums/by-event/${EVENT_ID_BODAS}`);
+            const albums = await res.json();
+            if (!albums.length) {
+                container.innerHTML = '<p>No hay álbumes disponibles.</p>';
+                return;
+            }
+            container.innerHTML = '';
+            albums.forEach(album => {
+                const card = document.createElement('div');
+                card.className = 'album-card';
+                const img = document.createElement('img');
+                img.src = album.mainPhotoUrl || '/img/placeholder.png';
+                img.alt = album.name;
+                const title = document.createElement('h3');
+                title.textContent = album.name;
+                card.append(img, title);
+                card.addEventListener('click', () => {
+                    window.location.href = `/portafolio/eventos/ver-album?albumId=${album.id}&volver=bodas`;
+                });
+                container.appendChild(card);
+            });
+        } catch (error) {
+            console.error(error);
+            container.innerHTML = '<p>Error cargando álbumes.</p>';
+        }
+    }
+    loadAlbums();
+</script>
+
+<footer>
+    <div class="footer-content">
+        <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
+        <a href="#terms" class="terms-link">Términos y Condiciones</a>
+    </div>
+</footer>
+
+<div id="terms" class="terms-container" style="display:none;">
+    <h2>Términos y Condiciones</h2>
+    <p>Contenido de los términos y condiciones...</p>
+    <button onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
+</div>
+</body>
+</html>

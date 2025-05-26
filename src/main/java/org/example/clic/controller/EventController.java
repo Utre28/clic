@@ -25,6 +25,10 @@ public class EventController {
         this.eventService = eventService;
         this.eventMapper = eventMapper;
     }
+    @GetMapping("/eventos")
+    public String eventos() {
+        return "eventos";  // nombre del archivo Thymeleaf: eventos.html
+    }
 
 
     /**

@@ -8,9 +8,8 @@ import java.util.List;
 public class User {
 
     public enum Role {
-        ADMIN,// Administrador con permisos totales
-        PHOTOGRAPHER,// Fotógrafo con permisos para panel y gestión
-        CLIENT   // Usuario normal
+        PHOTOGRAPHER, // Fotógrafo con permisos para panel y gestión
+        CLIENT        // Usuario normal
     }
 
     @Id
@@ -20,9 +19,10 @@ public class User {
     private String name;
 
     @Column(unique = true, nullable = false)
-    private String email;// Correo único obligatoria
-    @Column(nullable = false)
-    private String password; // Contraseña cifrada obligatoria
+    private String email; // Correo único obligatorio
+
+    @Column(nullable = true)
+    private String password; // Contraseña cifrada (nullable para usuarios Google)
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -34,65 +34,26 @@ public class User {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Event> events;  // Eventos organizados por el cliente
 
-    // getters y setters
+    // getters y setters...
 
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getId() {
-        return id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getName() {
-        return name;
-    }
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getGoogleId() { return googleId; }
+    public void setGoogleId(String googleId) { this.googleId = googleId; }
 
-    public String getEmail() {
-        return email;
-    }
+    public List<Event> getEvents() { return events; }
+    public void setEvents(List<Event> events) { this.events = events; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public String getGoogleId() {
-        return googleId;
-    }
-
-    public void setGoogleId(String googleId) {
-        this.googleId = googleId;
-    }
-
-    public List<Event> getEvents() {
-        return events;
-    }
-
-    public void setEvents(List<Event> events) {
-        this.events = events;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }
-
-
-

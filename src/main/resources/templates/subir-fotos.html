@@ -1,45 +1,16 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Subir Fotos – Fotógrafo Profesional</title>
-  <!-- Estilos globales -->
   <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
 </head>
 <body>
-<!-- Header con logo y navegación -->
-<header>
-  <div class="header-left">
-    <img class="logo"
-         th:src="@{/img/logo.png}"
-         src="/img/logo.png"
-         alt="Logo Fotógrafo"/>
-    <span class="branding">Clic Y Color</span>
-  </div>
-  <span class="site-title">Gestión de eventos y álbumes</span>
-  <nav>
-    <ul>
-      <li><a href="../static/index.html">Inicio</a></li>
-      <li class="dropdown">
-        <a href="../static/portafolio.html">Portafolio ▾</a>
-        <ul class="dropdown-menu">
-          <li><a href="../static/categoria-bodas.html">Bodas</a></li>
-          <li><a href="../static/categoria-bautizos.html">Bautizos</a></li>
-          <li><a href="../static/categoria-comuniones.html">Comuniones</a></li>
-          <li><a href="../static/categoria-retratos.html">Retratos</a></li>
-          <li><a href="../static/categoria-conciertos.html">Conciertos</a></li>
-        </ul>
-      </li>
-      <li><a href="../static/login.html">Iniciar sesión</a></li>
-      <li><a href="../static/contacto.html">Contacto</a></li>
-    </ul>
-  </nav>
-</header>
+<div th:replace="navbar :: navbar"></div>
 
-<!-- Sección principal: formularios de evento, álbum y subida de fotos -->
+
 <section class="upload-section">
-  <!-- 1. Crear nuevo evento -->
   <h2>Crear nuevo evento</h2>
   <form id="createEventForm">
     <label for="eventName">Nombre del evento:</label>
@@ -54,7 +25,6 @@
   </form>
   <div id="eventMessage"></div>
 
-  <!-- 2. Crear nuevo álbum -->
   <h2>Crear nuevo álbum</h2>
   <form id="createAlbumForm">
     <label for="newAlbum">Nombre del álbum:</label>
@@ -65,7 +35,6 @@
   </form>
   <div id="albumMessage"></div>
 
-  <!-- 3. Subir fotos al álbum -->
   <h2>Subir fotos al álbum</h2>
   <form id="uploadForm" enctype="multipart/form-data">
     <label for="albumSelect">Seleccionar álbum:</label>
@@ -78,10 +47,8 @@
   <div id="uploadStatus"></div>
 </section>
 
-<!-- Lógica JavaScript para cargar datos y manejar formularios -->
-
 <script>
-  // Carga lista de eventos para <select>
+  // Lógica para cargar eventos y álbumes, y manejar formularios
   async function loadEvents() {
     const events = await (await fetch('/api/events')).json();
     const select = document.getElementById('eventSelect');
@@ -94,8 +61,6 @@
     });
     if (events.length) loadAlbums(events[0].id);
   }
-
-  // Carga álbumes según evento seleccionado
   async function loadAlbums(eventId) {
     const albums = await (await fetch(`/api/albums/by-event/${eventId}`)).json();
     const select = document.getElementById('albumSelect');
@@ -108,14 +73,10 @@
     });
     document.getElementById('uploadAlbumId').value = albums[0]?.id || '';
   }
-
-  // Eventos para cambiar listas dinámicamente
   document.getElementById('eventSelect').addEventListener('change', e => loadAlbums(e.target.value));
   document.getElementById('albumSelect').addEventListener('change', e => {
     document.getElementById('uploadAlbumId').value = e.target.value;
   });
-
-  // Enviar formulario de creación de evento
   document.getElementById('createEventForm').addEventListener('submit', async e => {
     e.preventDefault();
     const data = {
@@ -129,8 +90,6 @@
     });
     if (resp.ok) { alert('Evento creado'); loadEvents(); } else { alert('Error creando evento'); }
   });
-
-  // Enviar formulario de creación de álbum
   document.getElementById('createAlbumForm').addEventListener('submit', async e => {
     e.preventDefault();
     const payload = { name: document.getElementById('newAlbum').value, eventId: Number(document.getElementById('eventSelect').value) };
@@ -139,8 +98,6 @@
     });
     if (resp.ok) { alert('Álbum creado'); loadAlbums(payload.eventId); } else { alert('Error creando álbum'); }
   });
-
-  // Enviar formulario de subida múltiple de fotos
   document.getElementById('uploadForm').addEventListener('submit', async e => {
     e.preventDefault();
     const files = document.getElementById('files').files;
@@ -150,12 +107,9 @@
     const resp = await fetch('/api/photos/upload-multiple', { method: 'POST', body: formData });
     document.getElementById('uploadStatus').textContent = resp.ok ? 'Fotos subidas correctamente.' : 'Error al subir fotos.';
   });
-
-  // Inicialización al cargar la página
   loadEvents();
 </script>
 
-<!-- Footer con términos -->
 <footer>
   <div class="footer-content">
     <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
@@ -163,7 +117,6 @@
   </div>
 </footer>
 
-<!-- Modal de Términos y Condiciones -->
 <div id="terms" class="terms-container">
   <h2>Términos y Condiciones</h2>
   <p>Contenido de los términos y condiciones...</p>

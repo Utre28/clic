@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <title>Acceso Denegado</title>
@@ -12,6 +12,7 @@
     </style>
 </head>
 <body>
+<div th:replace="navbar :: navbar"></div>
 <h1>Acceso Denegado (403)</h1>
 <p>Esta página es solo accesible para el fotógrafo.</p>
 <p>Si crees que es un error, contacta con el administrador.</p>

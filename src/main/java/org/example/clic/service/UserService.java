@@ -16,4 +16,6 @@ public interface UserService {
 
     // Nueva búsqueda por email para el endpoint /me
     Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }

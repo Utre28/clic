@@ -1,3 +1,4 @@
+// src/main/java/org/example/clic/controller/PanelController.java
 package org.example.clic.controller;
 
 import org.springframework.stereotype.Controller;
@@ -8,12 +9,11 @@ public class PanelController {
 
     @GetMapping("/panel")
     public String panel() {
-        // Thymeleaf buscará src/main/resources/templates/panel.html
         return "panel";
     }
-    @GetMapping("/subir-fotos.html")
+
+    @GetMapping("/subir-fotos")
     public String subirFotos() {
-        // devolverá src/main/resources/templates/subir-fotos.html
         return "subir-fotos";
     }
 }
