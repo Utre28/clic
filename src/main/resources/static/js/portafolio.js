@@ -26,5 +26,4 @@ async function loadCategories() {
         console.error(e);
     }
 }
-
 document.addEventListener('DOMContentLoaded', loadCategories);
