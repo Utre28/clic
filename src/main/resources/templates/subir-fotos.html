@@ -1,15 +1,17 @@
+<!-- src/main/resources/templates/subir-fotos.html -->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Subir Fotos – Fotógrafo Profesional</title>
-  <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body>
+<!-- Navbar -->
 <div th:replace="navbar :: navbar"></div>
 
-
+<!-- Sección principal: formularios de evento, álbum y subida de fotos -->
 <section class="upload-section">
   <h2>Crear nuevo evento</h2>
   <form id="createEventForm">
@@ -47,70 +49,20 @@
   <div id="uploadStatus"></div>
 </section>
 
-<script>
-  // Lógica para cargar eventos y álbumes, y manejar formularios
-  async function loadEvents() {
-    const events = await (await fetch('/api/events')).json();
-    const select = document.getElementById('eventSelect');
-    select.innerHTML = '';
-    events.forEach(evt => {
-      const opt = document.createElement('option');
-      opt.value = evt.id;
-      opt.textContent = evt.name;
-      select.appendChild(opt);
-    });
-    if (events.length) loadAlbums(events[0].id);
-  }
-  async function loadAlbums(eventId) {
-    const albums = await (await fetch(`/api/albums/by-event/${eventId}`)).json();
-    const select = document.getElementById('albumSelect');
-    select.innerHTML = '';
-    albums.forEach(alb => {
-      const opt = document.createElement('option');
-      opt.value = alb.id;
-      opt.textContent = alb.name;
-      select.appendChild(opt);
-    });
-    document.getElementById('uploadAlbumId').value = albums[0]?.id || '';
-  }
-  document.getElementById('eventSelect').addEventListener('change', e => loadAlbums(e.target.value));
-  document.getElementById('albumSelect').addEventListener('change', e => {
-    document.getElementById('uploadAlbumId').value = e.target.value;
-  });
-  document.getElementById('createEventForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const data = {
-      name: document.getElementById('eventName').value,
-      date: document.getElementById('eventDate').value,
-      location: document.getElementById('eventLocation').value,
-      clientId: Number(document.getElementById('eventClientId').value)
-    };
-    const resp = await fetch('/api/events', {
-      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)
-    });
-    if (resp.ok) { alert('Evento creado'); loadEvents(); } else { alert('Error creando evento'); }
-  });
-  document.getElementById('createAlbumForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const payload = { name: document.getElementById('newAlbum').value, eventId: Number(document.getElementById('eventSelect').value) };
-    const resp = await fetch('/api/albums', {
-      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
-    });
-    if (resp.ok) { alert('Álbum creado'); loadAlbums(payload.eventId); } else { alert('Error creando álbum'); }
-  });
-  document.getElementById('uploadForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const files = document.getElementById('files').files;
-    const formData = new FormData();
-    for (const f of files) formData.append('files', f);
-    formData.append('albumId', document.getElementById('uploadAlbumId').value);
-    const resp = await fetch('/api/photos/upload-multiple', { method: 'POST', body: formData });
-    document.getElementById('uploadStatus').textContent = resp.ok ? 'Fotos subidas correctamente.' : 'Error al subir fotos.';
-  });
-  loadEvents();
-</script>
+<!-- Scripts -->
+<script th:src="@{/js/visualizar-albumes.js}"></script>
+<script th:src="@{/js/script.js}"></script>
 
+<!-- Footer y Términos -->
 <footer>
+  <div class="footer-social">
+    <a href="https://instagram.com/clicycolor" aria-label="Instagram" target="_blank">
+      <img th:src="@{/img/instagram.png}" alt="Instagram" class="social-icon" />
+    </a>
+    <a href="https://wa.me/0034603109882" aria-label="WhatsApp" target="_blank">
+      <img th:src="@{/img/whatsapp.png}" alt="WhatsApp" class="social-icon" />
+    </a>
+  </div>
   <div class="footer-content">
     <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
     <a href="#terms" class="terms-link">Términos y Condiciones</a>
