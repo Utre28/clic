@@ -46,9 +46,23 @@ public class AuthController {
         if (bindingResult.hasErrors()) {
             return "registro";
         }
-        // Convertir DTO a entidad User
-        User user = userMapper.toEntity(userDTO);
-        userService.save(user);
+        if (userService.existsByEmail(userDTO.getEmail())) {
+            bindingResult.rejectValue("email", "error.userDTO", "Ya existe una cuenta con este correo.");
+            return "registro";
+        }
+        try {
+            User user = userMapper.toEntity(userDTO);
+            user.setRole(User.Role.CLIENT);
+            userService.save(user);
+        } catch (Exception ex) {
+            // Si el error es por clave duplicada, muestra el error
+            if (ex.getCause() != null && ex.getCause().getMessage().contains("Duplicate entry")) {
+                bindingResult.rejectValue("email", "error.userDTO", "Ya existe una cuenta con este correo.");
+                return "registro";
+            }
+            // Si es otro error, puedes mostrar un mensaje general o relanzarlo
+            throw ex;
+        }
         return "redirect:/login?registered";
     }
 }

@@ -11,7 +11,19 @@
     <div class="navbar-right">
         <ul class="menu">
             <li><a th:href="@{/}">Inicio</a></li>
-            <li><a th:href="@{/portafolio}">Portafolio</a></li>
+
+            <!-- Menú desplegable Portafolio -->
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Portafolio ▼</a>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{/portafolio/bodas}">Bodas</a></li>
+                    <li><a th:href="@{/portafolio/bautizos}">Bautizos</a></li>
+                    <li><a th:href="@{/portafolio/comuniones}">Comuniones</a></li>
+                    <li><a th:href="@{/portafolio/retratos}">Retratos</a></li>
+                    <li><a th:href="@{/portafolio/conciertos}">Conciertos</a></li>
+                </ul>
+            </li>
+
             <li sec:authorize="isAnonymous()"><a th:href="@{/login}">Iniciar sesión</a></li>
             <li sec:authorize="isAnonymous()"><a th:href="@{/register}">Registrarse</a></li>
             <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')"><a th:href="@{/perfil}">Mi perfil</a></li>

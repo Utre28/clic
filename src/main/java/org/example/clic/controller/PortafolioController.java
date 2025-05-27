@@ -13,27 +13,27 @@ public class PortafolioController {
 
     @GetMapping("/portafolio/bodas")
     public String bodas() {
-        return "categoria-bodas";
+        return "portafolio/bodas";
     }
 
     @GetMapping("/portafolio/bautizos")
     public String bautizos() {
-        return "categoria-bautizos";
+        return "portafolio/bautizos";
     }
 
     @GetMapping("/portafolio/comuniones")
     public String comuniones() {
-        return "categoria-comuniones";
+        return "portafolio/comuniones";
     }
 
     @GetMapping("/portafolio/retratos")
     public String retratos() {
-        return "categoria-retratos";
+        return "portafolio/retratos";
     }
 
     @GetMapping("/portafolio/conciertos")
     public String conciertos() {
-        return "categoria-conciertos";
+        return "portafolio/conciertos";
     }
 
     @GetMapping("/contacto")
