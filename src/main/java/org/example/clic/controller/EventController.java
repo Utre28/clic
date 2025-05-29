@@ -6,24 +6,28 @@ import org.example.clic.mapper.EventMapper;
 import org.example.clic.model.Event;
 import org.example.clic.model.User;
 import org.example.clic.service.EventService;
+import org.example.clic.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController// Define controlador REST
 @RequestMapping("/api/events") // Ruta base para todos los endpoints de eventos
 public class EventController {
     private final EventService eventService;// Servicio de eventos
-    private final EventMapper eventMapper;// Mapper entre entidad y DTO
+    private final EventMapper eventMapper;//
+    private final UserService userService;// Mapper entre entidad y DTO
 
     // Inyección de dependencias vía constructor
-    public EventController(EventService eventService, EventMapper eventMapper) {
+    public EventController(EventService eventService, EventMapper eventMapper, UserService userService) {
         this.eventService = eventService;
         this.eventMapper = eventMapper;
+        this.userService = userService;
     }
     @GetMapping("/eventos")
     public String eventos() {
@@ -72,23 +76,28 @@ public class EventController {
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody EventDTO dto, BindingResult br) {
         if (br.hasErrors()) {
-            // Recoge mensajes de error de cada campo y devuelve Bad Request
             var errors = br.getFieldErrors().stream()
                     .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
                     .collect(Collectors.toList());
             return ResponseEntity.badRequest().body(errors);
         }
-        // Construye entidad Event a partir de DTO
+
+        Optional<User> clientOpt = userService.findById(dto.getClientId());
+        if (clientOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Cliente no encontrado");
+        }
+
         Event event = new Event();
         event.setName(dto.getName());
         event.setDate(dto.getDate());
         event.setLocation(dto.getLocation());
+        event.setClient(clientOpt.get()); // <-- aquí asignamos cliente
 
-        // Guarda el evento y prepara la respuesta
         Event saved = eventService.save(event);
         return ResponseEntity.created(URI.create("/api/events/" + saved.getId()))
                 .body(eventMapper.toDto(saved));
     }
+
     /**
      * Actualiza un evento existente.
      * @param id ID del evento a actualizar.

@@ -56,4 +56,8 @@ public class UserServiceImpl implements UserService {
     public boolean existsByEmail(String email) {
         return false;
     }
+
+    public List<User> findByRole(User.Role role) {
+        return userRepository.findByRole(role);
+    }
 }

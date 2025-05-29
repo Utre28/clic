@@ -148,4 +148,14 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
+    @GetMapping("/api/clients")
+    @ResponseBody
+    public List<UserDTO> getAllClients() {
+        // Suponemos que UserService tiene método findByRole(Role role)
+        return userService.findByRole(User.Role.CLIENT)
+                .stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 }

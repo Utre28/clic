@@ -26,6 +26,8 @@ import org.example.clic.model.Album;
 import org.example.clic.model.Photo;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.core.Authentication;
+
 
 
 @RestController
@@ -187,7 +189,7 @@ public class PhotoController {
                     Photo photo = new Photo();
                     photo.setUrl("/uploads/" + filename);
                     photo.setAlbum(album);
-                    photoRepository.save(photo);
+                    photoService.save(photo);
                 } catch (IOException e) {
                     // Si falla una, responde error
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -198,6 +200,13 @@ public class PhotoController {
 
         // Si todas subieron bien
         return ResponseEntity.ok("Fotos subidas correctamente");
+    }
+
+    @GetMapping("/my-photos")
+    public List<PhotoDTO> getPhotosByUser(Authentication authentication) {
+        String email = authentication.getName(); // o como identifiques al usuario
+        // Busca las fotos cuyo álbum está asociado a eventos del usuario
+        return photoService.findPhotosByUserEmail(email);
     }
 
 

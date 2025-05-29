@@ -1,5 +1,6 @@
 package org.example.clic.service;
 
+import org.example.clic.dto.PhotoDTO;
 import org.example.clic.model.Photo;
 import org.example.clic.repository.PhotoRepository;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -21,6 +24,7 @@ public class PhotoServiceImpl implements PhotoService {
     public List<Photo> findAll() {
         return photoRepository.findAll();
     }
+
     @Override
     public List<Photo> findByAlbumId(Long albumId) {
         return photoRepository.findByAlbumId(albumId);
@@ -33,6 +37,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public Photo save(Photo photo) {
+        photo.setUploadedAt(LocalDateTime.now());
         return photoRepository.save(photo);
     }
 
@@ -44,5 +49,20 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     public boolean existsById(Long id) {
         return photoRepository.existsById(id);
+    }
+
+    @Override
+    public List<PhotoDTO> findPhotosByUserEmail(String email) {
+        List<Photo> photos = photoRepository.findPhotosByUserEmail(email);
+
+        return photos.stream()
+                .map(photo -> new PhotoDTO(
+                        photo.getId(),
+                        photo.getUrl(),
+                        photo.getDescription(),
+                        photo.getUploadedAt(),
+                        photo.getAlbum().getId()
+                ))
+                .collect(Collectors.toList());
     }
 }
