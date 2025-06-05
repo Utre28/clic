@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Categoría – Fotógrafo Profesional</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
+    <style>
+        .album-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+        .album-card {
+            width: 200px;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s;
+            position: relative;
+        }
+        .album-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .album-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+        }
+        .album-card h3 {
+            margin:10px 0;
+            font-size:1.1rem;
+            color:#333;
+        }
+        .album-controls {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+        }
+        .album-controls button {
+            background:transparent;
+            border:none;
+            cursor:pointer;
+            margin-left:4px;
+            font-size:1rem;
+        }
+        #newAlbumContainer {
+            text-align:center;
+            margin:1rem;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+
+
+<h1 id="categoryTitle" style="text-align:center; margin-top:2rem;" th:text="${eventName}"></h1> <!-- Usando Thymeleaf para pasar el nombre del evento -->
+<div id="newAlbumContainer"></div>
+<section id="albumList" class="album-list"></section>
+
+<script>
+    let currentRoles = [];
+    async function fetchUserRoles() {
+        try {
+            const res = await fetch('/api/me', { credentials: 'include' });
+            currentRoles = res.ok ? (await res.json()).roles : [];
+        } catch {
+            currentRoles = [];
+        }
+    }
+
+    function canEdit() {
+        return  currentRoles.includes('ROLE_PHOTOGRAPHER');
+    }
+
+    const qs = new URLSearchParams(window.location.search);
+    const eventName = qs.get('event') || 'General';
+    document.getElementById('categoryTitle').textContent = eventName;
+
+    async function loadAlbumsByEventName(name) {
+        const c = document.getElementById('albumList');
+        c.textContent = 'Cargando álbumes…';
+
+        await fetchUserRoles();
+
+        // fetch evento
+        const resE = await fetch(`/api/events?name=${encodeURIComponent(name)}`, { credentials: 'include' });
+        const evts = await resE.json();
+        const match = evts.find(e => e.name.toLowerCase() === name.toLowerCase());
+        if (!match) { c.innerHTML = `<p>No existe evento "${name}".</p>`; return; }
+        const eventId = match.id;
+
+        // nuevo álbum
+        const nab = document.getElementById('newAlbumContainer');
+        nab.innerHTML = '';
+        if (canEdit()) {
+            nab.innerHTML = '<button id="btnNewAlbum">+ Nuevo álbum</button>';
+            document.getElementById('btnNewAlbum').onclick = async () => {
+                const nm = prompt('Nombre del nuevo álbum:');
+                if (!nm) return;
+                const res = await fetch('/api/albums', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: nm, eventId })
+                });
+                if (res.ok) loadAlbumsByEventName(name);
+                else alert('Error creando álbum');
+            };
+        }
+
+        // fetch álbumes
+        const resA = await fetch(`/api/albums/by-event/${eventId}`, { credentials: 'include' });
+        const albums = await resA.json();
+        if (!albums.length) { c.innerHTML = '<p>No hay álbumes disponibles.</p>'; return; }
+
+        // render
+        c.innerHTML = '';
+        albums.forEach(album => {
+            const card = document.createElement('div');
+            card.className = 'album-card';
+            card.innerHTML = `
+                <img src="${album.mainPhotoUrl || 'img/placeholder.png'}" alt="${album.name}"/>
+                <h3>${album.name}</h3>`;
+            if (canEdit()) {
+                const ctrl = document.createElement('div');
+                ctrl.className = 'album-controls';
+                ctrl.innerHTML = `
+                    <button title="✏️" onclick="renameAlbum(${album.id}, '${name}')">✏️</button>
+                    <button title="🗑️" onclick="deleteAlbum(${album.id}, '${name}')">🗑️</button>`;
+                card.appendChild(ctrl);
+            }
+            card.onclick = () => {
+                window.location.href = `ver-album.html?albumId=${album.id}&volver=${name.toLowerCase()}`;
+            };
+            c.appendChild(card);
+        });
+    }
+
+    async function renameAlbum(id, name) {
+        const nm = prompt('Nuevo nombre:');
+        if (!nm) return;
+        await fetch(`/api/albums/${id}`, {
+            method: 'PUT', credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: nm })
+        });
+        loadAlbumsByEventName(name);
+    }
+
+    async function deleteAlbum(id, name) {
+        if (!confirm('¿Eliminar álbum?')) return;
+        await fetch(`/api/albums/${id}`, {
+            method: 'DELETE', credentials: 'include'
+        });
+        loadAlbumsByEventName(name);
+    }
+
+    loadAlbumsByEventName(eventName);
+</script>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-social">
+        <a href="https://instagram.com/clicycolor" aria-label="Instagram" target="_blank">
+            <img src="/img/instagram.png" alt="Instagram" class="social-icon" />
+        </a>
+        <a href="https://wa.me/0034603109882" aria-label="WhatsApp" target="_blank">
+            <img src="/img/whatsapp.png" alt="WhatsApp" class="social-icon" />
+        </a>
+    </div>
+    <div class="footer-content">
+        <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
+        <a href="#terms" class="terms-link">Términos y Condiciones</a>
+    </div>
+</footer>
+
+<!-- Modal de Términos y Condiciones -->
+<div id="terms" class="terms-container">
+    <h2>Términos y Condiciones</h2>
+    <p>Aquí van los términos y condiciones de uso...</p>
+    <button onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
+</div>
+
+</body>
+</html>

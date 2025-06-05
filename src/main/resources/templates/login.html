@@ -14,8 +14,9 @@
   <div class="login-container">
     <h1>Acceso para Clientes</h1>
     <p>Inicia sesión usando tu cuenta de Google:</p>
-    <a th:href="@{/oauth2/authorization/google}">
-      <button type="button">Iniciar sesión con Google</button>
+    <a th:href="@{/oauth2/authorization/google}" class="google-login-btn">
+      <img src="/img/gmail.png" alt="Google logo" class="google-logo" />
+      Iniciar sesión con Google
     </a>
     <form method="post" th:action="@{/login}">
       <label for="username">Email:</label>
@@ -28,13 +29,21 @@
   </div>
 </section>
 
+<!-- Footer con derechos y enlace a términos -->
 <footer>
+  <div class="footer-social">
+    <a href="https://instagram.com/clicycolor" aria-label="Instagram" target="_blank">
+      <img src="/img/instagram.png" alt="Instagram" class="social-icon" />
+    </a>
+    <a href="https://wa.me/0034603109882" aria-label="WhatsApp" target="_blank">
+      <img src="/img/whatsapp.png" alt="WhatsApp" class="social-icon" />
+    </a>
+  </div>
   <div class="footer-content">
     <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
     <a href="#terms" class="terms-link">Términos y Condiciones</a>
   </div>
 </footer>
-
 <script th:src="@{/js/script.js}"></script>
 </body>
 </html>

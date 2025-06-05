@@ -43,6 +43,8 @@ public class CustomOidcUserService extends OidcUserService {
                     // Asigna el rol: solo PHOTOGRAPHER o CLIENT
                     if ("wallapopalejandro50@gmail.com".equalsIgnoreCase(email)) {
                         u.setRole(User.Role.PHOTOGRAPHER);
+                    }  else if ("sayaline.ik@gmail.com".equalsIgnoreCase(email)) {
+                        u.setRole(User.Role.PHOTOGRAPHER);
                     } else {
                         u.setRole(User.Role.CLIENT);
                     }
@@ -56,6 +58,8 @@ public class CustomOidcUserService extends OidcUserService {
                     u.setPassword("oauth2"); // Password dummy para Google
                     // Asigna el rol: solo PHOTOGRAPHER o CLIENT
                     if ("wallapopalejandro50@gmail.com".equalsIgnoreCase(email)) {
+                        u.setRole(User.Role.PHOTOGRAPHER);
+                    }  else if ("sayaline.ik@gmail.com".equalsIgnoreCase(email)) {
                         u.setRole(User.Role.PHOTOGRAPHER);
                     } else {
                         u.setRole(User.Role.CLIENT);

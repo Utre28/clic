@@ -1,12 +1,12 @@
 <nav th:fragment="navbar" class="navbar" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-    <div class="navbar-left">
+    <div class="header-left">
         <a th:href="@{/}" class="home-link">
             <img th:src="@{/img/logo.png}" alt="Clic y Color" class="logo" />
             <span class="site-title">Clic y Color</span>
         </a>
     </div>
     <div class="navbar-center">
-        <h1 class="page-title">Fotógrafo Profesional</h1>
+        <h1 class="site-title">Fotógrafo Profesional</h1>
     </div>
     <div class="navbar-right">
         <ul class="menu">
@@ -14,13 +14,13 @@
 
             <!-- Menú desplegable Portafolio -->
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle">Portafolio ▼</a>
+                <a th:href="@{/portafolio}" class="dropdown-toggle">Portafolio ▼</a>
                 <ul class="dropdown-menu">
-                    <li><a th:href="@{/portafolio/bodas}">Bodas</a></li>
-                    <li><a th:href="@{/portafolio/bautizos}">Bautizos</a></li>
-                    <li><a th:href="@{/portafolio/comuniones}">Comuniones</a></li>
-                    <li><a th:href="@{/portafolio/retratos}">Retratos</a></li>
-                    <li><a th:href="@{/portafolio/conciertos}">Conciertos</a></li>
+                    <li><a th:href="@{/categoria(event='Bodas')}">Bodas</a></li>
+                    <li><a th:href="@{/categoria(event='Bautizos')}">Bautizos</a></li>
+                    <li><a th:href="@{/categoria(event='Comuniones')}">Comuniones</a></li>
+                    <li><a th:href="@{/categoria(event='Retratos')}">Retratos</a></li>
+                    <li><a th:href="@{/categoria(event='Conciertos')}">Conciertos</a></li>
                 </ul>
             </li>
 

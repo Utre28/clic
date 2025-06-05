@@ -26,4 +26,7 @@ async function loadCategories() {
         console.error(e);
     }
 }
+function closeTerms() {
+    document.getElementById('terms').style.display = 'none';
+}
 document.addEventListener('DOMContentLoaded', loadCategories);

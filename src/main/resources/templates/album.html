@@ -86,13 +86,14 @@
 
   loadAlbumPhotos();
 </script>
-
+<!-- Modal para ver foto ampliada -->
 <div id="modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;
     background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:1000;">
   <img id="modalImg" src="" alt="" style="max-width:90vw;max-height:90vh;border-radius:8px;"/>
 </div>
 
 <script>
+  // Mostrar/ocultar modal al hacer clic en imagen
   const modal = document.getElementById('modal');
   const modalImg = document.getElementById('modalImg');
   document.body.addEventListener('click', e => {
@@ -105,12 +106,20 @@
 </script>
 
 <footer>
+  <div class="footer-social">
+    <a href="https://instagram.com/clicycolor" aria-label="Instagram" target="_blank">
+      <img src="img/instagram.png" alt="Instagram" class="social-icon" />
+    </a>
+    <a href="https://wa.me/0034603109882" aria-label="WhatsApp" target="_blank">
+      <img src="img/whatsapp.png" alt="WhatsApp" class="social-icon" />
+    </a>
+  </div>
+  <!-- Pie de página con términos -->
   <div class="footer-content">
     <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
     <a href="#terms" class="terms-link">Términos y Condiciones</a>
   </div>
 </footer>
-
 <div id="terms" class="terms-container">
   <h2>Términos y Condiciones</h2>
   <p>Aquí van los términos y condiciones de uso...</p>
