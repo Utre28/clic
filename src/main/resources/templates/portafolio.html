@@ -49,6 +49,8 @@
     <p th:text="${event.location}">Ubicación del Evento</p>
     <!-- Enlace a una página del álbum o detalles del evento -->
     <a th:href="@{/albumes/by-event/{eventId}(eventId=${event.id})}" class="btn">Ver Álbumes</a>
+
+
   </div>
 </section>
 
