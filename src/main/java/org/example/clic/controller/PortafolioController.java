@@ -2,6 +2,9 @@ package org.example.clic.controller;
 
 import org.example.clic.model.Event;
 import org.example.clic.service.EventService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,4 +39,28 @@ public class PortafolioController {
     public String contacto() {
         return "contacto"; // Asegúrate de tener este archivo HTML
     }
+ /*   @GetMapping("/mis-eventos")
+    public String misEventos(@AuthenticationPrincipal User user, Model model) {
+        // Obtener los eventos asociados al cliente
+        List<Event> events = eventService.findByClientEmail(user.getUsername());
+
+        // Pasar los eventos al modelo
+        model.addAttribute("events", events);
+
+        // Devolver la vista correspondiente
+        return "mis-eventos";
+    }*/
+    @GetMapping("/mis-eventos")
+    public String misEventos(Model model, Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();  // Accede al nombre del usuario autenticado
+            // Aquí puedes consultar los eventos relacionados con el usuario
+            model.addAttribute("username", username);
+            // Obtén los eventos del usuario, si es necesario
+            return "mis-eventos";  // Retorna la vista correspondiente
+        } else {
+            return "redirect:/login";  // Si no está autenticado, redirige a login
+        }
+    }
+
 }

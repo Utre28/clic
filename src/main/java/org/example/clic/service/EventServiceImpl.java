@@ -50,4 +50,9 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findByCategory(category);  // Filtra por categoría
     }
 
+    @Override
+    public List<Event> findByClientEmail(String email) {
+        // Aquí deberías escribir la lógica para encontrar los eventos asociados al cliente por su email
+        return eventRepository.findByClientEmail(email);
+    }
 }

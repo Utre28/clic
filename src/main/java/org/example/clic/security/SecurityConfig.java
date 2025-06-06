@@ -34,14 +34,17 @@ public class SecurityConfig {
                                 "/login", "/register", "/error",
                                 "/oauth2/**",
                                 "/portafolio", "/portafolio/**",
-                                "/eventos", "/contacto", "/subir-fotos","/eventos/**",
+                                "/eventos", "/contacto", "/subir-fotos","/eventos/**","/mis-eventos",
                                 "/categoria/**", // Páginas de categoría accesibles para todos
                                 "/albumes", "/albumes/**",
                                 "/api/events/**", "/api/albums/**", "/api/photos/**" ,"/albumes/by-event/**"// Rutas públicas de API
                         ).permitAll() // Permitir todas estas rutas sin autenticación
                         .requestMatchers("/panel/**").hasRole("PHOTOGRAPHER") // Panel solo para fotógrafos
                         .requestMatchers("/perfil/**").authenticated() // Perfil solo para usuarios autenticados
+                        .requestMatchers("/mis-eventos").hasRole("CLIENT")// esta ruta solo sea accesible para usuarios autenticados
                         .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
+
+
                 )
                 .formLogin(form -> form
                         .loginPage("/login")

@@ -8,4 +8,6 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Long> {
     // Encuentra eventos por categoría
     List<Event> findByCategory(String category);
+    // Método para obtener eventos por email del cliente
+    List<Event> findByClientEmail(String email);
 }
