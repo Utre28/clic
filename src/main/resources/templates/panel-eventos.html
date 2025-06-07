@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Eventos – Fotógrafo</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+<h1>Todos los eventos</h1>
+
+<form method="get" th:action="@{/panel/eventos}" style="margin-bottom:20px;">
+    <input type="text" name="q" placeholder="Buscar evento..." th:value="${param.q}" />
+    <select name="eventoId">
+        <option value="">-- Filtrar por evento --</option>
+        <option th:each="event : ${topEvents}" th:value="${event.id}" th:text="${event.name}"
+                th:selected="${event.id == param.eventoId}"></option>
+    </select>
+    <button type="submit">Buscar / Filtrar</button>
+</form>
+
+<ul>
+    <li th:each="evento : ${filteredEvents}">
+        <a th:href="@{'/panel/eventos/' + ${evento.id}}" th:text="${evento.name}"></a>
+    </li>
+</ul>
+</body>
+</html>

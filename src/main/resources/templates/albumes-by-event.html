@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Álbumes del Evento</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+
+<header>
+    <h1>Álbumes del Evento</h1>
+</header>
+
+<section class="albumes">
+    <div th:if="${#lists.isEmpty(albums)}">
+        <p>No hay álbumes para este evento.</p>
+    </div>
+    <div th:each="album : ${albums}">
+        <a th:href="@{'/album/' + ${album.id}}" style="text-decoration:none;color:inherit;">
+            <div class="album-card">
+                <h3 th:text="${album.name}"></h3>
+                <p th:text="${album.createdAt}"></p>
+            </div>
+        </a>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-content">
+        <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
+        <a href="#terms" class="terms-link">Términos y Condiciones</a>
+    </div>
+</footer>
+
+</body>
+</html>
