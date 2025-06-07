@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portafolio por Categorías – Fotógrafo Profesional</title>
+  <title>Portafolio – Fotógrafo</title>
   <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
   <style>
     .categorias {
@@ -21,6 +21,9 @@
       transition: transform 0.3s ease;
       text-decoration: none;
       color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .categoria:hover {
       transform: scale(1.03);
@@ -35,22 +38,68 @@
       margin: 1rem;
       color: var(--color-primario);
     }
+    .filtros-portafolio {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin: 2rem 0 1rem 0;
+    }
+    .filtros-portafolio input[type="text"] {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      min-width: 200px;
+    }
+    .filtros-portafolio select, .filtros-portafolio button {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background: #f7f7f7;
+      cursor: pointer;
+    }
+    .btn {
+      margin: 1rem 0;
+      padding: 0.5rem 1.5rem;
+      background: var(--color-primario, #007bff);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #0056b3;
+    }
   </style>
 </head>
 <body>
 <div th:replace="navbar :: navbar"></div>
 
+<h1 style="text-align:center;">Portafolio de Eventos</h1>
+
+<form class="filtros-portafolio" method="get" th:action="@{/panel/portafolio}">
+  <input type="text" name="q" placeholder="Buscar evento..." th:value="${param.q}" />
+  <select name="eventoId">
+    <option value="">-- Filtrar por evento --</option>
+    <option th:each="event : ${topEvents}" th:value="${event.id}" th:text="${event.name}"
+            th:selected="${event.id == param.eventoId}"></option>
+  </select>
+  <button type="submit">Buscar / Filtrar</button>
+</form>
+
 <section id="categorias" class="categorias">
-  <!-- Iterar sobre los eventos -->
-  <div th:each="event : ${events}" class="categoria">
+  <div th:if="${#lists.isEmpty(filteredEvents)}">
+    <p style="grid-column: 1/-1; text-align:center;">No hay eventos para mostrar.</p>
+  </div>
+  <div th:each="event : ${filteredEvents}" class="categoria">
     <img th:src="${event.imageUrl}" alt="Imagen de evento" />
     <h3 th:text="${event.name}">Nombre del Evento</h3>
     <p th:text="${event.date}">Fecha del Evento</p>
     <p th:text="${event.location}">Ubicación del Evento</p>
-    <!-- Enlace a una página del álbum o detalles del evento -->
     <a th:href="@{/albumes/by-event/{eventId}(eventId=${event.id})}" class="btn">Ver Álbumes</a>
-
-
   </div>
 </section>
 

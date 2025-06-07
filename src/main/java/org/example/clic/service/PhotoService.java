@@ -13,6 +13,7 @@ public interface PhotoService {
     Photo save(Photo photo);// Crea o actualiza una foto
     void deleteById(Long id);// Elimina una foto por ID
     boolean existsById(Long id);// Verifica si una foto existe
+    List<Photo> findAllById(String[] ids); // Obtiene fotos por una lista de IDs
 
     List<PhotoDTO> findPhotosByUserEmail(String email);
 }

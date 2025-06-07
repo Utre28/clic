@@ -6,6 +6,7 @@ import org.example.clic.repository.PhotoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,5 +65,19 @@ public class PhotoServiceImpl implements PhotoService {
                         photo.getAlbum().getId()
                 ))
                 .collect(Collectors.toList());
+    }
+    @Override
+    public List<Photo> findAllById(String[] ids) {
+        List<Photo> photos = new ArrayList<>();
+        for (String id : ids) {
+            try {
+                Long longId = Long.parseLong(id);
+                Optional<Photo> photoOpt = findById(longId);
+                photoOpt.ifPresent(photos::add);
+            } catch (NumberFormatException e) {
+                // Puedes registrar el error si lo deseas
+            }
+        }
+        return photos;
     }
 }

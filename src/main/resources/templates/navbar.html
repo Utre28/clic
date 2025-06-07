@@ -1,3 +1,4 @@
+
 <nav th:fragment="navbar" class="navbar" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <div class="header-left">
         <a th:href="@{/}" class="home-link">
@@ -26,6 +27,15 @@
 
             <li sec:authorize="isAnonymous()"><a th:href="@{/login}">Iniciar sesión</a></li>
             <li sec:authorize="isAnonymous()"><a th:href="@{/register}">Registrarse</a></li>
+            <!-- Botón visible solo para CLIENT -->
+            <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')">
+                <a th:href="@{/mis-eventos}">Mis eventos</a>
+            </li>
+            <!-- Botón visible solo para PHOTOGRAPHER -->
+            <li sec:authorize="hasRole('PHOTOGRAPHER')">
+                <a th:href="@{/panel/eventos}">Eventos</a>
+            </li>
+            <!-- Otras opciones de menú -->
             <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')"><a th:href="@{/perfil}">Mi perfil</a></li>
             <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')"><a th:href="@{/logout}">Cerrar sesión</a></li>
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/perfil}">Mi perfil</a></li>

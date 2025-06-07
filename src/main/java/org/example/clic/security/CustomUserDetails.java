@@ -6,7 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
-// Integración de roles CLIENT, PHOTOGRAPHER y ADMIN con Spring Security
+// Integración de roles CLIENT, PHOTOGRAPHER
 public class CustomUserDetails implements UserDetails {
 
     private final User user;  // Entidad User de la aplicación

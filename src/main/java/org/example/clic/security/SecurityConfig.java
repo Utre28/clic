@@ -1,11 +1,10 @@
-// src/main/java/org/example/clic/security/SecurityConfig.java
 package org.example.clic.security;
 
 import org.example.clic.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -34,44 +33,45 @@ public class SecurityConfig {
                                 "/login", "/register", "/error",
                                 "/oauth2/**",
                                 "/portafolio", "/portafolio/**",
-                                "/eventos", "/contacto", "/subir-fotos","/eventos/**",
-                                "/categoria/**", // Páginas de categoría accesibles para todos
+                                "/eventos", "/contacto", "/subir-fotos", "/eventos/**",
+                                "/categoria/**", // Rutas públicas
                                 "/albumes", "/albumes/**",
-                                "/api/events/**", "/api/albums/**", "/api/photos/**" ,"/albumes/by-event/**"// Rutas públicas de API
-                        ).permitAll() // Permitir todas estas rutas sin autenticación
-                        .requestMatchers("/panel/**").hasRole("PHOTOGRAPHER") // Panel solo para fotógrafos
-                        .requestMatchers("/perfil/**").authenticated() // Perfil solo para usuarios autenticados
+                                "/api/events/**", "/api/albums/**", "/api/photos/**", "/albumes/by-event/**"  // Rutas públicas de API
+                        ).permitAll() // Permitir estas rutas sin autenticación
+                        .requestMatchers("/panel/**").hasRole("PHOTOGRAPHER") // Solo accesible para fotógrafos
+                        .requestMatchers("/perfil/**").authenticated() // Accesible para usuarios autenticados
+                        .requestMatchers("/mis-eventos").hasRole("CLIENT")
+                          // Permitir el acceso sin restricciones a /mis-eventos
                         .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .successHandler(successHandler)
+                        .loginPage("/login")  // Página de login personalizada
+                        .loginProcessingUrl("/login") // URL para procesar el login
+                        .successHandler(successHandler) // Redirigir después de login exitoso
                         .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login")
-                        .successHandler(successHandler)
+                        .loginPage("/login")  // Página de login personalizada para OAuth2
+                        .successHandler(successHandler) // Redirigir después de login exitoso
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutUrl("/logout") // URL para procesar logout
+                        .logoutSuccessUrl("/login?logout") // Redirigir después de logout
                         .permitAll()
                 )
-                .csrf(csrf -> csrf.disable())
-                .userDetailsService(customUserDetailsService);
+                .csrf(csrf -> csrf.disable())  // Deshabilitar CSRF (generalmente usado para APIs)
+                .userDetailsService(customUserDetailsService); // Servicio personalizado de detalles de usuario
 
         return http.build();
     }
 
-    // Ignora completamente las peticiones a /uploads/** para servir archivos estáticos sin filtro
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/uploads/**");
+        return (web) -> web.ignoring().requestMatchers("/uploads/**"); // Ignorar rutas para archivos estáticos
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();  // Encriptación de contraseñas
     }
 }

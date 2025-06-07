@@ -50,4 +50,9 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findByCategory(category);  // Filtra por categoría
     }
 
+    @Override
+    public List<Event> findByClientId(Long id) {
+        return eventRepository.findByClientId(id);
+    }
+
 }

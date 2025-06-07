@@ -1,6 +1,3 @@
-// JavaScript principal para manejar interacciones de la página
-// Se inicia cuando el DOM está listo
-
 // 1. Mostrar y ocultar Términos y Condiciones
 function initTerms() {
   const termsLink = document.querySelector('.terms-link');
@@ -19,98 +16,155 @@ function initTerms() {
   }
 }
 
-// 2. Cargar datos del usuario en el panel o redirigir si no está autenticado
-async function loadUserPanel() {
-  const nameEl = document.getElementById('user-name');
-  const emailEl = document.getElementById('user-email');
-  if (!nameEl || !emailEl) return;
+// 2. Mostrar notificación en la parte inferior derecha
+function showNotification(message, isError = false) {
+  const notification = document.getElementById("notification");
+  notification.textContent = message;
+  notification.classList.toggle("error", isError);
+  notification.style.display = "block";
 
-  const resp = await fetch('/api/users/me', { credentials: 'include' });
-  if (!resp.ok) {
-    window.location.href = '/login.html';
-    return;
+  // Ocultar el mensaje después de 5 segundos
+  setTimeout(() => {
+    notification.style.display = "none";
+  }, 5000);
+}
+
+// 3. Llenar el select de clientes dinámicamente
+async function loadClients() {
+  const clientSelect = document.getElementById("eventClientId");
+  const response = await fetch('/api/users/api/clients');  // Suponiendo que tienes este endpoint para obtener clientes
+  if (response.ok) {
+    const clients = await response.json();
+    clients.forEach(client => {
+      const option = document.createElement("option");
+      option.value = client.id;
+      option.textContent = client.name;
+      clientSelect.appendChild(option);
+    });
+  } else {
+    console.error("Error al cargar los clientes");
   }
-  const user = await resp.json();
-  nameEl.textContent = user.name;
-  emailEl.textContent = user.email;
 }
 
-// 3. Cargar select de eventos y álbumes relacionados
-async function loadEvents() {
-  const resp = await fetch('/api/events');
-  const events = await resp.json();
-  const sel = document.getElementById('eventSelect');
-  if (!sel) return;
-
-  sel.innerHTML = '';
-  events.forEach(e => {
-    const opt = document.createElement('option');
-    opt.value = e.id;
-    opt.textContent = e.name;
-    sel.appendChild(opt);
-  });
-  if (events.length) loadAlbums(events[0].id);
-}
-async function loadAlbums(eventId) {
-  const resp = await fetch(`/api/albums/by-event/${eventId}`);
-  const albums = await resp.json();
-  const sel = document.getElementById('albumSelect');
-  if (!sel) return;
-  sel.innerHTML = '';
-  albums.forEach(a => {
-    const opt = document.createElement('option');
-    opt.value = a.id;
-    opt.textContent = a.name;
-    sel.appendChild(opt);
-  });
-  const uploadId = document.getElementById('uploadAlbumId');
-  if (uploadId) uploadId.value = albums[0]?.id || '';
+// 4. Establecer la fecha mínima en el input para la fecha del evento (no permitir fechas pasadas)
+function setMinDate() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById("eventDate").setAttribute("min", today);
 }
 
-// 4. Manejar formulario de creación de eventos
+// 5. Manejar formulario de creación de eventos
 function initCreateEvent() {
   const form = document.getElementById('createEventForm');
   if (!form) return;
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    const name = form.eventName.value.trim();
+    const name = form.eventName.value;
     const date = form.eventDate.value;
     const loc = form.eventLocation.value.trim();
-    const client = form.eventClientId.value.trim() || null;
-    if (!name || !date || !loc) {
-      alert('Completa todos los campos obligatorios');
+    const category = form.eventCategory.value;
+    const client = form.eventClientId.value || null;
+
+    // Validación de campos
+    if (!name || !date || !loc || !category) {
+      showNotification('Completa todos los campos obligatorios', true);
       return;
     }
+
+    // Si no hay cliente seleccionado, el evento va al portafolio
+    const eventType = client ? 'cliente' : 'portafolio';
+
+    // Validar que el tipo de evento esté entre las 5 opciones
+    const validCategories = ["Bodas", "Bautizos", "Comuniones", "Retratos", "Conciertos"];
+    if (!validCategories.includes(category)) {
+      showNotification('Categoría de evento no válida', true);
+      return;
+    }
+
     try {
       const resp = await fetch('/api/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, date, location: loc, clientId: client ? Number(client) : null })
+        body: JSON.stringify({
+          name, date, location: loc, category, clientId: client ? Number(client) : null, type: eventType
+        })
       });
+
       if (resp.ok) {
-        alert('Evento creado');
+        showNotification('Evento creado con éxito');
         form.reset();
-        loadEvents();
+        loadEvents(); // Refresca el select de eventos
       } else {
-        const err = await resp.json();
-        alert('Error: ' + (err.message || resp.statusText));
+        let errMsg = 'Error al crear evento';
+        try {
+          const err = await resp.json();
+          errMsg = 'Error: ' + (err.message || JSON.stringify(err));
+        } catch {}
+        showNotification(errMsg, true);
       }
     } catch (err) {
-      alert('Error de red: ' + err.message);
+      showNotification('Error de red: ' + err.message, true);
     }
   });
 }
 
-// 5. Manejar formulario de creación de álbumes
+// 6. Llenar el select de eventos dinámicamente
+async function loadEvents() {
+  const eventSelect = document.getElementById("eventSelect");
+  if (!eventSelect) return;
+  eventSelect.innerHTML = '';
+  const response = await fetch('/api/events');
+  if (response.ok) {
+    const events = await response.json();
+    events.forEach(event => {
+      const option = document.createElement("option");
+      option.value = event.id;
+      option.textContent = event.name;
+      eventSelect.appendChild(option);
+    });
+  } else {
+    console.error("Error al cargar los eventos");
+  }
+}
+
+// Llenar el select de álbumes dinámicamente
+async function loadAlbums() {
+  const albumSelect = document.getElementById("albumSelect");
+  if (!albumSelect) return;
+  albumSelect.innerHTML = '';
+  const response = await fetch('/api/albums');
+  if (response.ok) {
+    const albums = await response.json();
+    albums.forEach(album => {
+      const option = document.createElement("option");
+      option.value = album.id;
+      option.textContent = album.name;
+      albumSelect.appendChild(option);
+    });
+  } else {
+    console.error("Error al cargar los álbumes");
+  }
+}
+
+// 7. Inicializar todas las funciones cuando carga la página
+document.addEventListener('DOMContentLoaded', () => {
+  loadClients();  // Llenar clientes
+  loadEvents();   // Llenar eventos
+  loadAlbums();   // Llenar álbumes
+  setMinDate();   // Establecer la fecha mínima a hoy
+  initCreateEvent();
+  initCreateAlbum(); // Inicializa el formulario de crear álbum
+});
+
+// 8. Manejar formulario de creación de álbum
 function initCreateAlbum() {
   const form = document.getElementById('createAlbumForm');
   if (!form) return;
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    const name = form.newAlbum.value.trim();
-    const eventId = document.getElementById('eventSelect')?.value;
-    if (!name) {
-      alert('Nombre de álbum obligatorio');
+    const name = form.newAlbum.value;
+    const eventId = form.eventSelect.value;
+    if (!name || !eventId) {
+      showNotification('Completa todos los campos obligatorios del álbum', true);
       return;
     }
     try {
@@ -120,55 +174,19 @@ function initCreateAlbum() {
         body: JSON.stringify({ name, eventId: Number(eventId) })
       });
       if (resp.ok) {
-        alert('Álbum creado');
+        showNotification('Álbum creado con éxito');
         form.reset();
-        if (eventId) loadAlbums(eventId);
+        loadAlbums(); // Refresca el select de álbumes
       } else {
-        const err = await resp.json();
-        alert('Error: ' + (err.message || resp.statusText));
+        let errMsg = 'Error al crear álbum';
+        try {
+          const err = await resp.json();
+          errMsg = 'Error: ' + (err.message || JSON.stringify(err));
+        } catch {}
+        showNotification(errMsg, true);
       }
     } catch (err) {
-      alert('Error de red: ' + err.message);
+      showNotification('Error de red: ' + err.message, true);
     }
   });
 }
-
-// 6. Manejar subida de múltiples fotos
-function initUploadPhotos() {
-  const form = document.getElementById('uploadForm');
-  if (!form) return;
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    const files = document.getElementById('files').files;
-    const albumId = document.getElementById('uploadAlbumId')?.value;
-    if (!albumId || !files.length) {
-      alert('Selecciona un álbum y al menos una foto');
-      return;
-    }
-    const fd = new FormData();
-    for (const f of files) fd.append('files', f);
-    fd.append('albumId', albumId);
-    const resp = await fetch('/api/photos/upload-multiple', { method: 'POST', body: fd });
-    const status = document.getElementById('uploadStatus');
-    if (resp.ok) {
-      status.textContent = 'Fotos subidas correctamente.';
-      form.reset();
-    } else {
-      status.textContent = 'Error al subir fotos.';
-    }
-  });
-}
-
-// 7. Inicializar todas las funciones cuando carga la página
-function init() {
-  console.log('Init página');
-  initTerms();
-  loadUserPanel();
-  loadEvents();
-  document.getElementById('eventSelect')?.addEventListener('change', e => loadAlbums(e.target.value));
-  document.getElementById('albumSelect')?.addEventListener('change', e => document.getElementById('uploadAlbumId').value = e.target.value);
-  initCreateEvent();
-  initCreateAlbum();
-  initUploadPhotos();
-}
-document.addEventListener('DOMContentLoaded', init);

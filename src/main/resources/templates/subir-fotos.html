@@ -6,6 +6,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Subir Fotos – Fotógrafo Profesional</title>
   <link rel="stylesheet" th:href="@{/css/style.css}" />
+  <style>
+    .upload-section {
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .upload-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 2rem 1.5rem;
+      min-width: 320px;
+      max-width: 400px;
+      width: 100%;
+    }
+    .upload-card h2 {
+      margin-top: 0;
+      font-size: 1.3rem;
+      color: #333;
+    }
+    .upload-card form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+    .upload-card button {
+      margin-top: 0.7rem;
+    }
+  </style>
 </head>
 <body>
 <!-- Navbar -->
@@ -13,42 +44,55 @@
 
 <!-- Sección principal: formularios de evento, álbum y subida de fotos -->
 <section class="upload-section">
-  <h2>Crear nuevo evento</h2>
-  <form id="createEventForm">
-    <label for="eventName">Nombre del evento:</label>
-    <input type="text" id="eventName" required />
-    <label for="eventDate">Fecha del evento:</label>
-    <input type="date" id="eventDate" required />
-    <label for="eventLocation">Lugar del evento:</label>
-    <input type="text" id="eventLocation" required />
-    <label for="eventClientId">Seleccionar cliente:</label>
-    <select id="eventClientId" required>
-      <option value="">-- Selecciona un cliente --</option>
-    </select>
-    <button type="submit" id="createEventBtn">Crear evento</button>
-  </form>
-  <div id="eventMessage"></div>
-
-  <h2>Crear nuevo álbum</h2>
-  <form id="createAlbumForm">
-    <label for="newAlbum">Nombre del álbum:</label>
-    <input type="text" id="newAlbum" required />
-    <label for="eventSelect">Seleccionar evento:</label>
-    <select id="eventSelect" required></select>
-    <button type="submit" id="createAlbumBtn">Crear álbum</button>
-  </form>
-  <div id="albumMessage"></div>
-
-  <h2>Subir fotos al álbum</h2>
-  <form id="uploadForm" enctype="multipart/form-data">
-    <label for="albumSelect">Seleccionar álbum:</label>
-    <select id="albumSelect" required></select>
-    <input type="hidden" id="uploadAlbumId" />
-    <label for="files">Selecciona las fotos:</label>
-    <input type="file" id="files" name="files" multiple accept="image/*" required />
-    <button type="submit">Subir fotos</button>
-  </form>
-  <div id="uploadStatus"></div>
+  <div class="upload-card">
+    <h2>Crear nuevo evento</h2>
+    <form id="createEventForm">
+      <label for="eventName">Nombre del evento:</label>
+      <input type="text" id="eventName" required />
+      <label for="eventDate">Fecha del evento:</label>
+      <input type="date" id="eventDate" required />
+      <label for="eventLocation">Lugar del evento:</label>
+      <input type="text" id="eventLocation" required />
+      <label for="eventCategory">Categoría del evento:</label>
+      <select id="eventCategory" required>
+        <option value="">-- Selecciona una categoría --</option>
+        <option value="Bodas">Bodas</option>
+        <option value="Bautizos">Bautizos</option>
+        <option value="Comuniones">Comuniones</option>
+        <option value="Retratos">Retratos</option>
+        <option value="Conciertos">Conciertos</option>
+      </select>
+      <label for="eventClientId">Seleccionar cliente:</label>
+      <select id="eventClientId" required>
+        <option value="">-- Selecciona un cliente --</option>
+      </select>
+      <button type="submit" id="createEventBtn">Crear evento</button>
+    </form>
+    <div id="eventMessage"></div>
+  </div>
+  <div class="upload-card">
+    <h2>Crear nuevo álbum</h2>
+    <form id="createAlbumForm">
+      <label for="newAlbum">Nombre del álbum:</label>
+      <input type="text" id="newAlbum" required />
+      <label for="eventSelect">Seleccionar evento:</label>
+      <select id="eventSelect" required></select>
+      <button type="submit" id="createAlbumBtn">Crear álbum</button>
+    </form>
+    <div id="albumMessage"></div>
+  </div>
+  <div class="upload-card">
+    <h2>Subir fotos al álbum</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <label for="albumSelect">Seleccionar álbum:</label>
+      <select id="albumSelect" required></select>
+      <input type="hidden" id="uploadAlbumId" />
+      <label for="files">Selecciona las fotos:</label>
+      <input type="file" id="files" name="files" multiple accept="image/*" required />
+      <button type="submit">Subir fotos</button>
+    </form>
+    <div id="uploadStatus"></div>
+  </div>
 </section>
 
 <!-- Scripts -->
@@ -76,5 +120,24 @@
   <p>Contenido de los términos y condiciones...</p>
   <button onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
 </div>
+
+<div id="notification" style="display:none;position:fixed;bottom:2rem;right:2rem;z-index:9999;background:#222;color:#fff;padding:1rem 2rem;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.15);"></div>
 </body>
 </html>
+
+<script>
+  // Suponiendo que este script está relacionado con el formulario de creación de eventos
+  document.getElementById('createEventForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Evita el envío del formulario
+
+    const form = event.target;
+    const eventId = form.eventSelect.value;
+    const date = form.eventDate.value;
+    const loc = form.eventLocation.value.trim();
+    const category = form.eventCategory.value;
+    const client = form.eventClientId.value.trim() || null;
+
+    // Aquí iría el código para manejar el envío de datos, por ejemplo, una llamada a la API
+    console.log({ eventId, date, loc, category, client });
+  });
+</script>

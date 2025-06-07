@@ -1,13 +1,11 @@
 package org.example.clic.controller;
 
-import org.example.clic.model.Event;
 import org.example.clic.service.EventService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 
 @Controller
 public class PortafolioController {

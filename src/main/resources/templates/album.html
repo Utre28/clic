@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Álbum - Fotógrafo Profesional</title>
+  <title th:text="'Álbum: ' + ${album.name}">Álbum</title>
   <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
   <style>
     .photo-gallery {
@@ -12,6 +12,12 @@
       gap: 15px;
       justify-content: center;
       padding: 20px;
+    }
+    .photo-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
     }
     .photo-gallery img {
       width: 200px;
@@ -28,64 +34,44 @@
       color: blue;
       text-decoration: underline;
     }
+    .select-foto {
+      margin-top: 8px;
+    }
+    #shareLink {
+      width: 60%;
+      display: none;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
 <div th:replace="navbar :: navbar"></div>
 
-
 <header>
-  <a id="backBtn" href="#">&larr; Volver</a>
-  <h1 id="albumTitle" style="text-align:center;"></h1>
+  <a id="backBtn" th:href="@{/eventos}" href="/eventos">&larr; Volver</a>
+  <h1 th:text="${album.name}" style="text-align:center;">Álbum</h1>
 </header>
 
-<section id="photoGallery" class="photo-gallery"></section>
+<section id="photoGallery" class="photo-gallery">
+  <div th:if="${#lists.isEmpty(fotos)}">
+    <p>No hay fotos en este álbum.</p>
+  </div>
+  <div th:each="foto : ${fotos}" class="photo-item">
+    <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto" class="gallery-img"/>
+    <label>
+      <input type="checkbox" th:id="'foto-' + ${foto.id}" th:value="${foto.id}" class="select-foto"/>
+      Seleccionar
+    </label>
+  </div>
+</section>
 
-<script>
-  function getQueryParam(param) {
-    const params = new URLSearchParams(window.location.search);
-    return params.get(param);
-  }
-  const albumId = getQueryParam('albumId');
-  const volverA = getQueryParam('volver') || 'portafolio';
-  document.getElementById('backBtn').href = `categoria-${volverA}.html`;
+<div style="text-align:center; margin: 20px;">
+  <form id="downloadForm" method="POST" th:action="@{/descargar-fotos}" target="_blank">
+    <input type="hidden" name="fotoIds" id="fotoIds" />
+    <button id="downloadBtn" type="button">Descargar seleccionadas</button>
+  </form>
+</div>
 
-  if (!albumId) {
-    alert('No se ha especificado un álbum');
-    window.location.href = `categoria-${volverA}.html`;
-  }
-
-  async function loadAlbumPhotos() {
-    try {
-      const res = await fetch(`/api/albums/${albumId}`);
-      const album = await res.json();
-      document.getElementById('albumTitle').textContent = album.name;
-
-      const photosRes = await fetch(`/api/photos/by-album/${albumId}`);
-      const photos = await photosRes.json();
-      const gallery = document.getElementById('photoGallery');
-      gallery.innerHTML = '';
-
-      if (!photos.length) {
-        gallery.innerHTML = '<p>No hay fotos en este álbum.</p>';
-        return;
-      }
-
-      photos.forEach(photo => {
-        const img = document.createElement('img');
-        img.src = photo.url;
-        img.alt = photo.description || 'Foto';
-        gallery.appendChild(img);
-      });
-
-    } catch (error) {
-      console.error(error);
-      document.getElementById('photoGallery').innerHTML = '<p>Error cargando fotos.</p>';
-    }
-  }
-
-  loadAlbumPhotos();
-</script>
 <!-- Modal para ver foto ampliada -->
 <div id="modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;
     background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:1000;">
@@ -93,16 +79,30 @@
 </div>
 
 <script>
-  // Mostrar/ocultar modal al hacer clic en imagen
-  const modal = document.getElementById('modal');
-  const modalImg = document.getElementById('modalImg');
-  document.body.addEventListener('click', e => {
-    if (e.target.tagName === 'IMG' && e.target.parentElement.id === 'photoGallery') {
-      modalImg.src = e.target.src;
+  // Modal para ver foto ampliada (igual que antes)
+  document.querySelectorAll('.gallery-img').forEach(img => {
+    img.addEventListener('click', function(e) {
+      const modal = document.getElementById('modal');
+      const modalImg = document.getElementById('modalImg');
+      modalImg.src = this.src;
       modal.style.display = 'flex';
-    }
+    });
   });
-  modal.addEventListener('click', () => modal.style.display = 'none');
+  document.getElementById('modal').addEventListener('click', function() {
+    this.style.display = 'none';
+  });
+
+  // Descargar seleccionadas
+  document.getElementById('downloadBtn').addEventListener('click', function() {
+    const selected = Array.from(document.querySelectorAll('.select-foto:checked'))
+      .map(cb => cb.value);
+    if (selected.length === 0) {
+      alert('Selecciona al menos una foto para descargar.');
+      return;
+    }
+    document.getElementById('fotoIds').value = selected.join(',');
+    document.getElementById('downloadForm').submit();
+  });
 </script>
 
 <footer>
@@ -114,7 +114,6 @@
       <img src="img/whatsapp.png" alt="WhatsApp" class="social-icon" />
     </a>
   </div>
-  <!-- Pie de página con términos -->
   <div class="footer-content">
     <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
     <a href="#terms" class="terms-link">Términos y Condiciones</a>

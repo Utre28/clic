@@ -7,7 +7,9 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
 </head>
 <body>
+<!-- Navbar: Inserta el navbar desde un fragmento Thymeleaf -->
 <div th:replace="navbar :: navbar"></div>
+
 <header>
     <div class="header-left">
         <img th:src="@{/img/logo.png}" src="/img/logo.png" alt="Logo Fotógrafo" class="logo" />
@@ -18,8 +20,24 @@
 
 <section class="eventos">
     <!-- Aquí va el contenido específico de eventos -->
-    <h1>Eventos</h1>
+    <h1>Mis Eventos</h1>
     <p>Gestiona y visualiza tus eventos aquí.</p>
+
+    <!-- Mostrar mensaje si no hay eventos -->
+    <div th:if="${#lists.isEmpty(events)}">
+        <p>No tienes eventos disponibles.</p>
+    </div>
+
+    <!-- Mostrar la lista de eventos -->
+    <div th:each="event : ${events}">
+        <a th:href="@{'/albumes/by-event/' + ${event.id}}" style="text-decoration:none;color:inherit;">
+            <div class="event-card">
+                <h3 th:text="${event.name}"></h3>
+                <p th:text="${event.date}"></p>
+                <p th:text="${event.location}"></p>
+            </div>
+        </a>
+    </div>
 </section>
 
 <footer>
@@ -29,6 +47,7 @@
     </div>
 </footer>
 
+<!-- Contenedor de términos y condiciones -->
 <div id="terms" class="terms-container" style="display:none;">
     <h2>Términos y Condiciones</h2>
     <p>Aquí van los términos y condiciones de uso...</p>

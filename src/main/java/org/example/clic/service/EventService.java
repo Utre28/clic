@@ -12,4 +12,6 @@ public interface EventService {
     void deleteById(Long id);// Eliminar evento por ID
     boolean existsById(Long id);// Verificar existencia de evento
     List<Event> findByCategory(String category); // Filtrar eventos por categoría
+
+    List<Event> findByClientId(Long id);
 }
