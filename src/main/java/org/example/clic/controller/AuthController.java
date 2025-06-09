@@ -2,8 +2,6 @@ package org.example.clic.controller;
 
 import jakarta.validation.Valid;
 import org.example.clic.dto.UserDTO;
-import org.example.clic.mapper.UserMapper;
-import org.example.clic.model.User;
 import org.example.clic.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,11 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class AuthController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
 
-    public AuthController(UserService userService, UserMapper userMapper) {
+    public AuthController(UserService userService) {
         this.userService = userService;
-        this.userMapper = userMapper;
     }
 
     @GetMapping("/login")
@@ -51,16 +47,15 @@ public class AuthController {
             return "registro";
         }
         try {
-            User user = userMapper.toEntity(userDTO);
-            user.setRole(User.Role.CLIENT);
-            userService.save(user);
+            userService.registerUser(userDTO);
+        } catch (IllegalArgumentException ex) {
+            bindingResult.rejectValue("confirmPassword", "error.userDTO", ex.getMessage());
+            return "registro";
         } catch (Exception ex) {
-            // Si el error es por clave duplicada, muestra el error
             if (ex.getCause() != null && ex.getCause().getMessage().contains("Duplicate entry")) {
                 bindingResult.rejectValue("email", "error.userDTO", "Ya existe una cuenta con este correo.");
                 return "registro";
             }
-            // Si es otro error, puedes mostrar un mensaje general o relanzarlo
             throw ex;
         }
         return "redirect:/login?registered";

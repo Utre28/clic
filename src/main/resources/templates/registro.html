@@ -25,6 +25,10 @@
       <label for="password">Contraseña:</label>
       <input type="password" id="password" th:field="*{password}" placeholder="Contraseña" required />
 
+      <label for="confirmPassword">Confirmar contraseña:</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repite la contraseña" required />
+      <div id="passwordError" class="error" style="display:none;">Las contraseñas no coinciden.</div>
+
       <button type="submit">Registrar</button>
       <p>¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión aquí</a></p>
     </form>
@@ -56,5 +60,15 @@
 
 <!-- Script global si hace falta -->
 <script th:src="@{/js/script.js}"></script>
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+  var pass = document.getElementById('password').value;
+  var confirm = document.getElementById('confirmPassword').value;
+  if (pass !== confirm) {
+    document.getElementById('passwordError').style.display = 'block';
+    e.preventDefault();
+  }
+});
+</script>
 </body>
 </html>

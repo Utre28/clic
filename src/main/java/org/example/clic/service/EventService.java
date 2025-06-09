@@ -12,6 +12,11 @@ public interface EventService {
     void deleteById(Long id);// Eliminar evento por ID
     boolean existsById(Long id);// Verificar existencia de evento
     List<Event> findByCategory(String category); // Filtrar eventos por categoría
+    List<Event> findPublicByCategory(String category);
+    List<Event> findTop5Public();
+    List<Event> findAllPublic();
 
     List<Event> findByClientId(Long id);
+    List<Event> findByPrivadoFalse();
+    List<Event> findByPrivadoFalseAndCategory(String category);
 }

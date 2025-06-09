@@ -5,15 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Perfil - Clic y Color</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
+    <style>
+        .perfil-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 2rem 2.5rem;
+        }
+        .perfil-container h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .perfil-form label {
+            font-weight: bold;
+            margin-top: 1rem;
+            display: block;
+        }
+        .perfil-form input[type="text"], .perfil-form input[type="email"], .perfil-form input[type="password"] {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.3rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 1rem;
+        }
+        .perfil-form button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 0.6rem 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .perfil-form button:hover {
+            background: #0056b3;
+        }
+        .perfil-success {
+            color: green;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .perfil-error {
+            color: #dc3545;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
 <body>
-
 <div th:replace="navbar :: navbar"></div>
+<div class="perfil-container">
+    <h1>Mi Perfil</h1>
+    <form class="perfil-form" th:action="@{/perfil}" method="post">
+        <div th:if="${success}" class="perfil-success" th:text="${success}"></div>
+        <div th:if="${emailError}" class="perfil-error" th:text="${emailError}"></div>
+        <div th:if="${passwordError}" class="perfil-error" th:text="${passwordError}"></div>
 
-<main>
-    <h1>Bienvenido a tu perfil</h1>
-    <p>Página de perfil básica. Personalízala.</p>
-</main>
+        <label>Nombre</label>
+        <input type="text" th:value="${user.name}" readonly />
 
+        <label>Email</label>
+        <input type="email" name="email" th:value="${user.email}" required />
+
+        <label>Nueva contraseña</label>
+        <input type="password" name="nuevaPassword" placeholder="Dejar en blanco para no cambiar" />
+
+        <label>Confirmar nueva contraseña</label>
+        <input type="password" name="confirmarPassword" placeholder="Repite la nueva contraseña" />
+
+        <button type="submit">Actualizar Perfil</button>
+    </form>
+</div>
 </body>
 </html>

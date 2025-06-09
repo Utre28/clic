@@ -23,5 +23,7 @@ public interface AlbumMapper {
 
     // Ignoramos la creación del evento dentro de MapStruct, lo gestionaremos en AlbumMapperImpl
     @Mapping(target = "event", ignore = true)
+    @Mapping(target = "photos", ignore = true)
+    @Mapping(target = "privado", ignore = true)
     Album toEntity(AlbumDTO dto);
 }

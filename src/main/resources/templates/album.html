@@ -48,7 +48,10 @@
 <div th:replace="navbar :: navbar"></div>
 
 <header>
-  <a id="backBtn" th:href="@{/eventos}" href="/eventos">&larr; Volver</a>
+  <a id="backBtn"
+     th:href="@{/albumes/by-event/{eventId}(eventId=${eventId})}"
+     href="/albumes"
+  >&larr; Volver</a>
   <h1 th:text="${album.name}" style="text-align:center;">Álbum</h1>
 </header>
 
@@ -58,19 +61,8 @@
   </div>
   <div th:each="foto : ${fotos}" class="photo-item">
     <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto" class="gallery-img"/>
-    <label>
-      <input type="checkbox" th:id="'foto-' + ${foto.id}" th:value="${foto.id}" class="select-foto"/>
-      Seleccionar
-    </label>
   </div>
 </section>
-
-<div style="text-align:center; margin: 20px;">
-  <form id="downloadForm" method="POST" th:action="@{/descargar-fotos}" target="_blank">
-    <input type="hidden" name="fotoIds" id="fotoIds" />
-    <button id="downloadBtn" type="button">Descargar seleccionadas</button>
-  </form>
-</div>
 
 <!-- Modal para ver foto ampliada -->
 <div id="modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;
@@ -90,18 +82,6 @@
   });
   document.getElementById('modal').addEventListener('click', function() {
     this.style.display = 'none';
-  });
-
-  // Descargar seleccionadas
-  document.getElementById('downloadBtn').addEventListener('click', function() {
-    const selected = Array.from(document.querySelectorAll('.select-foto:checked'))
-      .map(cb => cb.value);
-    if (selected.length === 0) {
-      alert('Selecciona al menos una foto para descargar.');
-      return;
-    }
-    document.getElementById('fotoIds').value = selected.join(',');
-    document.getElementById('downloadForm').submit();
   });
 </script>
 

@@ -11,10 +11,13 @@ public interface EventMapper {
 
     // Mapea client.id a clientId en el DTO
     @Mapping(source = "client.id", target = "clientId")
+    @Mapping(source = "privado", target = "privado")
     EventDTO toDto(Event event);
 
     // Crea el objeto User con solo el ID al mapear de DTO a entidad
     @Mapping(target = "client", expression = "java(createUser(dto.getClientId()))")
+    @Mapping(source = "privado", target = "privado")
+    @Mapping(target = "albums", ignore = true)
     Event toEntity(EventDTO dto);
 
     // Método auxiliar para construir User con ID

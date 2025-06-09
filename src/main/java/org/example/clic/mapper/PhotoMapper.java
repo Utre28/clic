@@ -13,6 +13,8 @@ public interface PhotoMapper {
     PhotoDTO toDto(Photo photo);
 
     @Mapping(target = "album", expression = "java(createAlbum(dto.getAlbumId()))")
+    @Mapping(target = "accessLogs", ignore = true)
+    @Mapping(target = "privado", ignore = true)
     Photo toEntity(PhotoDTO dto);
 
     // Crea Album con solo ID para establecer la relación

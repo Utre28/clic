@@ -28,6 +28,7 @@ public class AlbumViewController {
         var fotos = photoService.findByAlbumId(id);
         model.addAttribute("album", album);
         model.addAttribute("fotos", fotos);
+        model.addAttribute("eventId", album.getEvent().getId()); // Añade el eventId
         return "album";
     }
 }

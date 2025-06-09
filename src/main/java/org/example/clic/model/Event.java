@@ -27,6 +27,9 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Album> albums = new ArrayList<>();  // Álbumes asociados
 
+    @Column(nullable = false)
+    private boolean privado = true; // Campo para controlar la visibilidad del evento
+
     // getters y setters
 
     public Long getId() {
@@ -83,6 +86,14 @@ public class Event {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public boolean isPrivado() {
+        return privado;
+    }
+
+    public void setPrivado(boolean privado) {
+        this.privado = privado;
     }
 
 }

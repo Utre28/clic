@@ -7,7 +7,9 @@ import java.util.List;
 // Repositorio JPA para operaciones CRUD de Event
 public interface EventRepository extends JpaRepository<Event, Long> {
     // Encuentra eventos por categoría
-    List<Event> findByCategory(String category);
+    List<Event> findByCategoryIgnoreCase(String category);
     List<Event> findByClientId(Long clientId);
-
+    List<Event> findByPrivadoFalse();
+    List<Event> findByPrivadoFalseAndCategoryIgnoreCase(String category);
+    List<Event> findTop5ByPrivadoFalseOrderByIdDesc();
 }

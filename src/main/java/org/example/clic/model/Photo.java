@@ -27,6 +27,9 @@ public class Photo {
     @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccessLog> accessLogs; // Historial de accesos
 
+    @Column(nullable = false)
+    private boolean privado = true; // Controla la visibilidad de la foto
+
     // getters y setters
 
     public Long getId() {
@@ -75,6 +78,14 @@ public class Photo {
 
     public void setAccessLogs(List<AccessLog> accessLogs) {
         this.accessLogs = accessLogs;
+    }
+
+    public boolean isPrivado() {
+        return privado;
+    }
+
+    public void setPrivado(boolean privado) {
+        this.privado = privado;
     }
 
 }

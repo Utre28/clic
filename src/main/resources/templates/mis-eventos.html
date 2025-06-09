@@ -3,42 +3,105 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Eventos - Fotógrafo Profesional</title>
+    <title>Mis Eventos - Clic y Color</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
+    <style>
+        .panel-container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 2rem 2.5rem;
+        }
+        .panel-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .eventos-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .event-card {
+            background: #fafafa;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 1.5rem 1rem 1rem 1rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s;
+            border: 1px solid #f0f0f0;
+        }
+        .event-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+        .event-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #eee;
+        }
+        .event-card h3 {
+            margin: 0.5rem 0 0.3rem 0;
+            color: var(--color-primario, #007bff);
+        }
+        .event-card p {
+            margin: 0.2rem 0;
+            color: #444;
+        }
+        .btn-ver {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 0.4rem 1rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+        .btn-ver:hover {
+            background: #0056b3;
+        }
+        @media (max-width: 1100px) {
+            .eventos-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 700px) {
+            .panel-container { padding: 1rem 0.5rem; }
+            .eventos-grid { grid-template-columns: 1fr; }
+            .event-card img { height: 80px; }
+        }
+    </style>
 </head>
 <body>
 <!-- Navbar: Inserta el navbar desde un fragmento Thymeleaf -->
 <div th:replace="navbar :: navbar"></div>
 
-<header>
-    <div class="header-left">
-        <img th:src="@{/img/logo.png}" src="/img/logo.png" alt="Logo Fotógrafo" class="logo" />
-        <span class="branding">Clic Y Color</span>
-    </div>
-    <span class="site-title">Eventos</span>
-</header>
+<div class="panel-container">
+    <h1 class="panel-header">Mis Eventos</h1>
+    <p style="text-align:center;">Gestiona y visualiza tus eventos aquí.</p>
 
-<section class="eventos">
-    <!-- Aquí va el contenido específico de eventos -->
-    <h1>Mis Eventos</h1>
-    <p>Gestiona y visualiza tus eventos aquí.</p>
-
-    <!-- Mostrar mensaje si no hay eventos -->
     <div th:if="${#lists.isEmpty(events)}">
-        <p>No tienes eventos disponibles.</p>
+        <p style="text-align:center;">No tienes eventos disponibles.</p>
     </div>
 
-    <!-- Mostrar la lista de eventos -->
-    <div th:each="event : ${events}">
-        <a th:href="@{'/albumes/by-event/' + ${event.id}}" style="text-decoration:none;color:inherit;">
-            <div class="event-card">
-                <h3 th:text="${event.name}"></h3>
-                <p th:text="${event.date}"></p>
-                <p th:text="${event.location}"></p>
-            </div>
-        </a>
+    <div class="eventos-grid" th:if="${not #lists.isEmpty(events)}">
+        <div th:each="event : ${events}" class="event-card">
+            <img th:src="@{/img/default-event.jpg}" alt="Imagen de evento" />
+            <h3 th:text="${event.name}"></h3>
+            <p th:text="${event.date}"></p>
+            <p th:text="${event.location}"></p>
+            <a th:href="@{'/albumes/by-event/' + ${event.id}}" class="btn-ver">Ver Álbumes</a>
+        </div>
     </div>
-</section>
+</div>
 
 <footer>
     <div class="footer-content">

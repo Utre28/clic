@@ -58,9 +58,19 @@
 <div th:replace="navbar :: navbar"></div>
 
 
-<h1 id="categoryTitle" style="text-align:center; margin-top:2rem;" th:text="${eventName}"></h1> <!-- Usando Thymeleaf para pasar el nombre del evento -->
+<h1 id="categoryTitle" style="text-align:center; margin-top:2rem;" th:text="${eventName}"></h1>
 <div id="newAlbumContainer"></div>
-<section id="albumList" class="album-list"></section>
+<section class="album-list">
+  <div th:if="${#lists.isEmpty(events)}">
+    <p style="text-align:center;">No hay eventos públicos en esta categoría.</p>
+  </div>
+  <div th:each="event : ${events}" class="album-card">
+    <h3 th:text="${event.name}"></h3>
+    <p th:text="${event.date}"></p>
+    <p th:text="${event.location}"></p>
+    <a th:href="@{'/albumes/by-event/' + ${event.id}}" class="btn">Ver Álbumes</a>
+  </div>
+</section>
 
 <script>
     let currentRoles = [];

@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import org.example.clic.dto.PhotoDTO;
 import org.example.clic.mapper.PhotoMapper;
 import org.example.clic.repository.AlbumRepository;
-import org.example.clic.repository.PhotoRepository;
 import org.example.clic.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.core.Authentication;
 
 
-
 @RestController
 @RequestMapping("/api/photos")
 public class PhotoController {
@@ -43,9 +41,6 @@ public class PhotoController {
     }
     @Autowired // Inyecta repositorios si los necesitas directamente
     private AlbumRepository albumRepository;
-
-    @Autowired
-    private PhotoRepository photoRepository;
 
     /**
      * Obtiene todas las fotos.
@@ -175,7 +170,6 @@ public class PhotoController {
         // Verifica existencia de álbum
         Album album = albumRepository.findById(albumId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Álbum no encontrado"));
-
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
                 try {
@@ -184,7 +178,6 @@ public class PhotoController {
                     Files.createDirectories(uploadPath); // Crear carpeta si no existe
                     Path filePath = uploadPath.resolve(filename);
                     Files.write(filePath, file.getBytes());
-
                     // Guarda entidad Photo con URL y álbum asociado
                     Photo photo = new Photo();
                     photo.setUrl("/uploads/" + filename);
@@ -197,7 +190,14 @@ public class PhotoController {
                 }
             }
         }
-
+        // Elimina el envío de correo:
+        // Event event = album.getEvent();
+        // if (event != null && event.getClient() != null && event.getClient().getEmail() != null) {
+        //     String to = event.getClient().getEmail();
+        //     String subject = "¡Tus fotos ya están disponibles!";
+        //     String text = "Hola, ya están disponibles tus fotos en el álbum '" + album.getName() + "'. ¡Disfrútalas!";
+        //     mailService.sendSimpleMail(to, subject, text);
+        // }
         // Si todas subieron bien
         return ResponseEntity.ok("Fotos subidas correctamente");
     }

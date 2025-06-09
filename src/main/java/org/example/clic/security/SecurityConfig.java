@@ -36,12 +36,14 @@ public class SecurityConfig {
                                 "/eventos", "/contacto", "/subir-fotos", "/eventos/**",
                                 "/categoria/**", // Rutas públicas
                                 "/albumes", "/albumes/**",
-                                "/api/events/**", "/api/albums/**", "/api/photos/**", "/albumes/by-event/**"  // Rutas públicas de API
+                                "/album/**", // <-- Añadido: acceso público a álbumes y fotos
+                                "/uploads/**", // <-- Añadido: acceso público a fotos subidas
+                                "/api/events/**", "/api/albums/**", "/api/photos/**", "/albumes/by-event/**",
+                                "/api/photos/by-album/**" // <-- Añadido: acceso público a fotos por álbum
                         ).permitAll() // Permitir estas rutas sin autenticación
                         .requestMatchers("/panel/**").hasRole("PHOTOGRAPHER") // Solo accesible para fotógrafos
                         .requestMatchers("/perfil/**").authenticated() // Accesible para usuarios autenticados
                         .requestMatchers("/mis-eventos").hasRole("CLIENT")
-                          // Permitir el acceso sin restricciones a /mis-eventos
                         .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
                 )
                 .formLogin(form -> form

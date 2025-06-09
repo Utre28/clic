@@ -17,6 +17,7 @@ public class EventDTO {
     private String location;
     private Long clientId;// ID del cliente relacionado (opcional)
     private String category;// Categoría del evento (opcional)
+    private boolean privado = true;
 
     // getters y setters
 
@@ -66,4 +67,7 @@ public class EventDTO {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public boolean isPrivado() { return privado; }
+    public void setPrivado(boolean privado) { this.privado = privado; }
 }

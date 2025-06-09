@@ -5,34 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Álbumes del Evento</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
+    <style>
+        .panel-container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 2rem 2.5rem;
+        }
+        .panel-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .albumes-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .album-card {
+            background: #fafafa;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 1.5rem 1rem 1rem 1rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s;
+            border: 1px solid #f0f0f0;
+        }
+        .album-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+        .album-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #eee;
+        }
+        .album-card h3 {
+            margin: 0.5rem 0 0.3rem 0;
+            color: var(--color-primario, #007bff);
+        }
+        .album-card p {
+            margin: 0.2rem 0;
+            color: #444;
+        }
+        .btn-ver {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 0.4rem 1rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+        .btn-ver:hover {
+            background: #0056b3;
+        }
+        @media (max-width: 1100px) {
+            .albumes-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 700px) {
+            .panel-container { padding: 1rem 0.5rem; }
+            .albumes-grid { grid-template-columns: 1fr; }
+            .album-card img { height: 80px; }
+        }
+    </style>
 </head>
 <body>
 <div th:replace="navbar :: navbar"></div>
-
-<header>
-    <h1>Álbumes del Evento</h1>
-</header>
-
-<section class="albumes">
-    <div th:if="${#lists.isEmpty(albums)}">
-        <p>No hay álbumes para este evento.</p>
+<div class="panel-container">
+    <h1 class="panel-header">Álbumes del Evento</h1>
+    <div th:if="${evento != null}">
+        <h2 th:text="${evento.name}" style="text-align:center; color:#444;"></h2>
+        <p style="text-align:center; color:#888;" th:text="${evento.date}"></p>
     </div>
-    <div th:each="album : ${albums}">
-        <a th:href="@{'/album/' + ${album.id}}" style="text-decoration:none;color:inherit;">
-            <div class="album-card">
-                <h3 th:text="${album.name}"></h3>
-                <p th:text="${album.createdAt}"></p>
-            </div>
-        </a>
+    <div th:if="${#lists.isEmpty(albumes)}">
+        <p style="text-align:center;">No hay álbumes para este evento.</p>
     </div>
-</section>
-
-<footer>
-    <div class="footer-content">
-        <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
-        <a href="#terms" class="terms-link">Términos y Condiciones</a>
+    <div class="albumes-grid" th:if="${not #lists.isEmpty(albumes)}">
+        <div th:each="album : ${albumes}" class="album-card">
+            <img th:src="@{/img/default-event.jpg}" alt="Imagen de álbum" />
+            <h3 th:text="${album.name}"></h3>
+            <p th:text="${album.createdAt}"></p>
+            <a th:href="@{'/album/' + ${album.id}}" class="btn-ver">Ver Fotos</a>
+        </div>
     </div>
-</footer>
-
+</div>
 </body>
 </html>

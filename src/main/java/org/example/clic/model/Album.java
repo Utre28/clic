@@ -25,6 +25,9 @@ public class Album {
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos = new ArrayList<>(); // Fotos del álbum
 
+    @Column(nullable = false)
+    private boolean privado = true; // Visibilidad del álbum
+
     // getters y setters
 
     public Long getId() {
@@ -65,6 +68,14 @@ public class Album {
 
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
+    }
+
+    public boolean isPrivado() {
+        return privado;
+    }
+
+    public void setPrivado(boolean privado) {
+        this.privado = privado;
     }
 }
 

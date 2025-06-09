@@ -50,7 +50,7 @@
       <label for="eventName">Nombre del evento:</label>
       <input type="text" id="eventName" required />
       <label for="eventDate">Fecha del evento:</label>
-      <input type="date" id="eventDate" required />
+      <input type="date" id="eventDate" required max="[[${#dates.format(#dates.createNow(),'yyyy-MM-dd')}]]" />
       <label for="eventLocation">Lugar del evento:</label>
       <input type="text" id="eventLocation" required />
       <label for="eventCategory">Categoría del evento:</label>
@@ -66,6 +66,9 @@
       <select id="eventClientId" required>
         <option value="">-- Selecciona un cliente --</option>
       </select>
+      <label for="eventPrivado">
+        <input type="checkbox" id="eventPrivado" checked /> Privado (solo el cliente podrá ver el evento)
+      </label>
       <button type="submit" id="createEventBtn">Crear evento</button>
     </form>
     <div id="eventMessage"></div>

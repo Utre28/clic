@@ -7,13 +7,10 @@ import org.example.clic.model.Event;
 import org.example.clic.model.User;
 import org.example.clic.service.EventService;
 import org.example.clic.service.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.ui.Model;
 
 import java.net.URI;
 import java.util.List;
@@ -37,16 +34,37 @@ public class EventController {
 
     // Endpoint para obtener todos los eventos, opcionalmente filtrados por categoría
     @GetMapping
-    public List<EventDTO> getAll(@RequestParam(required = false) String category) {
+    public List<EventDTO> getAll(@RequestParam(required = false) String category, Authentication authentication) {
+        boolean isPhotographer = authentication != null && authentication.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals(userService.getPhotographerRole()));
+        boolean isClient = authentication != null && authentication.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals(userService.getClientRole()));
         List<Event> events;
-        if (category == null || category.isEmpty()) {
-            events = eventService.findAll();  // Obtiene todos los eventos
+        if (isPhotographer) {
+            // Fotógrafo ve todos los eventos
+            if (category == null || category.isEmpty()) {
+                events = eventService.findAll();
+            } else {
+                events = eventService.findByCategory(category);
+            }
+        } else if (isClient) {
+            // Cliente ve sus eventos
+            String email = authentication.getName();
+            Optional<User> userOpt = userService.findByEmail(email);
+            if (userOpt.isPresent()) {
+                events = eventService.findByClientId(userOpt.get().getId());
+            } else {
+                events = List.of();
+            }
         } else {
-            events = eventService.findByCategory(category);  // Filtra por categoría
+            // Público general solo ve eventos públicos
+            if (category == null || category.isEmpty()) {
+                events = eventService.findAllPublic();
+            } else {
+                events = eventService.findPublicByCategory(category);
+            }
         }
-        return events.stream()
-                .map(eventMapper::toDto)  // Convierte cada evento a un DTO
-                .collect(Collectors.toList());
+        return events.stream().map(eventMapper::toDto).collect(Collectors.toList());
     }
 
     // Endpoint para crear un nuevo evento
@@ -77,6 +95,7 @@ public class EventController {
         event.setDate(dto.getDate());
         event.setLocation(dto.getLocation());
         event.setCategory(dto.getCategory());
+        event.setPrivado(dto.isPrivado());
         if (clientOpt.isPresent()) {
             event.setClient(clientOpt.get()); // Asocia el evento con el cliente
         } else {

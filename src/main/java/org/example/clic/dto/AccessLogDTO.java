@@ -1,6 +1,5 @@
 package org.example.clic.dto;
 
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -9,13 +8,10 @@ import java.time.LocalDateTime;
 public class AccessLogDTO {
     private Long id;// Identificador único del registro de acceso
 
-    @NotNull(message = "El ID del usuario es obligatorio")
     private Long userId; // ID del usuario que accede
 
-    @NotNull(message = "El ID de la foto es obligatorio")
     private Long photoId; // ID de la foto accedida
 
-    @NotNull(message = "La fecha y hora de acceso es obligatoria")
     private LocalDateTime accessedAt;  // Fecha y hora del acceso
 
     // getters & setters

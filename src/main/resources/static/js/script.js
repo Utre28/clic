@@ -63,6 +63,7 @@ function initCreateEvent() {
     const loc = form.eventLocation.value.trim();
     const category = form.eventCategory.value;
     const client = form.eventClientId.value || null;
+    const privado = form.eventPrivado.checked;
 
     // Validación de campos
     if (!name || !date || !loc || !category) {
@@ -85,7 +86,7 @@ function initCreateEvent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name, date, location: loc, category, clientId: client ? Number(client) : null, type: eventType
+          name, date, location: loc, category, clientId: client ? Number(client) : null, privado, type: eventType
         })
       });
 

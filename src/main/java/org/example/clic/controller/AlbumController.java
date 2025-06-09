@@ -8,15 +8,12 @@ import org.example.clic.model.Event;
 import org.example.clic.model.User;
 import org.example.clic.service.AlbumService;
 import org.example.clic.service.EventService;
-import org.example.clic.service.PhotoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.ui.Model;
-import org.springframework.stereotype.Controller;
 
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -157,21 +154,6 @@ public class AlbumController {
         return ResponseEntity.ok(albums.stream()
                 .map(albumMapper::toDto)
                 .collect(Collectors.toList()));
-    }
-}
-
-@Controller
-@RequestMapping("/albumes")
-class AlbumControllerMvc {
-    private final AlbumService albumService;
-    public AlbumControllerMvc(AlbumService albumService) {
-        this.albumService = albumService;
-    }
-    @GetMapping("/by-event/{eventId}")
-    public String viewAlbumsByEvent(@PathVariable Long eventId, Model model) {
-        var albums = albumService.findByEventId(eventId);
-        model.addAttribute("albums", albums);
-        return "albumes-by-event";
     }
 }
 

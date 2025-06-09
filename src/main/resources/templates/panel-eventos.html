@@ -4,25 +4,166 @@
     <meta charset="UTF-8" />
     <title>Eventos – Fotógrafo</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        .panel-container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 2rem 2.5rem;
+        }
+        .panel-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .filtros-panel-eventos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .filtros-panel-eventos input[type="text"], .filtros-panel-eventos select {
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            min-width: 200px;
+        }
+        .filtros-panel-eventos button {
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            border: none;
+            background: var(--color-primario, #007bff);
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .filtros-panel-eventos button:hover {
+            background: #0056b3;
+        }
+        .event-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+        .event-table th, .event-table td {
+            padding: 0.8rem 0.5rem;
+            border-bottom: 1px solid #eaeaea;
+            text-align: center;
+        }
+        .event-table th {
+            background: #f7f7f7;
+            color: #333;
+        }
+        .event-table tr:last-child td {
+            border-bottom: none;
+        }
+        .event-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #eee;
+        }
+        .btn-ver {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 0.4rem 1rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin-right: 0.5rem;
+            transition: background 0.2s;
+        }
+        .btn-ver:hover {
+            background: #0056b3;
+        }
+        .btn-borrar {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 0.4rem 1rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-borrar:hover {
+            background: #a71d2a;
+        }
+        @media (max-width: 700px) {
+            .panel-container { padding: 1rem 0.5rem; }
+            .event-table th, .event-table td { font-size: 0.95rem; padding: 0.5rem 0.2rem; }
+            .event-img { width: 50px; height: 50px; }
+        }
+    </style>
 </head>
 <body>
 <div th:replace="navbar :: navbar"></div>
-<h1>Todos los eventos</h1>
+<div class="panel-container">
+    <h1 class="panel-header">Gestión de Eventos</h1>
 
-<form method="get" th:action="@{/panel/eventos}" style="margin-bottom:20px;">
-    <input type="text" name="q" placeholder="Buscar evento..." th:value="${param.q}" />
-    <select name="eventoId">
-        <option value="">-- Filtrar por evento --</option>
-        <option th:each="event : ${topEvents}" th:value="${event.id}" th:text="${event.name}"
-                th:selected="${event.id == param.eventoId}"></option>
-    </select>
-    <button type="submit">Buscar / Filtrar</button>
-</form>
+    <!-- Mostrar mensaje de error si existe -->
+    <div th:if="${message}" style="color:red;text-align:center;">
+        <p th:text="${message}"></p>
+    </div>
 
-<ul>
-    <li th:each="evento : ${filteredEvents}">
-        <a th:href="@{'/panel/eventos/' + ${evento.id}}" th:text="${evento.name}"></a>
-    </li>
-</ul>
+    <!-- Formulario de filtro (GET) -->
+    <form class="filtros-panel-eventos" th:action="@{/panel/eventos}" method="get">
+        <input type="text" name="q" placeholder="Buscar evento..." th:value="${q}" />
+        <select name="eventoCategoria">
+            <option value="">-- Filtrar por tipo --</option>
+            <option th:value="'Bodas'" th:selected="${eventoCategoria == 'Bodas'}">Bodas</option>
+            <option th:value="'Bautizos'" th:selected="${eventoCategoria == 'Bautizos'}">Bautizos</option>
+            <option th:value="'Comuniones'" th:selected="${eventoCategoria == 'Comuniones'}">Comuniones</option>
+            <option th:value="'Retratos'" th:selected="${eventoCategoria == 'Retratos'}">Retratos</option>
+            <option th:value="'Conciertos'" th:selected="${eventoCategoria == 'Conciertos'}">Conciertos</option>
+        </select>
+        <button type="submit">Buscar / Filtrar</button>
+    </form>
+
+    <!-- Formulario de borrado múltiple (POST) -->
+    <form id="borrarEventosForm" th:action="@{/panel/eventos/borrar-multiple}" method="post">
+        <table class="event-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Fecha</th>
+                    <th>Ubicación</th>
+                    <th>Privacidad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(filteredEvents)}">
+                <td colspan="7" style="text-align:center;">No hay eventos para mostrar.</td>
+            </tr>
+            <tr th:each="event : ${filteredEvents}">
+                <td>
+                    <input type="checkbox" name="eventoIds" th:value="${event.id}" />
+                </td>
+                <td>
+                    <img th:src="@{/img/default-event.jpg}" alt="Imagen de evento" class="event-img" />
+                </td>
+                <td th:text="${event.name}">Nombre del Evento</td>
+                <td th:text="${event.date}">Fecha</td>
+                <td th:text="${event.location}">Ubicación</td>
+                <td>
+                    <span th:text="${event.privado ? 'Privado' : 'Público'}"></span>
+                </td>
+                <td>
+                    <a th:href="@{'/panel/eventos/' + ${event.id}}" class="btn-ver">Ver Detalles</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <button type="submit" class="btn-borrar" onclick="return confirm('¿Seguro que quieres borrar los eventos seleccionados?')">Borrar Seleccionados</button>
+    </form>
+</div>
 </body>
 </html>
