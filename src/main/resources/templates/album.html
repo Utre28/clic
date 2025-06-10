@@ -42,6 +42,18 @@
       display: none;
       margin-top: 10px;
     }
+    .btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
@@ -59,8 +71,28 @@
   <div th:if="${#lists.isEmpty(fotos)}">
     <p>No hay fotos en este álbum.</p>
   </div>
-  <div th:each="foto : ${fotos}" class="photo-item">
-    <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto" class="gallery-img"/>
+  <form id="downloadZipForm" method="post" action="/api/photos/download-zip" target="_blank" style="width:100%;"
+        th:if="${desdeMisEventos}">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;">
+      <div th:each="foto : ${fotos}" class="photo-item" style="align-items:center;">
+        <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto" class="gallery-img"/>
+        <label style="margin-top:0.5rem;">
+          <input type="checkbox" name="photoIds" th:value="${foto.id}" class="photo-checkbox"/>
+          Seleccionar
+        </label>
+      </div>
+    </div>
+    <div style="text-align:center; margin: 20px;">
+      <button type="submit" class="btn">Descargar seleccionadas (.zip)</button>
+    </div>
+  </form>
+  <!-- Solo mostrar las fotos sin checkboxes si NO viene de mis eventos -->
+  <div th:if="${!desdeMisEventos}">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;">
+      <div th:each="foto : ${fotos}" class="photo-item" style="align-items:center;">
+        <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto" class="gallery-img"/>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -82,6 +114,20 @@
   });
   document.getElementById('modal').addEventListener('click', function() {
     this.style.display = 'none';
+  });
+
+  // Validar selección antes de enviar el formulario ZIP
+  document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('downloadZipForm');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        const checked = Array.from(document.querySelectorAll('.photo-checkbox:checked'));
+        if (!checked.length) {
+          alert('Selecciona al menos una foto para descargar.');
+          e.preventDefault();
+        }
+      });
+    }
   });
 </script>
 

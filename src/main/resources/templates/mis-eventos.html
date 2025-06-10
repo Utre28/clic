@@ -98,7 +98,7 @@
             <h3 th:text="${event.name}"></h3>
             <p th:text="${event.date}"></p>
             <p th:text="${event.location}"></p>
-            <a th:href="@{'/albumes/by-event/' + ${event.id}}" class="btn-ver">Ver Álbumes</a>
+            <a th:href="@{'/album/' + ${event.id} + '?mis=true'}" class="btn-ver">Ver Álbumes</a>
         </div>
     </div>
 </div>

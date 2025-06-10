@@ -26,6 +26,9 @@ import org.example.clic.model.Photo;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.core.Authentication;
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 @RestController
@@ -209,5 +212,28 @@ public class PhotoController {
         return photoService.findPhotosByUserEmail(email);
     }
 
-
+    @PostMapping("/download-zip")
+    public void downloadPhotosZip(@RequestParam("photoIds") List<Long> photoIds, HttpServletResponse response) {
+        try {
+            response.setContentType("application/zip");
+            response.setHeader("Content-Disposition", "attachment; filename=fotos.zip");
+            try (ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())) {
+                for (Long id : photoIds) {
+                    var photoOpt = photoService.findById(id);
+                    if (photoOpt.isPresent()) {
+                        var photo = photoOpt.get();
+                        String filePath = photo.getUrl().replaceFirst("/", "");
+                        java.io.File file = new java.io.File(filePath);
+                        if (file.exists()) {
+                            zos.putNextEntry(new ZipEntry(file.getName()));
+                            java.nio.file.Files.copy(file.toPath(), zos);
+                            zos.closeEntry();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Puedes loguear el error si lo deseas
+        }
+    }
 }
