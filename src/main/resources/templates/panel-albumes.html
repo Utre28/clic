@@ -121,5 +121,43 @@
         </div>
     </div>
 </div>
+<!-- Footer -->
+<footer>
+    <div class="footer-social">
+        <a href="https://instagram.com/clicycolor" aria-label="Instagram" target="_blank">
+            <img th:src="@{/img/instagram.png}" alt="Instagram" class="social-icon" />
+        </a>
+        <a href="https://wa.me/0034603109882" aria-label="WhatsApp" target="_blank">
+            <img th:src="@{/img/whatsapp.png}" alt="WhatsApp" class="social-icon" />
+        </a>
+    </div>
+    <div class="footer-content">
+        <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
+        <a href="#terms" id="terms-link" class="terms-link">Términos y Condiciones</a>
+    </div>
+</footer>
+<div id="terms" class="terms-container" style="display:none;">
+    <h2>Términos y Condiciones</h2>
+    <p>Aquí van los términos y condiciones de uso...</p>
+    <button id="close-terms-btn" onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var termsLink = document.getElementById('terms-link');
+        var termsModal = document.getElementById('terms');
+        var closeBtn = document.getElementById('close-terms-btn');
+        if (termsLink && termsModal) {
+            termsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                termsModal.style.display = 'block';
+            });
+        }
+        if (closeBtn && termsModal) {
+            closeBtn.addEventListener('click', function() {
+                termsModal.style.display = 'none';
+            });
+        }
+    });
+</script>
 </body>
 </html>
