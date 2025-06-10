@@ -70,33 +70,49 @@
 <footer>
     <div class="footer-social">
         <a href="https://instagram.com/clicycolor" aria-label="Instagram" target="_blank">
-            <img th:src="@{/img/instagram.png}" alt="Instagram" class="social-icon" />
+            <img src="/img/instagram.png" alt="Instagram" class="social-icon" />
         </a>
         <a href="https://wa.me/0034603109882" aria-label="WhatsApp" target="_blank">
-            <img th:src="@{/img/whatsapp.png}" alt="WhatsApp" class="social-icon" />
+            <img src="/img/whatsapp.png" alt="WhatsApp" class="social-icon" />
         </a>
     </div>
     <div class="footer-content">
         <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
-        <a href="#terms" id="terms-link" class="terms-link">Términos y Condiciones</a>
+        <a href="#" id="terms-link" class="terms-link">Términos y Condiciones</a>
     </div>
 </footer>
+
 <div id="terms" class="terms-container" style="display:none;">
-    <h2>Términos y Condiciones</h2>
-    <p>Aquí van los términos y condiciones de uso...</p>
+
+    <div id="terms-content">
+        <!-- El contenido de los términos se cargará aquí -->
+    </div>
     <button id="close-terms-btn" onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var termsLink = document.getElementById('terms-link');
         var termsModal = document.getElementById('terms');
         var closeBtn = document.getElementById('close-terms-btn');
+        var termsContent = document.getElementById('terms-content');
+
         if (termsLink && termsModal) {
             termsLink.addEventListener('click', function(e) {
                 e.preventDefault();
-                termsModal.style.display = 'block';
+                // Cargar el contenido del archivo de los términos y condiciones
+                fetch('/terminos-condiciones.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        termsContent.innerHTML = data;  // Insertar el contenido en el modal
+                        termsModal.style.display = 'block';  // Mostrar el modal
+                    })
+                    .catch(error => {
+                        console.error('Error al cargar los términos y condiciones:', error);
+                    });
             });
         }
+
         if (closeBtn && termsModal) {
             closeBtn.addEventListener('click', function() {
                 termsModal.style.display = 'none';

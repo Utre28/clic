@@ -39,7 +39,8 @@ public class SecurityConfig {
                                 "/album/**", // <-- Añadido: acceso público a álbumes y fotos
                                 "/uploads/**", // <-- Añadido: acceso público a fotos subidas
                                 "/api/events/**", "/api/albums/**", "/api/photos/**", "/albumes/by-event/**",
-                                "/api/photos/by-album/**" // <-- Añadido: acceso público a fotos por álbum
+                                "/api/photos/by-album/**", // <-- Añadido: acceso público a fotos por álbum
+                                "/terminos-condiciones.html" // Ruta añadida para Términos y Condiciones
                         ).permitAll() // Permitir estas rutas sin autenticación
                         .requestMatchers("/panel/**").hasRole("PHOTOGRAPHER") // Solo accesible para fotógrafos
                         .requestMatchers("/perfil/**").authenticated() // Accesible para usuarios autenticados
