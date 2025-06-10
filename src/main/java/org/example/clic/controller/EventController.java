@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -105,5 +106,39 @@ public class EventController {
         Event saved = eventService.save(event); // Guarda el evento en la base de datos
         return ResponseEntity.created(URI.create("/api/events/" + saved.getId()))
                 .body(eventMapper.toDto(saved)); // Retorna el evento guardado como respuesta
+    }
+
+    @GetMapping("/stats")
+    public List<Map<String, Object>> getEventStats() {
+        // Suponiendo que Event tiene un campo 'visits'
+        return eventService.findAll().stream()
+            .map(ev -> {
+                Map<String, Object> map = Map.of(
+                    "id", ev.getId(),
+                    "name", ev.getName(),
+                    "visits", ev instanceof Event && ev.getClass().getDeclaredFields() != null && hasVisits(ev) ? getVisits(ev) : 0
+                );
+                return map;
+            })
+            .collect(Collectors.toList());
+    }
+
+    // Métodos auxiliares para obtener visitas si el campo existe
+    private boolean hasVisits(Event ev) {
+        try {
+            ev.getClass().getDeclaredField("visits");
+            return true;
+        } catch (NoSuchFieldException e) {
+            return false;
+        }
+    }
+    private int getVisits(Event ev) {
+        try {
+            var f = ev.getClass().getDeclaredField("visits");
+            f.setAccessible(true);
+            return (int) f.get(ev);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

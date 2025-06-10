@@ -17,10 +17,29 @@
         <p>Aquí puedes gestionar tus fotos y estadísticas.</p>
         <ul>
             <li><a th:href="@{/subir-fotos}">Subir Fotos</a></li>
-            <li><a href="#">Ver Estadísticas</a></li>
+            <li><a href="#" id="showStatsBtn">Ver Estadísticas</a></li>
         </ul>
     </section>
 </main>
+
+<!-- Modal de Estadísticas -->
+<div id="statsModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:2000;">
+    <div style="background:#fff; padding:2rem; border-radius:10px; max-width:500px; width:90%;">
+        <h2>Visitas por Evento</h2>
+        <table style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th style="text-align:left;">Evento</th>
+                    <th style="text-align:right;">Visitas</th>
+                </tr>
+            </thead>
+            <tbody id="statsTableBody">
+                <!-- JS llenará aquí -->
+            </tbody>
+        </table>
+        <button onclick="document.getElementById('statsModal').style.display='none'">Cerrar</button>
+    </div>
+</div>
 
 <!-- Footer -->
 <footer>
@@ -38,6 +57,33 @@
 </div>
 
 <script th:src="@{/js/script.js}" src="/js/script.js"></script>
+<script>
+document.getElementById('showStatsBtn').addEventListener('click', async function(e) {
+    e.preventDefault();
+    const modal = document.getElementById('statsModal');
+    const tbody = document.getElementById('statsTableBody');
+    tbody.innerHTML = '<tr><td colspan="2">Cargando...</td></tr>';
+    modal.style.display = 'flex';
+    try {
+        const res = await fetch('/api/events/stats');
+        if (!res.ok) throw new Error('Error al cargar estadísticas');
+        const stats = await res.json();
+        if (!stats.length) {
+            tbody.innerHTML = '<tr><td colspan="2">No hay datos de visitas.</td></tr>';
+        } else {
+            tbody.innerHTML = '';
+            stats.forEach(ev => {
+                tbody.innerHTML += `<tr>
+                    <td>${ev.name}</td>
+                    <td style="text-align:right;">${ev.visits}</td>
+                </tr>`;
+            });
+        }
+    } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="2">Error al cargar estadísticas.</td></tr>';
+    }
+});
+</script>
 
 </body>
 </html>

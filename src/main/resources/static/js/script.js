@@ -1,12 +1,16 @@
 // 1. Mostrar y ocultar Términos y Condiciones
 function initTerms() {
-  const termsLink = document.querySelector('.terms-link');
+  // Selecciona todos los enlaces de términos y el primer modal de términos
+  const termsLinks = document.querySelectorAll('.terms-link');
   const termsContainer = document.querySelector('.terms-container');
-  const closeBtn = document.querySelector('.terms-close-btn');
+  const closeBtn = termsContainer ? termsContainer.querySelector('button') : null;
 
-  if (termsLink && termsContainer) {
-    termsLink.addEventListener('click', () => {
-      termsContainer.style.display = 'block';
+  if (termsLinks.length && termsContainer) {
+    termsLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        termsContainer.style.display = 'block';
+      });
     });
   }
   if (closeBtn && termsContainer) {
@@ -154,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setMinDate();   // Establecer la fecha mínima a hoy
   initCreateEvent();
   initCreateAlbum(); // Inicializa el formulario de crear álbum
+  initTerms();
 });
 
 // 8. Manejar formulario de creación de álbum

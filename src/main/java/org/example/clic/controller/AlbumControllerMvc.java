@@ -22,9 +22,17 @@ public class AlbumControllerMvc {
     @GetMapping("/by-event/{eventId}")
     public String viewAlbumsByEvent(@PathVariable Long eventId, Model model) {
         var albums = albumService.findByEventId(eventId);
-        var evento = eventService.findById(eventId).orElse(null); // Obtener el evento
+        var eventoOpt = eventService.findById(eventId); // Obtener el evento
+        if (eventoOpt.isPresent()) {
+            var evento = eventoOpt.get();
+            // Incrementar visitas
+            evento.setVisits(evento.getVisits() + 1);
+            eventService.save(evento);
+            model.addAttribute("evento", evento);
+        } else {
+            model.addAttribute("evento", null);
+        }
         model.addAttribute("albumes", albums);
-        model.addAttribute("evento", evento);
         return "albumes-by-event";
     }
 }

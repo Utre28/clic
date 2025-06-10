@@ -29,6 +29,8 @@ public class Event {
 
     @Column(nullable = false)
     private boolean privado = true; // Campo para controlar la visibilidad del evento
+    @Column(nullable = false)
+    private int visits = 0; // Contador de visitas
 
     // getters y setters
 
@@ -94,6 +96,14 @@ public class Event {
 
     public void setPrivado(boolean privado) {
         this.privado = privado;
+    }
+
+    public int getVisits() {
+        return visits;
+    }
+
+    public void setVisits(int visits) {
+        this.visits = visits;
     }
 
 }

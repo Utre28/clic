@@ -9,7 +9,6 @@
 <body>
 <div th:replace="navbar :: navbar"></div>
 
-
 <section class="login">
   <div class="login-container">
     <form method="post" th:action="@{/api/contact}">
@@ -35,7 +34,6 @@
   </div>
 </section>
 
-<!-- Footer con derechos y enlace a términos -->
 <footer>
   <div class="footer-social">
     <a href="https://instagram.com/clicycolor" aria-label="Instagram" target="_blank">
@@ -47,16 +45,14 @@
   </div>
   <div class="footer-content">
     <p>&copy; 2025 Clic y Color. Todos los derechos reservados.</p>
-    <a href="#" id="terms-link" class="terms-link">Términos y Condiciones</a>
+    <a href="#terms" id="terms-link" class="terms-link">Términos y Condiciones</a>
   </div>
 </footer>
-<!-- Modal de Términos y Condiciones (oculto por defecto) -->
 <div id="terms" class="terms-container" style="display:none;">
   <h2>Términos y Condiciones</h2>
   <p>Aquí van los términos y condiciones de uso...</p>
   <button id="close-terms-btn" onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
 </div>
-
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var termsLink = document.getElementById('terms-link');
