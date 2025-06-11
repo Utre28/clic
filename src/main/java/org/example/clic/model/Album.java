@@ -28,6 +28,9 @@ public class Album {
     @Column(nullable = false)
     private boolean privado = true; // Visibilidad del álbum
 
+    // Añade este campo (usa Integer o int según tu preferencia)
+    private int downloads = 0;
+
     // getters y setters
 
     public Long getId() {
@@ -76,6 +79,14 @@ public class Album {
 
     public void setPrivado(boolean privado) {
         this.privado = privado;
+    }
+
+    public int getDownloads() {
+        return downloads;
+    }
+
+    public void setDownloads(int downloads) {
+        this.downloads = downloads;
     }
 }
 

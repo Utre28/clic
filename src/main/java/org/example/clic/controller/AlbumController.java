@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -154,6 +155,32 @@ public class AlbumController {
         return ResponseEntity.ok(albums.stream()
                 .map(albumMapper::toDto)
                 .collect(Collectors.toList()));
+    }
+
+    /**
+     * GET /api/albums/download-stats
+     * Devuelve la lista de álbumes con el número de descargas de cada uno
+     */
+    @GetMapping("/download-stats")
+    public List<java.util.Map<String, Object>> getDownloadStats() {
+        return albumService.findAll().stream()
+                .map(album -> {
+                    java.util.Map<String, Object> map = new java.util.HashMap<>();
+                    map.put("id", album.getId());
+                    map.put("name", album.getName());
+                    map.put("downloads", getAlbumDownloadsSafe(album));
+                    return map;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // Método auxiliar para evitar errores si el campo no existe
+    private int getAlbumDownloadsSafe(Album album) {
+        try {
+            return album.getDownloads();
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }
 

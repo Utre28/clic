@@ -14,30 +14,12 @@
     <div th:if="${#lists.isEmpty(albumes)}">
         <p>No hay álbumes para este evento.</p>
     </div>
-    <div th:each="album : ${albumes}" class="album-block">
-        <div class="album-header" style="display: flex; align-items: center; justify-content: space-between;">
-            <h2 th:text="${album.name}" style="flex:1; text-align:center; margin:0;">Nombre del Álbum</h2>
-            <a th:href="@{'/album/' + ${album.id}}" class="btn-ver" style="margin-left:1rem;">Ver Fotos</a>
-        </div>
-        <div th:if="${albumFotosMap != null and albumFotosMap[album.id] != null}">
-            <!-- Formulario para borrar fotos seleccionadas -->
-            <form id="borrarFotosForm" action="/panel/fotos/borrar-multiple" method="post">
-                <div class="fotos-grid">
-                    <div th:each="foto : ${albumFotosMap[album.id]}" class="foto-card">
-                        <label style="display: flex; flex-direction: column; align-items: center;">
-                            <img th:src="${foto.url}" alt="Foto" class="foto-preview"/>
-                            <div style="margin-top:0.5rem; display:flex; align-items:center; justify-content:center;">
-                                <input type="checkbox" name="fotoIds" th:value="${foto.id}" id="foto-${foto.id}" class="foto-checkbox">
-                                <span style="margin-left:0.5rem;">Seleccionar</span>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-                <button type="submit" class="btn-borrar" onclick="return confirmBorrar()">Borrar Seleccionadas</button>
-            </form>
-        </div>
-        <div th:if="${albumFotosMap == null or albumFotosMap[album.id] == null or #lists.isEmpty(albumFotosMap[album.id])}">
-            <p style="color:#888;">No hay fotos en este álbum.</p>
+    <div class="albumes-grid" th:if="${not #lists.isEmpty(albumes)}">
+        <div th:each="album : ${albumes}" class="album-card">
+            <img th:src="@{/img/default-event.jpg}" alt="Imagen de álbum" />
+            <h3 th:text="${album.name}"></h3>
+            <p th:text="${album.createdAt}"></p>
+            <a th:href="@{'/album/' + ${album.id}}" class="btn-ver">Ver Fotos</a>
         </div>
     </div>
 </div>
