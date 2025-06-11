@@ -4,15 +4,54 @@
     <meta charset="UTF-8" />
     <title>Eventos – Fotógrafo</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" />
-
+    <style>
+        .acciones-evento {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            align-items: stretch;
+        }
+        .btn-ver, .btn-enviar-mensaje {
+            font-size: 0.85rem;
+            padding: 0.3rem 0.7rem;
+            min-width: 110px;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn-ver {
+            background: #e0e0e0;
+            color: #333;
+        }
+        .btn-enviar-mensaje {
+            background: #4caf50;
+            color: #fff;
+        }
+        .btn-ver:hover {
+            background: #d5d5d5;
+        }
+        .btn-enviar-mensaje:hover {
+            background: #388e3c;
+        }
+        .acciones-evento form {
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
-<div th:replace="navbar :: navbar"></div>
+<div th:replace="~{navbar :: navbar}"></div>
 
 <div class="panel-container">
     <h1 class="panel-header">Gestión de Eventos</h1>
 
-    <!-- Mostrar mensaje de error si existe -->
+    <!-- Mostrar mensaje de éxito o error -->
+    <div th:if="${param.mensaje}" style="color:green; text-align:center; margin-bottom:1rem;">
+        <p th:text="${param.mensaje}"></p>
+    </div>
     <div th:if="${message}" style="color:red;text-align:center;">
         <p th:text="${message}"></p>
     </div>
@@ -34,43 +73,49 @@
         <button type="submit">Buscar / Filtrar</button>
     </form>
 
-    <!-- Formulario de borrado múltiple (POST) -->
-    <form id="borrarEventosForm" th:action="@{/panel/eventos/borrar-multiple}" method="post">
-        <table class="event-table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Imagen</th>
-                    <th>Nombre</th>
-                    <th>Fecha</th>
-                    <th>Ubicación</th>
-                    <th>Privacidad</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-            <tr th:if="${#lists.isEmpty(filteredEvents)}">
-                <td colspan="7" style="text-align:center;">No hay eventos para mostrar.</td>
+    <!-- Formulario de borrado múltiple (POST) SOLO para el botón y los checkboxes -->
+    <table class="event-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Fecha</th>
+                <th>Ubicación</th>
+                <th>Privacidad</th>
+                <th>Acciones</th>
             </tr>
-            <tr th:each="event : ${filteredEvents}">
-                <td>
-                    <input type="checkbox" name="eventoIds" th:value="${event.id}" />
-                </td>
-                <td>
-                    <img th:src="@{/img/default-event.jpg}" alt="Imagen de evento" class="event-img" />
-                </td>
-                <td th:text="${event.name}">Nombre del Evento</td>
-                <td th:text="${event.date}">Fecha</td>
-                <td th:text="${event.location}">Ubicación</td>
-                <td>
-                    <span th:text="${event.privado ? 'Privado' : 'Público'}"></span>
-                </td>
-                <td>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(filteredEvents)}">
+            <td colspan="7" style="text-align:center;">No hay eventos para mostrar.</td>
+        </tr>
+        <tr th:each="event : ${filteredEvents}">
+            <td>
+                <input type="checkbox" name="eventoIds" th:value="${event.id}" form="borrarEventosForm" />
+            </td>
+            <td>
+                <img th:src="@{/img/default-event.jpg}" alt="Imagen de evento" class="event-img" />
+            </td>
+            <td th:text="${event.name}">Nombre del Evento</td>
+            <td th:text="${event.date}">Fecha</td>
+            <td th:text="${event.location}">Ubicación</td>
+            <td>
+                <span th:text="${event.privado ? 'Privado' : 'Público'}"></span>
+            </td>
+            <td>
+                <div class="acciones-evento">
                     <a th:href="@{'/panel/eventos/' + ${event.id}}" class="btn-ver">Ver Detalles</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                    <form th:action="@{'/panel/eventos/' + ${event.id} + '/enviar-mensaje'}" method="post">
+                        <button type="submit" class="btn-enviar-mensaje">Enviar mensaje</button>
+                        <span th:if="${param.mensajeId} == ${event.id}" th:text="${param.mensaje}"></span>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <form id="borrarEventosForm" th:action="@{/panel/eventos/borrar-multiple}" method="post" style="margin-top:1rem;">
         <button type="submit" class="btn-borrar" id="btnBorrarSeleccionados">Borrar Seleccionados</button>
     </form>
 </div>
