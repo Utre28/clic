@@ -16,6 +16,9 @@
     <div th:if="${message}" style="color:red;text-align:center;">
         <p th:text="${message}"></p>
     </div>
+    <div id="no-selection-message" style="display:none;color:red;text-align:center;margin-bottom:1rem;">
+        No ha seleccionado ningún evento.
+    </div>
 
     <!-- Formulario de filtro (GET) -->
     <form class="filtros-panel-eventos" th:action="@{/panel/eventos}" method="get">
@@ -68,7 +71,7 @@
             </tr>
             </tbody>
         </table>
-        <button type="submit" class="btn-borrar" onclick="return confirm('¿Seguro que quieres borrar los eventos seleccionados?')">Borrar Seleccionados</button>
+        <button type="submit" class="btn-borrar" id="btnBorrarSeleccionados">Borrar Seleccionados</button>
     </form>
 </div>
 <!-- Footer -->
@@ -120,6 +123,22 @@
         if (closeBtn && termsModal) {
             closeBtn.addEventListener('click', function() {
                 termsModal.style.display = 'none';
+            });
+        }
+
+        // Validación para mostrar mensaje si no hay selección al borrar
+        const borrarForm = document.getElementById('borrarEventosForm');
+        const noSelMsg = document.getElementById('no-selection-message');
+        if (borrarForm) {
+            borrarForm.addEventListener('submit', function(e) {
+                const checked = borrarForm.querySelectorAll('input[type="checkbox"][name="eventoIds"]:checked');
+                if (checked.length === 0) {
+                    e.preventDefault();
+                    if (noSelMsg) {
+                        noSelMsg.style.display = 'block';
+                        setTimeout(() => { noSelMsg.style.display = 'none'; }, 3500);
+                    }
+                }
             });
         }
     });

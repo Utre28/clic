@@ -51,10 +51,10 @@ async function loadClients() {
 }
 
 // 4. Establecer la fecha mínima en el input para la fecha del evento (no permitir fechas pasadas)
-function setMinDate() {
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById("eventDate").setAttribute("min", today);
-}
+// function setMinDate() {
+//   const today = new Date().toISOString().split('T')[0];
+//   document.getElementById("eventDate").setAttribute("min", today);
+// }
 
 // 5. Manejar formulario de creación de eventos
 function initCreateEvent() {
@@ -155,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
   loadClients();  // Llenar clientes
   loadEvents();   // Llenar eventos
   loadAlbums();   // Llenar álbumes
-  setMinDate();   // Establecer la fecha mínima a hoy
   initCreateEvent();
   initCreateAlbum(); // Inicializa el formulario de crear álbum
   initTerms();

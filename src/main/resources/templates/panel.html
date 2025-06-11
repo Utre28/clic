@@ -24,7 +24,7 @@
 
 <!-- Modal de Estadísticas -->
 <div id="statsModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:2000;">
-    <div style="background:#fff; padding:2rem; border-radius:10px; max-width:500px; width:90%;">
+    <div style="background:#fff; padding:2rem; border-radius:10px; max-width:600px; width:95%;">
         <h2>Visitas por Evento</h2>
         <table style="width:100%; border-collapse:collapse;">
             <thead>
@@ -37,6 +37,9 @@
                 <!-- JS llenará aquí -->
             </tbody>
         </table>
+        <div style="margin:2rem 0;">
+            <canvas id="statsChart" width="500" height="250"></canvas>
+        </div>
         <button onclick="document.getElementById('statsModal').style.display='none'">Cerrar</button>
     </div>
 </div>
@@ -65,6 +68,8 @@
     <button id="close-terms-btn" onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
 </div>
 
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var termsLink = document.getElementById('terms-link');
@@ -102,25 +107,66 @@ document.getElementById('showStatsBtn').addEventListener('click', async function
     e.preventDefault();
     const modal = document.getElementById('statsModal');
     const tbody = document.getElementById('statsTableBody');
+    const chartCanvas = document.getElementById('statsChart');
     tbody.innerHTML = '<tr><td colspan="2">Cargando...</td></tr>';
     modal.style.display = 'flex';
+    let chartInstance = null;
     try {
         const res = await fetch('/api/events/stats');
         if (!res.ok) throw new Error('Error al cargar estadísticas');
         const stats = await res.json();
         if (!stats.length) {
             tbody.innerHTML = '<tr><td colspan="2">No hay datos de visitas.</td></tr>';
+            if (chartCanvas && chartCanvas.chart) {
+                chartCanvas.chart.destroy();
+            }
         } else {
             tbody.innerHTML = '';
+            const labels = [];
+            const data = [];
             stats.forEach(ev => {
+                labels.push(ev.name);
+                data.push(ev.visits);
                 tbody.innerHTML += `<tr>
                     <td>${ev.name}</td>
                     <td style="text-align:right;">${ev.visits}</td>
                 </tr>`;
             });
+            // Dibuja la gráfica
+            if (chartCanvas.chart) {
+                chartCanvas.chart.destroy();
+            }
+            chartCanvas.chart = new Chart(chartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Visitas',
+                        data: data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision:0 }
+                        }
+                    }
+                }
+            });
         }
     } catch (err) {
         tbody.innerHTML = '<tr><td colspan="2">Error al cargar estadísticas.</td></tr>';
+        if (chartCanvas && chartCanvas.chart) {
+            chartCanvas.chart.destroy();
+        }
     }
 });
 </script>

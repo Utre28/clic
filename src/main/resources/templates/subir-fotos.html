@@ -19,7 +19,9 @@
       <label for="eventName">Nombre del evento:</label>
       <input type="text" id="eventName" required />
       <label for="eventDate">Fecha del evento:</label>
-      <input type="date" id="eventDate" required max="[[${#dates.format(#dates.createNow(),'yyyy-MM-dd')}]]" />
+      <input type="date" id="eventDate" required
+             th:max="${#dates.format(#dates.createNow(),'yyyy-MM-dd')}" 
+             max="[[${#dates.format(#dates.createNow(),'yyyy-MM-dd')}]]" />
       <label for="eventLocation">Lugar del evento:</label>
       <input type="text" id="eventLocation" required />
       <label for="eventCategory">Categoría del evento:</label>
@@ -88,7 +90,6 @@
 </footer>
 
 <div id="terms" class="terms-container" style="display:none;">
-
   <div id="terms-content">
     <!-- El contenido de los términos se cargará aquí -->
   </div>
@@ -97,6 +98,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    // Términos y condiciones modal
     var termsLink = document.getElementById('terms-link');
     var termsModal = document.getElementById('terms');
     var closeBtn = document.getElementById('close-terms-btn');
@@ -105,24 +107,41 @@
     if (termsLink && termsModal) {
       termsLink.addEventListener('click', function(e) {
         e.preventDefault();
-        // Cargar el contenido del archivo de los términos y condiciones
         fetch('/terminos-condiciones.html')
-                .then(response => response.text())
-                .then(data => {
-                  termsContent.innerHTML = data;  // Insertar el contenido en el modal
-                  termsModal.style.display = 'block';  // Mostrar el modal
-                })
-                .catch(error => {
-                  console.error('Error al cargar los términos y condiciones:', error);
-                });
+          .then(response => response.text())
+          .then(data => {
+            termsContent.innerHTML = data;
+            termsModal.style.display = 'block';
+          })
+          .catch(error => {
+            console.error('Error al cargar los términos y condiciones:', error);
+          });
       });
     }
-
     if (closeBtn && termsModal) {
       closeBtn.addEventListener('click', function() {
         termsModal.style.display = 'none';
       });
     }
+
+    // Forzar el atributo max en el input de fecha (por si el navegador o un datepicker externo no lo respeta)
+    var dateInput = document.getElementById('eventDate');
+    if (dateInput) {
+      var today = new Date().toISOString().split('T')[0];
+      dateInput.setAttribute('max', today);
+    }
+
+    // Si usas un datepicker externo, configura aquí el máximo (ejemplo para flatpickr)
+    if (window.flatpickr) {
+      flatpickr("#eventDate", {
+        maxDate: "today",
+        dateFormat: "Y-m-d"
+      });
+    }
+    // Ejemplo para bootstrap-datepicker:
+    // if (window.jQuery && $('#eventDate').datepicker) {
+    //   $('#eventDate').datepicker({ endDate: today, format: 'yyyy-mm-dd' });
+    // }
   });
 </script>
 

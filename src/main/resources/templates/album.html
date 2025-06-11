@@ -24,11 +24,16 @@
       <button type="button" id="selectDeselectBtn" class="btn-small">Seleccionar Todas</button>
     </div>
 
-    <div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;">
-      <div th:each="foto : ${fotos}" class="photo-item" style="align-items:center;">
-        <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto" class="gallery-img"/>
-        <label style="margin-top:0.5rem;">
-          <input type="checkbox" name="photoIds" th:value="${foto.id}" class="photo-checkbox"/>
+    <div style="display:flex; flex-wrap:wrap; gap:2rem; justify-content:center;">
+      <div th:each="foto : ${fotos}" class="photo-item"
+           style="display: flex; flex-direction: column; align-items: center; padding: 0; margin: 0; line-height: 1;">
+        <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto"
+             class="gallery-img"
+             style="display:block; margin:0; padding:0; border:none; line-height:1; width:auto; max-width:320px; max-height:220px; object-fit:contain; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
+        <label style="margin:1rem 0 0 0; padding:0; display: flex; align-items: center; justify-content: center; line-height:1;">
+          <input type="checkbox" name="photoIds" th:value="${foto.id}" class="photo-checkbox"
+                 style="margin:0; padding:0; line-height:1;"/>
+          <span style="margin-left: 0.5rem; line-height:1;">Seleccionar</span>
         </label>
       </div>
     </div>
@@ -39,9 +44,10 @@
 
   <!-- Solo mostrar las fotos sin checkboxes si NO viene de mis eventos -->
   <div th:if="${!desdeMisEventos}">
-    <div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;">
+    <div style="display:flex; flex-wrap:wrap; gap:2rem; justify-content:center;">
       <div th:each="foto : ${fotos}" class="photo-item" style="align-items:center;">
-        <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto" class="gallery-img"/>
+        <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto" class="gallery-img"
+             style="display:block; margin:0; padding:0; border:none; width:auto; max-width:320px; max-height:220px; object-fit:contain; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
       </div>
     </div>
   </div>
@@ -148,8 +154,36 @@
       checkbox.addEventListener('change', function() {
         const allChecked = Array.from(checkboxes).every(cb => cb.checked);
         selectDeselectBtn.textContent = allChecked ? 'Deseleccionar Todas' : 'Seleccionar Todas';
+        updateDownloadButtonState();
       });
     });
+
+    // Deshabilitar el botón de descarga si no hay fotos seleccionadas
+    const downloadBtn = document.querySelector('#downloadZipForm button[type="submit"]');
+    function updateDownloadButtonState() {
+      const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+      if (downloadBtn) {
+        downloadBtn.disabled = !anyChecked;
+      }
+    }
+    // Inicializar el estado al cargar
+    updateDownloadButtonState();
+
+    // Mostrar alerta si no hay fotos seleccionadas al intentar descargar
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', function(e) {
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        if (!anyChecked) {
+          e.preventDefault();
+          alert('No has seleccionado ninguna foto');
+          return false;
+        }
+      });
+    }
+    // Habilitar el botón siempre (para que el JS controle el submit)
+    if (downloadBtn) {
+      downloadBtn.disabled = false;
+    }
   });
 
 
