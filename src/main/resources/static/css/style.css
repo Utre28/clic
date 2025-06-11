@@ -532,8 +532,10 @@ nav ul li.dropdown:hover .dropdown-menu { display:block; }
 .album-header h2 {
     margin: 0;
     color: var(--color-primario, #007bff);
+    text-transform: capitalize;
 }
 .btn-borrar, .btn-ver {
+    margin-top: 20px;
     background: #dc3545;
     color: #fff;
     border: none;
@@ -870,4 +872,154 @@ nav ul li.dropdown:hover .dropdown-menu { display:block; }
 
 .photo-gallery img:hover {
     transform: scale(1.05); /* Efecto de ampliación suave al pasar el ratón */
+}
+
+
+
+
+
+/* Estilos para el modal */
+.photo-modal {
+    display: none; /* Inicialmente oculto */
+    position: fixed;
+    z-index: 1; /* Mostrar encima de todo */
+    left: 0;
+    top: 0;
+    width: 100%; /* Ancho completo */
+    height: 100%; /* Altura completa */
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    position: relative;
+    background-color: rgba(74, 74, 74, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: hidden;
+    text-align: center;
+}
+
+.modal-content img {
+    max-width: 100%; /* Ajusta la imagen para que no sobresalga */
+    max-height: 100vh; /* Limita el tamaño para que no ocupe toda la pantalla */
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+#modalImage {
+    display: block;
+    width: 90vw; /* Que ocupe el 90% del ancho de la ventana */
+    height: 90vh; /* Que ocupe el 90% de la altura de la ventana */
+    object-fit: contain; /* Mantiene proporción sin recortar */
+    border-radius: 8px;
+}
+
+/* Estilos para las fotos en la galería */
+.foto-card input[type="checkbox"] {
+    display: inline-block; /* Muestra el checkbox */
+    margin-bottom: 10px;
+}
+
+.foto-card label {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+
+.foto-card input[type="checkbox"]:checked + label img {
+    border: 3px solid #007BFF; /* Cambia el borde al seleccionar la foto */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Estilo general de la galería */
+.foto-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.foto-preview:hover {
+    transform: scale(1.05);
+}
+
+/* Estilo para el mensaje de éxito o error */
+#feedbackMessage {
+    display: none; /* Inicialmente oculto */
+    position: fixed; /* Fijo en la parte superior */
+    top: 80px; /* Ajusta esto para que quede justo debajo del navbar */
+    left: 50%; /* Centrado horizontal */
+    transform: translateX(-50%); /* Centra el mensaje */
+    padding: 10px;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    z-index: 9999; /* Asegura que el mensaje esté encima de otros elementos */
+    width: 80%; /* O ajusta al tamaño que desees */
+}
+
+/* Estilo de mensaje de error (rojo) */
+#feedbackMessage.error {
+    background-color: #dc3545; /* Rojo en caso de error */
+}
+
+/* Estilo de mensaje de éxito (verde) */
+#feedbackMessage.success {
+    background-color: #4CAF50; /* Verde para el mensaje de éxito */
+}
+
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.prev { left: 10px; } /* Flecha izquierda */
+.next { right: 10px; } /* Flecha derecha */
+
+.prev:hover, .next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+#modalCheckbox {
+    position: absolute;
+    bottom: 20px; /* Colocarlo en la parte inferior */
+    right: 20px; /* Colocarlo en la parte derecha */
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 10; /* Asegura que el checkbox esté encima de otros elementos */
+}
+
+#modalCheckbox + label {
+    position: absolute;
+    bottom: 20px;
+    right: 50px; /* Un poco a la izquierda del checkbox para el texto */
+    color: white;
+    font-size: 14px;
+    margin-top: 5px;
 }
