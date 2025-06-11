@@ -5,67 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title th:text="'Álbum: ' + ${album.name}">Álbum</title>
   <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
-  <style>
-    .photo-gallery {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      justify-content: center;
-      padding: 20px;
-    }
-    .photo-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .photo-gallery img {
-      width: 200px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-    .photo-gallery img:hover {
-      transform: scale(1.05);
-    }
-    #backBtn {
-      margin: 20px;
-      color: blue;
-      text-decoration: underline;
-    }
-    .select-foto {
-      margin-top: 8px;
-    }
-    #shareLink {
-      width: 60%;
-      display: none;
-      margin-top: 10px;
-    }
-    .btn {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .btn:hover {
-      background-color: #0056b3;
-    }
-  </style>
 </head>
 <body>
 <div th:replace="navbar :: navbar"></div>
-
-<header>
   <a id="backBtn"
      th:href="@{/albumes/by-event/{eventId}(eventId=${eventId})}"
      href="/albumes"
-  >&larr; Volver</a>
-  <h1 th:text="${album.name}" style="text-align:center;">Álbum</h1>
-</header>
+  >Volver</a>
+  <div class="album">
+  <h1 th:text="${album.name}">Álbum</h1>
+
 
 <section id="photoGallery" class="photo-gallery">
   <div th:if="${#lists.isEmpty(fotos)}">
@@ -130,7 +79,7 @@
     }
   });
 </script>
-
+  </div>
 <!-- Footer -->
 <footer>
   <div class="footer-social">

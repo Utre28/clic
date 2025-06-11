@@ -9,9 +9,9 @@
 <body>
 <div th:replace="navbar :: navbar"></div>
 
-<section class="login">
-  <div class="login-container">
-    <form method="post" th:action="@{/api/contact}">
+<section class="perfil-container">
+  <div>
+    <form class="perfil-form" method="post" th:action="@{/api/contact}">
       <h1>Contáctame</h1>
 
       <label for="nombre">Nombre:</label>

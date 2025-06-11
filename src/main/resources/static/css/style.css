@@ -127,7 +127,7 @@ body {
 /* Hero */
 .hero {
     background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(252,252,252,0.6)), url('../img/negativo.png') no-repeat center/cover;
-    color: #000;
+    color: #000000;
     text-align: center;
     padding: 10rem 5%;
 }
@@ -144,20 +144,30 @@ body {
 }
 
 .btn {
-    display: inline-block;
-    padding: 1rem 2rem;
-    background-color: var(--color-acento);
+    margin: 1rem 0 0 0;
+    padding: 0.5rem 1.5rem;
+    background: var(--color-primario, #007bff);
     color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
+    font-weight: bold;
+    transition: background 0.2s;
+    align-self: center;
 }
 
 .btn:hover {
-    background-color: #ccc;
+    background: #0056b3;
 }
-
+@media (max-width: 1100px) {
+    .categorias { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+    .panel-container { padding: 1rem 0.5rem; }
+    .categorias { grid-template-columns: 1fr; }
+    .categoria img { height: 120px; }
+}
 /* Footer */
 footer {
     background-color: var(--color-primario);
@@ -409,9 +419,10 @@ nav ul li.dropdown:hover .dropdown-menu { display:block; }
 
 .categorias {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
     padding: 2rem 5%;
+    grid-template-columns: repeat(3, 1fr); /* Tres columnas, cada una con el mismo tamaño */
+    margin: 0 auto; /* Centra el contenedor */
 }
 .categoria {
     background-color: white;
@@ -422,6 +433,10 @@ nav ul li.dropdown:hover .dropdown-menu { display:block; }
     transition: transform 0.3s ease;
     text-decoration: none;
     color: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 1rem;
 }
 .categoria:hover {
     transform: scale(1.03);
@@ -434,5 +449,425 @@ nav ul li.dropdown:hover .dropdown-menu { display:block; }
 }
 .categoria h3 {
     margin: 1rem;
+    color: var(--color-primario, #007bff);
+}
+
+.panel-container {
+    width: 80%;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 2rem 2.5rem;
+    font-family: var(--fuente-titulo);
+    font-size: 1rem;
     color: var(--color-primario);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+
+.panel-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.albumes-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
+}
+.album-card {
+    background: #fafafa;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 1.5rem 1rem 1rem 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s;
+    border: 1px solid #f0f0f0;
+}
+.album-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+.album-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background: #eee;
+}
+.album-card h3 {
+    margin: 0.5rem 0 0.3rem 0;
+    color: var(--color-primario, #007bff);
+}
+.album-card p {
+    margin: 0.2rem 0;
+    color: #444;
+}
+
+@media (max-width: 1100px) {
+    .albumes-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+    .panel-container { padding: 1rem 0.5rem; }
+    .albumes-grid { grid-template-columns: 1fr; }
+    .album-card img { height: 80px; }
+}
+.album-block {
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 2rem;
+}
+.album-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.album-header h2 {
+    margin: 0;
+    color: var(--color-primario, #007bff);
+}
+.btn-borrar, .btn-ver {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.4rem 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    margin-right: 0.5rem;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+.fotos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem;
+    margin-top: 1rem;
+}
+.foto-card {
+    background: #fafafa;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    padding: 0.7rem;
+    text-align: center;
+    position: relative;
+}
+.foto-card img {
+    width: 100%;
+    max-width: 180px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    background: #eee;
+}
+.foto-card form {
+    margin: 0;
+}
+.foto-card .btn-borrar {
+    margin: 0.3rem 0 0 0;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.95rem;
+}
+@media (max-width: 900px) {
+    .fotos-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+    .panel-container { padding: 1rem 0.5rem; }
+    .fotos-grid { grid-template-columns: 1fr; }
+}
+.filtros-portafolio {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+.filtros-portafolio select {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    min-width: 200px;
+}
+.filtros-portafolio button {
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    border: none;
+    background: var(--color-primario, #007bff);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.filtros-portafolio button:hover {
+    background: #0056b3;
+}
+
+ .panel-container {
+     max-width: 1100px;
+     margin: 2rem auto;
+     background: #fff;
+     border-radius: 12px;
+     box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+     padding: 3rem 4rem;
+ }
+.panel-container h1{
+    font-family: var(--fuente-titulo);
+    font-size:2rem;
+    color:var(--color-primario);
+    text-align:center;
+}
+.panel-container p{
+    color:#000000;
+    text-align:center;
+}
+
+.filtros-panel-eventos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+.filtros-panel-eventos input[type="text"], .filtros-panel-eventos select {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    min-width: 200px;
+}
+.filtros-panel-eventos button {
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    border: none;
+    background: var(--color-primario, #007bff);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.filtros-panel-eventos button:hover {
+    background: #0056b3;
+}
+.event-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+.event-table th, .event-table td {
+    padding: 0.8rem 0.5rem;
+    border-bottom: 1px solid #eaeaea;
+    text-align: center;
+}
+.event-table th {
+    background: #f7f7f7;
+    color: #333;
+}
+.event-table tr:last-child td {
+    border-bottom: none;
+}
+.event-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #eee;
+}
+.btn-ver {
+    background: #0056b3;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.4rem 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    margin-right: 0.5rem;
+    transition: background 0.2s;
+}
+.btn-ver:hover {
+    background: #0056b3;
+}
+@media (max-width: 700px) {
+    .panel-container { padding: 1rem 0.5rem; }
+    .event-table th, .event-table td { font-size: 0.95rem; padding: 0.5rem 0.2rem; }
+    .event-img { width: 50px; height: 50px; }
+}
+
+.upload-section {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: center;
+    align-items: flex-start;
+}
+.upload-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 2rem 1.5rem;
+    min-width: 320px;
+    max-width: 400px;
+    width: 100%;
+}
+.upload-card h2 {
+    font-family: var(--fuente-titulo);
+    font-size: 1.5rem;
+    color: var(--color-primario);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+.upload-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+.upload-card button {
+    margin-top: 0.7rem;
+}
+
+#borrarEventosForm {
+    max-width: 1200px; /* Define un ancho máximo mayor para el formulario */
+    margin: 3rem auto; /* Añade un margen superior e inferior más grande */
+    padding: 2rem; /* Relleno dentro del formulario */
+    background-color: #ffffff; /* Color de fondo del formulario */
+    border-radius: 10px; /* Esquinas redondeadas */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave alrededor del formulario */
+}
+
+
+ .perfil-container {
+     max-width: 500px;
+     margin: 2rem auto;
+     background: #fff;
+     border-radius: 12px;
+     box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+     padding: 2rem 2.5rem;
+ }
+.perfil-container h1 {
+    font-family: var(--fuente-titulo);
+    font-size:2rem;
+    color:var(--color-primario);
+    text-align:center;
+}
+.perfil-form label {
+    font-weight: bold;
+    margin-top: 1rem;
+    display: block;
+    color:var(--color-primario);
+}
+.perfil-form input[type="text"], .perfil-form input[type="email"], .perfil-form input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 1rem;
+}
+.perfil-form button {
+    background: #0056b3;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.6rem 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 1rem;
+}
+.perfil-form button:hover {
+    background: #066ddc;
+}
+.perfil-success {
+    color: green;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+.perfil-error {
+    color: #dc3545;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+#backBtn {
+    font-weight: bold;
+    font-size: 1rem; /* Aumenta el tamaño de la fuente */
+    color:var(--color-primario);
+    text-decoration: none; /* Elimina el subrayado */
+    background-color: white;
+    border: 2px solid #0056B3FF; /* Añade un borde azul alrededor */
+    border-radius: 20px; /* Bordes redondeados */
+    display: inline-flex; /* Alinea el contenido de forma flexible */
+    align-items: center; /* Alinea verticalmente el contenido */
+    transition: all 0.3s ease; /* Transición suave al pasar el ratón */
+    width: 5%; /* El botón ocupa solo el espacio necesario */
+}
+
+#backBtn:hover {
+    background-color: #0056B3FF; /* Cambia el fondo a azul cuando pasa el ratón */
+    color: #fff; /* Cambia el texto a blanco */
+    transform: translateY(-3px); /* Efecto de elevación al pasar el ratón */
+}
+
+#backBtn:before {
+    content: "\2190"; /* Añade la flecha izquierda antes del texto */
+    margin-right: 0.5rem; /* Espacio entre la flecha y el texto */
+    font-size: 1.5rem; /* Aumenta el tamaño de la flecha */
+}
+
+.album {
+    width: 90%;
+    margin-top: 1rem;
+    margin-left: auto; /* Centrado automático */
+    margin-right: auto; /* Centrado automático */
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 0.5rem 1rem;
+    font-family: var(--fuente-titulo);
+    font-size: 1rem;
+    color: var(--color-primario);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    text-transform: capitalize;
+}
+.photo-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Espacio entre las imágenes */
+    justify-content: center;
+    padding: 20px;
+}
+
+.photo-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 220px; /* Ancho fijo para cada contenedor de imagen */
+    height: 300px; /* Altura fija para el contenedor */
+    justify-content: center;
+    overflow: hidden; /* Evita que la imagen se salga del contenedor */
+    border-radius: 12px; /* Bordes redondeados del contenedor */
+}
+
+.photo-gallery img {
+    width: 100%; /* La imagen ocupa todo el ancho del contenedor */
+    height: 100%; /* La imagen ocupa toda la altura del contenedor */
+    object-fit: contain; /* Asegura que la imagen se vea completa, sin recortarse */
+    border-radius: 12px; /* Bordes redondeados en la imagen */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra suave alrededor de la imagen */
+    cursor: pointer; /* Cambia el cursor al pasar sobre la imagen */
+    transition: transform 0.3s ease; /* Efecto de transición para el hover */
+}
+
+.photo-gallery img:hover {
+    transform: scale(1.05); /* Efecto de ampliación suave al pasar el ratón */
 }

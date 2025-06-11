@@ -4,105 +4,11 @@
     <meta charset="UTF-8" />
     <title>Eventos – Fotógrafo</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <style>
-        .panel-container {
-            max-width: 1100px;
-            margin: 2rem auto;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            padding: 2rem 2.5rem;
-        }
-        .panel-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        .filtros-panel-eventos {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
-        .filtros-panel-eventos input[type="text"], .filtros-panel-eventos select {
-            padding: 0.5rem;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            min-width: 200px;
-        }
-        .filtros-panel-eventos button {
-            padding: 0.5rem 1.5rem;
-            border-radius: 5px;
-            border: none;
-            background: var(--color-primario, #007bff);
-            color: #fff;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .filtros-panel-eventos button:hover {
-            background: #0056b3;
-        }
-        .event-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1.5rem;
-        }
-        .event-table th, .event-table td {
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #eaeaea;
-            text-align: center;
-        }
-        .event-table th {
-            background: #f7f7f7;
-            color: #333;
-        }
-        .event-table tr:last-child td {
-            border-bottom: none;
-        }
-        .event-img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-            background: #eee;
-        }
-        .btn-ver {
-            background: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 0.4rem 1rem;
-            font-weight: bold;
-            text-decoration: none;
-            margin-right: 0.5rem;
-            transition: background 0.2s;
-        }
-        .btn-ver:hover {
-            background: #0056b3;
-        }
-        .btn-borrar {
-            background: #dc3545;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 0.4rem 1rem;
-            font-weight: bold;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-        .btn-borrar:hover {
-            background: #a71d2a;
-        }
-        @media (max-width: 700px) {
-            .panel-container { padding: 1rem 0.5rem; }
-            .event-table th, .event-table td { font-size: 0.95rem; padding: 0.5rem 0.2rem; }
-            .event-img { width: 50px; height: 50px; }
-        }
-    </style>
+
 </head>
 <body>
 <div th:replace="navbar :: navbar"></div>
+
 <div class="panel-container">
     <h1 class="panel-header">Gestión de Eventos</h1>
 
