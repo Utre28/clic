@@ -7,6 +7,7 @@
 </head>
 <body>
 <div th:replace="navbar :: navbar"></div>
+<a id="backBtn" href="#">Volver</a>
 <div class="panel-container">
     <h1 class="panel-header" th:text="'Álbumes de ' + ${evento.name}">Álbumes del Evento</h1>
 
@@ -316,6 +317,16 @@
                 termsModal.style.display = 'none';
             });
         }
+    });
+
+    window.addEventListener('DOMContentLoaded', function() {
+        const backBtn = document.getElementById('backBtn');
+
+        // Usamos history.back() para regresar a la página anterior
+        backBtn.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevenir que el enlace haga la navegación por defecto
+            window.history.back();  // Regresar a la página anterior
+        });
     });
 </script>
 </body>

@@ -18,8 +18,8 @@
         <p>No tienes eventos disponibles.</p>
     </div>
 
-    <div class="eventos-grid" th:if="${not #lists.isEmpty(events)}">
-        <div th:each="event : ${events}" class="event-card">
+    <div class="categorias" th:if="${not #lists.isEmpty(events)}">
+        <div th:each="event : ${events}" class="categoria">
             <img th:src="@{/img/default-event.jpg}" alt="Imagen de evento" />
             <h3 th:text="${event.name}"></h3>
             <p th:text="${event.date}"></p>

@@ -8,10 +8,7 @@
 </head>
 <body>
 <div th:replace="navbar :: navbar"></div>
-  <a id="backBtn"
-     th:href="@{/albumes/by-event/{eventId}(eventId=${eventId})}"
-     href="/albumes"
-  >Volver</a>
+<a id="backBtn" href="#">Volver</a>
   <div class="album">
   <h1 th:text="${album.name}">Álbum</h1>
 
@@ -20,14 +17,18 @@
   <div th:if="${#lists.isEmpty(fotos)}">
     <p>No hay fotos en este álbum.</p>
   </div>
-  <form id="downloadZipForm" method="post" action="/api/photos/download-zip" target="_blank" style="width:100%;"
-        th:if="${desdeMisEventos}">
+
+  <!-- Mostrar formulario de descarga solo si estamos en Mis eventos -->
+  <form id="downloadZipForm" method="post" action="/api/photos/download-zip" target="_blank" style="width:100%;" th:if="${desdeMisEventos}">
+    <div style="text-align:center; margin: 20px;">
+      <button type="button" id="selectDeselectBtn" class="btn-small">Seleccionar Todas</button>
+    </div>
+
     <div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;">
       <div th:each="foto : ${fotos}" class="photo-item" style="align-items:center;">
         <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto" class="gallery-img"/>
         <label style="margin-top:0.5rem;">
           <input type="checkbox" name="photoIds" th:value="${foto.id}" class="photo-checkbox"/>
-          Seleccionar
         </label>
       </div>
     </div>
@@ -35,6 +36,7 @@
       <button type="submit" class="btn">Descargar seleccionadas (.zip)</button>
     </div>
   </form>
+
   <!-- Solo mostrar las fotos sin checkboxes si NO viene de mis eventos -->
   <div th:if="${!desdeMisEventos}">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;">
@@ -120,7 +122,47 @@
   document.querySelectorAll('.gallery-img').forEach(img => {
     fotos.push(img.src); // Llenar la lista de fotos con las imágenes
   });
+  document.addEventListener('DOMContentLoaded', function() {
+    const selectDeselectBtn = document.getElementById('selectDeselectBtn');
+    const checkboxes = document.querySelectorAll('.photo-checkbox');
 
+    function toggleSelectDeselect() {
+      const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+
+      if (allChecked) {
+        // Si todas están seleccionadas, desmarcarlas
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+        selectDeselectBtn.textContent = 'Seleccionar Todas';
+      } else {
+        // Si algunas no están seleccionadas, marcar todas
+        checkboxes.forEach(checkbox => checkbox.checked = true);
+        selectDeselectBtn.textContent = 'Deseleccionar Todas';
+      }
+    }
+
+    // Evento para marcar/desmarcar todas las fotos
+    selectDeselectBtn.addEventListener('click', toggleSelectDeselect);
+
+    // Actualizar el estado del botón cuando se marque/desmarque manualmente un checkbox
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        selectDeselectBtn.textContent = allChecked ? 'Deseleccionar Todas' : 'Seleccionar Todas';
+      });
+    });
+  });
+
+
+
+  window.addEventListener('DOMContentLoaded', function() {
+    const backBtn = document.getElementById('backBtn');
+
+    // Usamos history.back() para regresar a la página anterior
+    backBtn.addEventListener('click', function(event) {
+      event.preventDefault(); // Prevenir que el enlace haga la navegación por defecto
+      window.history.back();  // Regresar a la página anterior
+    });
+  });
 </script>
   </div>
 <!-- Footer -->

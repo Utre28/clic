@@ -32,7 +32,7 @@
             </li>
             <!-- Botón visible solo para PHOTOGRAPHER -->
             <li sec:authorize="hasRole('PHOTOGRAPHER')">
-                <a th:href="@{/panel/eventos}">Eventos</a>
+                <a th:href="@{/panel/eventos}"> Gestión de eventos</a>
             </li>
             <!-- Otras opciones de menú -->
             <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')"><a th:href="@{/perfil}">Mi perfil</a></li>
