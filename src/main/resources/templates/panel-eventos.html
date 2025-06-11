@@ -11,6 +11,7 @@
             gap: 0.3rem;
             align-items: stretch;
         }
+
         .btn-ver, .btn-enviar-mensaje {
             font-size: 0.85rem;
             padding: 0.3rem 0.7rem;
@@ -22,24 +23,38 @@
             border: none;
             cursor: pointer;
             text-align: center;
+            display: inline-block;
         }
+
         .btn-ver {
-            background: #e0e0e0;
-            color: #333;
+            background: #0257b4;
+            color: #fff;
         }
+
         .btn-enviar-mensaje {
             background: #4caf50;
             color: #fff;
         }
+
         .btn-ver:hover {
-            background: #d5d5d5;
+            background: #0469d6;
         }
+
         .btn-enviar-mensaje:hover {
             background: #388e3c;
         }
+
+        /* Estilo para evitar que el borde del formulario sea visible */
         .acciones-evento form {
             margin: 0;
+            padding: 0;
+            display: inline-block;  /* Asegura que no se vea como un cuadro */
         }
+
+        .acciones-evento form button {
+            width: 100%; /* Asegura que el botón se ajuste al 100% */
+        }
+
     </style>
 </head>
 <body>
@@ -72,7 +87,10 @@
         </select>
         <button type="submit">Buscar / Filtrar</button>
     </form>
-
+    <!-- Mensaje de éxito o error -->
+    <div id="feedbackMessage" style="display:none; padding: 10px; background-color: #4CAF50; color: white; text-align: center; border-radius: 5px; margin-top: 10px;">
+        <span id="feedbackText"></span>
+    </div>
     <!-- Formulario de borrado múltiple (POST) SOLO para el botón y los checkboxes -->
     <table class="event-table">
         <thead>
@@ -116,7 +134,7 @@
         </tbody>
     </table>
     <form id="borrarEventosForm" th:action="@{/panel/eventos/borrar-multiple}" method="post" style="margin-top:1rem;">
-        <button type="submit" class="btn-borrar" id="btnBorrarSeleccionados">Borrar Seleccionados</button>
+        <button type="submit" class="btn-borrar" id="btnBorrarSeleccionados">Borrar Eventos seleccionados</button>
     </form>
 </div>
 <!-- Footer -->
