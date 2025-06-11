@@ -46,38 +46,81 @@
 </section>
 
 <!-- Modal para ver foto ampliada -->
-<div id="modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;
-    background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:1000;">
-  <img id="modalImg" src="" alt="" style="max-width:90vw;max-height:90vh;border-radius:8px;"/>
-</div>
+    <!-- Modal para ver foto ampliada -->
+    <div id="photoModal" class="photo-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.8); justify-content: center; align-items: center; z-index: 1000;">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+
+        <!-- Flechas de navegación -->
+        <button class="prev" id="prevBtn" onclick="prevImage()">&#10094;</button> <!-- Flecha izquierda -->
+        <button class="next" id="nextBtn" onclick="nextImage()">&#10095;</button> <!-- Flecha derecha -->
+
+        <!-- Imagen del modal -->
+        <img id="modalImage" src="" alt="Foto" />
+      </div>
+    </div>
+
 
 <script>
-  // Modal para ver foto ampliada (igual que antes)
-  document.querySelectorAll('.gallery-img').forEach(img => {
-    img.addEventListener('click', function(e) {
-      const modal = document.getElementById('modal');
-      const modalImg = document.getElementById('modalImg');
-      modalImg.src = this.src;
-      modal.style.display = 'flex';
-    });
-  });
-  document.getElementById('modal').addEventListener('click', function() {
-    this.style.display = 'none';
+  // Variables para manejar las fotos
+  let fotos = []; // Lista de imágenes
+  let fotoActualIndex = 0; // Índice de la foto actual
+
+  // Rellenar la lista de fotos al cargar la página
+  document.querySelectorAll('.gallery-img').forEach((img, index) => {
+    fotos.push(img.src); // Almacenar solo las URLs de las imágenes
   });
 
-  // Validar selección antes de enviar el formulario ZIP
-  document.addEventListener('DOMContentLoaded', function() {
-    var form = document.getElementById('downloadZipForm');
-    if (form) {
-      form.addEventListener('submit', function(e) {
-        const checked = Array.from(document.querySelectorAll('.photo-checkbox:checked'));
-        if (!checked.length) {
-          alert('Selecciona al menos una foto para descargar.');
-          e.preventDefault();
-        }
-      });
+  // Abrir el modal al hacer clic en una imagen
+  document.querySelectorAll('.gallery-img').forEach((img, index) => {
+    img.addEventListener('click', function() {
+      const modal = document.getElementById('photoModal');
+      const modalImg = document.getElementById('modalImage');
+      modalImg.src = this.src; // Establecer la fuente de la imagen en el modal
+      fotoActualIndex = index; // Establecer el índice de la foto actual
+      modal.style.display = 'flex'; // Mostrar el modal
+    });
+  });
+
+  // Función para cerrar el modal
+  function closeModal() {
+    document.getElementById('photoModal').style.display = 'none'; // Cerrar el modal
+  }
+
+  // Función para navegar a la foto anterior
+  function prevImage() {
+    fotoActualIndex = (fotoActualIndex - 1 + fotos.length) % fotos.length; // Índice circular (anterior)
+    updateModalImage(); // Actualizar la imagen en el modal
+  }
+
+  // Función para navegar a la foto siguiente
+  function nextImage() {
+    fotoActualIndex = (fotoActualIndex + 1) % fotos.length; // Índice circular (siguiente)
+    updateModalImage(); // Actualizar la imagen en el modal
+  }
+
+  // Función para actualizar la imagen en el modal
+  function updateModalImage() {
+    const modalImg = document.getElementById('modalImage');
+    modalImg.src = fotos[fotoActualIndex]; // Establecer la nueva imagen
+  }
+
+  // Cerrar el modal con la tecla 'Esc'
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      closeModal(); // Cerrar el modal al presionar Escape
+    } else if (event.key === 'ArrowLeft') {
+      prevImage(); // Navegar a la foto anterior si se presiona la flecha izquierda
+    } else if (event.key === 'ArrowRight') {
+      nextImage(); // Navegar a la foto siguiente si se presiona la flecha derecha
     }
   });
+
+  // Añadir las imágenes a la lista de fotos
+  document.querySelectorAll('.gallery-img').forEach(img => {
+    fotos.push(img.src); // Llenar la lista de fotos con las imágenes
+  });
+
 </script>
   </div>
 <!-- Footer -->
