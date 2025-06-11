@@ -1,10 +1,9 @@
-<!-- src/main/resources/templates/login.html -->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login – Fotógrafo Profesional</title>
+  <title>Registro – Fotógrafo Profesional</title>
   <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body>
@@ -12,32 +11,38 @@
 
 <section class="login">
   <div class="login-container">
-    <h1>Acceso para Clientes</h1>
-    <p>Inicia sesión usando tu cuenta de Google:</p>
-    <a th:href="@{/oauth2/authorization/google}" class="google-login-btn">
-      <img src="/img/gmail.png" alt="Google logo" class="google-logo" />
-      Iniciar sesión con Google
-    </a>
-    <form method="post" th:action="@{/login}">
-      <label for="username">Email:</label>
-      <input type="email" id="username" name="username" autocomplete="username" required/>
+    <h1>Registro de Cliente</h1>
+    <form method="post" th:action="@{/register}" th:object="${userDTO}">
+      <label for="name">Nombre:</label>
+      <input type="text" id="name" th:field="*{name}" required/>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" th:field="*{email}" required/>
+
       <label for="password">Contraseña:</label>
-      <input type="password" id="password" name="password" autocomplete="current-password" required/>
-      <button type="submit">Iniciar sesión</button>
+      <input type="password" id="password" th:field="*{password}" required/>
+
+      <label for="confirmPassword">Repite la contraseña:</label>
+      <input type="password" id="confirmPassword" th:field="*{confirmPassword}" required/>
+
+      <div th:if="${#fields.hasErrors('password')}" style="color:red; text-align:center;">
+        <span th:errors="*{password}"></span>
+      </div>
+      <div th:if="${#fields.hasErrors('confirmPassword')}" style="color:red; text-align:center;">
+        <span th:errors="*{confirmPassword}"></span>
+      </div>
+      <div th:if="${error}" style="color:red; text-align:center; margin-top:1rem;">
+        <span th:text="${error}"></span>
+      </div>
+      <div th:if="${message}" style="color:green; text-align:center; margin-top:1rem;">
+        <span th:text="${message}"></span>
+      </div>
+      <button type="submit">Registrarse</button>
     </form>
-    <div th:if="${param.error}" style="color:red; text-align:center; margin-top:1rem;">
-      <span th:if="${session['SPRING_SECURITY_LAST_EXCEPTION'] != null}"
-            th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}">Correo no registrado o no verificado correctamente.</span>
-      <span th:if="${session['SPRING_SECURITY_LAST_EXCEPTION'] == null}">
-        Correo no registrado o no verificado correctamente.
-      </span>
-    </div>
-    <p>¿No tienes cuenta? <a th:href="@{/register}">Regístrate aquí</a></p>
+    <p>¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión aquí</a></p>
   </div>
 </section>
 
-<!-- Footer con derechos y enlace a términos -->
-<!-- Footer -->
 <footer>
   <div class="footer-social">
     <a href="https://instagram.com/clicycolor" aria-label="Instagram" target="_blank">
@@ -54,7 +59,6 @@
 </footer>
 
 <div id="terms" class="terms-container" style="display:none;">
-
   <div id="terms-content">
     <!-- El contenido de los términos se cargará aquí -->
   </div>
@@ -71,16 +75,15 @@
     if (termsLink && termsModal) {
       termsLink.addEventListener('click', function(e) {
         e.preventDefault();
-        // Cargar el contenido del archivo de los términos y condiciones
         fetch('/terminos-condiciones.html')
-                .then(response => response.text())
-                .then(data => {
-                  termsContent.innerHTML = data;  // Insertar el contenido en el modal
-                  termsModal.style.display = 'block';  // Mostrar el modal
-                })
-                .catch(error => {
-                  console.error('Error al cargar los términos y condiciones:', error);
-                });
+          .then(response => response.text())
+          .then(data => {
+            termsContent.innerHTML = data;
+            termsModal.style.display = 'block';
+          })
+          .catch(error => {
+            console.error('Error al cargar los términos y condiciones:', error);
+          });
       });
     }
 

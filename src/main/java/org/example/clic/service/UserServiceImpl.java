@@ -1,12 +1,12 @@
-package org.example.clic.service.impl;
+package org.example.clic.service;
 
 import org.example.clic.model.User;
 import org.example.clic.dto.UserDTO;
-import org.example.clic.service.UserService;
 import org.example.clic.repository.UserRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setRole(User.Role.CLIENT); // O el rol que corresponda
-        // user.setEnabled(true); // Si tienes este campo
+        user.setEmailVerified(false); // Si tienes verificación de email
         return userRepository.save(user);
     }
 

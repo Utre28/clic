@@ -34,6 +34,9 @@ public class User {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Event> events;  // Eventos organizados por el cliente
 
+    @Column(nullable = false)
+    private boolean emailVerified = false; // Indica si el correo ha sido verificado
+
     // getters y setters...
 
     public Long getId() { return id; }
@@ -56,4 +59,7 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public boolean isEmailVerified() { return emailVerified; }
+    public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified; }
 }
