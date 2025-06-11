@@ -19,4 +19,5 @@ public interface UserService {
     String getPhotographerRole();
     String getClientRole();
     String getRoleByUsername(String email);
+    String encodePassword(String rawPassword);
 }

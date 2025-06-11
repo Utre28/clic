@@ -26,6 +26,15 @@ public class VerificationToken {
         this.expiryDate = expiryDate;
     }
 
+    public enum Type {
+        VERIFICATION,
+        RESET_PASSWORD
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Type type = Type.VERIFICATION;
+
     // getters y setters
     public Long getId() { return id; }
     public String getToken() { return token; }
@@ -34,4 +43,10 @@ public class VerificationToken {
     public void setUser(User user) { this.user = user; }
     public LocalDateTime getExpiryDate() { return expiryDate; }
     public void setExpiryDate(LocalDateTime expiryDate) { this.expiryDate = expiryDate; }
+    public Type getType() { return type; }
+    public void setType(Type type) { this.type = type; }
+
+    public boolean isExpired(int minutes) {
+        return expiryDate.isBefore(java.time.LocalDateTime.now().minusMinutes(minutes));
+    }
 }

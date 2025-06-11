@@ -4,6 +4,7 @@ import org.example.clic.model.User;
 import org.example.clic.model.VerificationToken;
 import org.example.clic.repository.VerificationTokenRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -30,7 +31,25 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
     }
 
     @Override
+    @Transactional
     public void deleteByToken(String token) {
         tokenRepository.deleteByToken(token);
+    }
+
+    public VerificationToken createToken(User user, String code, VerificationToken.Type type, int expiryMinutes) {
+        VerificationToken token = new VerificationToken(code, user, java.time.LocalDateTime.now().plusMinutes(expiryMinutes));
+        token.setType(type);
+        return tokenRepository.save(token);
+    }
+
+    @Override
+    public Optional<VerificationToken> findByUserAndType(User user, VerificationToken.Type type) {
+        return tokenRepository.findByUserIdAndType(user.getId(), type);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUserAndType(User user, VerificationToken.Type type) {
+        tokenRepository.deleteByUserIdAndType(user.getId(), type);
     }
 }

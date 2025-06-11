@@ -25,6 +25,9 @@
       <input type="password" id="password" name="password" autocomplete="current-password" required/>
       <button type="submit">Iniciar sesión</button>
     </form>
+    <div style="text-align:center; margin-top:1rem;">
+      <a th:href="@{/forgot-password}" style="color:#007bff; text-decoration:underline;">¿Olvidaste tu contraseña?</a>
+    </div>
     <div th:if="${param.error}" style="color:red; text-align:center; margin-top:1rem;">
       <span th:if="${session['SPRING_SECURITY_LAST_EXCEPTION'] != null}"
             th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}">Correo no registrado o no verificado correctamente.</span>

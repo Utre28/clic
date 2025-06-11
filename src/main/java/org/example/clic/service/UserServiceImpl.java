@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setRole(User.Role.CLIENT); // O el rol que corresponda
         user.setEmailVerified(false); // Si tienes verificación de email
-        return userRepository.save(user);
+        return user; // NO guardar aquí
     }
 
     @Override
@@ -96,5 +96,10 @@ public class UserServiceImpl implements UserService {
             return user.getRole().toString();
         }
         return "";
+    }
+
+    @Override
+    public String encodePassword(String rawPassword) {
+        return passwordEncoder.encode(rawPassword);
     }
 }
