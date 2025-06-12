@@ -158,4 +158,14 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/api/photographers")
+    @ResponseBody
+    public List<UserDTO> getAllPhotographers() {
+        // Suponemos que UserService tiene método findByRole(Role role)
+        return userService.findByRole(User.Role.PHOTOGRAPHER)
+                .stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 }

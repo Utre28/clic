@@ -38,22 +38,47 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Carga clientes para evento
+    // Carga clientes y fotógrafos para evento
     const clientSelect = document.getElementById('eventClientId');
     if (clientSelect) {
         try {
-            const response = await fetch('/users/api/clients');
-            if (!response.ok) throw new Error('Error al obtener clientes');
-            const clients = await response.json();
+            // Limpiar opciones previas
+            clientSelect.innerHTML = '<option value="">-- Selecciona un cliente o fotógrafo --</option>';
 
-            clients.forEach(client => {
-                const option = document.createElement('option');
-                option.value = client.id;
-                option.textContent = client.name;
-                clientSelect.appendChild(option);
-            });
+            // Cargar clientes
+            const clientsResp = await fetch('/users/api/clients');
+            if (!clientsResp.ok) throw new Error('Error al obtener clientes');
+            const clients = await clientsResp.json();
+            if (clients.length) {
+                const optgroupClients = document.createElement('optgroup');
+                optgroupClients.label = 'Clientes';
+                clients.forEach(client => {
+                    const option = document.createElement('option');
+                    option.value = client.id;
+                    option.textContent = client.name;
+                    optgroupClients.appendChild(option);
+                });
+                clientSelect.appendChild(optgroupClients);
+            }
+
+            // Cargar fotógrafos
+            const photogsResp = await fetch('/users/api/photographers');
+            if (photogsResp.ok) {
+                const photogs = await photogsResp.json();
+                if (photogs.length) {
+                    const optgroupPhotogs = document.createElement('optgroup');
+                    optgroupPhotogs.label = 'Fotógrafos';
+                    photogs.forEach(photog => {
+                        const option = document.createElement('option');
+                        option.value = photog.id;
+                        option.textContent = photog.name;
+                        optgroupPhotogs.appendChild(option);
+                    });
+                    clientSelect.appendChild(optgroupPhotogs);
+                }
+            }
         } catch (error) {
-            console.error('Error cargando clientes:', error);
+            console.error('Error cargando clientes/fotógrafos:', error);
         }
     }
 

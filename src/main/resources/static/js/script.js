@@ -33,20 +33,44 @@ function showNotification(message, isError = false) {
   }, 5000);
 }
 
-// 3. Llenar el select de clientes dinámicamente
+// 3. Llenar el select de clientes y fotógrafos dinámicamente
 async function loadClients() {
   const clientSelect = document.getElementById("eventClientId");
-  const response = await fetch('/api/users/api/clients');  // Suponiendo que tienes este endpoint para obtener clientes
-  if (response.ok) {
-    const clients = await response.json();
-    clients.forEach(client => {
-      const option = document.createElement("option");
-      option.value = client.id;
-      option.textContent = client.name;
-      clientSelect.appendChild(option);
-    });
-  } else {
-    console.error("Error al cargar los clientes");
+  if (!clientSelect) return;
+  clientSelect.innerHTML = '<option value="">-- Selecciona un cliente o fotógrafo --</option>';
+
+  // Cargar clientes
+  const clientsResp = await fetch('/api/users/api/clients');
+  if (clientsResp.ok) {
+    const clients = await clientsResp.json();
+    if (clients.length) {
+      const optgroupClients = document.createElement('optgroup');
+      optgroupClients.label = 'Clientes';
+      clients.forEach(client => {
+        const option = document.createElement("option");
+        option.value = client.id;
+        option.textContent = client.name;
+        optgroupClients.appendChild(option);
+      });
+      clientSelect.appendChild(optgroupClients);
+    }
+  }
+
+  // Cargar fotógrafos
+  const photogsResp = await fetch('/api/users/api/photographers');
+  if (photogsResp.ok) {
+    const photogs = await photogsResp.json();
+    if (photogs.length) {
+      const optgroupPhotogs = document.createElement('optgroup');
+      optgroupPhotogs.label = 'Fotógrafos';
+      photogs.forEach(photog => {
+        const option = document.createElement("option");
+        option.value = photog.id;
+        option.textContent = photog.name;
+        optgroupPhotogs.appendChild(option);
+      });
+      clientSelect.appendChild(optgroupPhotogs);
+    }
   }
 }
 
