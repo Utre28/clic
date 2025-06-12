@@ -5,13 +5,19 @@
             <span class="site-title">Clic y Color</span>
         </a>
     </div>
+
+    <!-- Centro (solo para pantallas grandes) -->
     <div class="navbar-center">
         <h1 class="site-title">Fotógrafo Profesional</h1>
     </div>
+
+    <!-- Botón de menú hamburguesa (solo para pantallas pequeñas) -->
+    <button id="menuToggle">☰</button>
+
+    <!-- Menú principal (solo para pantallas grandes) -->
     <div class="navbar-right">
         <ul class="menu">
             <li><a th:href="@{/}">Inicio</a></li>
-
             <!-- Menú desplegable Portafolio -->
             <li class="dropdown">
                 <a th:href="@{/portafolio}" class="dropdown-toggle">Portafolio ▼</a>
@@ -23,18 +29,14 @@
                     <li><a th:href="@{'/portafolio?eventoCategoria=Conciertos'}">Conciertos</a></li>
                 </ul>
             </li>
-
             <li sec:authorize="isAnonymous()"><a th:href="@{/login}">Iniciar sesión</a></li>
             <li sec:authorize="isAnonymous()"><a th:href="@{/register}">Registrarse</a></li>
-            <!-- Botón visible solo para CLIENT -->
             <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')">
                 <a th:href="@{/mis-eventos}">Mis eventos</a>
             </li>
-            <!-- Botón visible solo para PHOTOGRAPHER -->
             <li sec:authorize="hasRole('PHOTOGRAPHER')">
-                <a th:href="@{/panel/eventos}"> Gestión de eventos</a>
+                <a th:href="@{/panel/eventos}">Gestión de eventos</a>
             </li>
-            <!-- Otras opciones de menú -->
             <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')"><a th:href="@{/perfil}">Mi perfil</a></li>
             <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')"><a th:href="@{/logout}">Cerrar sesión</a></li>
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/perfil}">Mi perfil</a></li>
@@ -44,4 +46,43 @@
         </ul>
     </div>
 
+    <!-- Menú hamburguesa en pantallas pequeñas (se muestra cuando el botón hamburguesa es clicado) -->
+    <div class="navbar-right">
+        <ul class="menu mobile">
+            <li><a th:href="@{/}">Inicio</a></li>
+            <li class="dropdown">
+                <a th:href="@{/portafolio}" class="dropdown-toggle">Portafolio ▼</a>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{'/portafolio?eventoCategoria=Bodas'}">Bodas</a></li>
+                    <li><a th:href="@{'/portafolio?eventoCategoria=Bautizos'}">Bautizos</a></li>
+                    <li><a th:href="@{'/portafolio?eventoCategoria=Comuniones'}">Comuniones</a></li>
+                    <li><a th:href="@{'/portafolio?eventoCategoria=Retratos'}">Retratos</a></li>
+                    <li><a th:href="@{'/portafolio?eventoCategoria=Conciertos'}">Conciertos</a></li>
+                </ul>
+            </li>
+            <li sec:authorize="isAnonymous()"><a th:href="@{/login}">Iniciar sesión</a></li>
+            <li sec:authorize="isAnonymous()"><a th:href="@{/register}">Registrarse</a></li>
+            <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')">
+                <a th:href="@{/mis-eventos}">Mis eventos</a>
+            </li>
+            <li sec:authorize="hasRole('PHOTOGRAPHER')">
+                <a th:href="@{/panel/eventos}">Gestión de eventos</a>
+            </li>
+            <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')"><a th:href="@{/perfil}">Mi perfil</a></li>
+            <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')"><a th:href="@{/logout}">Cerrar sesión</a></li>
+            <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/perfil}">Mi perfil</a></li>
+            <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/panel}">Panel</a></li>
+            <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/logout}">Cerrar sesión</a></li>
+            <li><a th:href="@{/contacto}">Contacto</a></li>
+        </ul>
+    </div>
 </nav>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Al hacer clic en el botón de menú hamburguesa, se alterna la visibilidad del menú
+        document.getElementById("menuToggle").addEventListener("click", function () {
+            document.querySelector(".menu.mobile").classList.toggle("show");
+        });
+    });
+</script>

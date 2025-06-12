@@ -12,17 +12,14 @@
             align-items: stretch;
         }
 
+        /* Cambios en los botones para pantallas pequeñas */
         .btn-ver, .btn-enviar-mensaje {
-            font-size: 0.9rem;
-            padding: 0.3rem 0.7rem;
-            width: auto;
+            font-size: 1rem; /* Tamaño de texto más grande en pantallas pequeñas */
+            padding: 0.6rem 1.2rem; /* Mayor espacio en los botones */
+            width: 100%; /* Botones ocupan todo el ancho */
+            margin-top: 1rem; /* Separación entre botones */
             box-sizing: border-box;
-            margin: 0;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
             text-align: center;
-            display: inline-block;
         }
 
         .btn-ver {
@@ -57,7 +54,8 @@
     </style>
 </head>
 <body>
-<div th:replace="~{navbar :: navbar}"></div>
+<div th:replace="navbar :: navbar"></div>
+<div th:replace="fragments/scripts :: script"></div>
 
 <div class="panel-container">
     <h1 class="panel-header">Gestión de Eventos</h1>

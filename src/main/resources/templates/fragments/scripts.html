@@ -1,0 +1,13 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Menú hamburguesa
+        var menuToggle = document.getElementById("menuToggle");
+        var menuMobile = document.querySelector(".menu.mobile");
+
+        if (menuToggle && menuMobile) {
+            menuToggle.addEventListener("click", function() {
+                menuMobile.classList.toggle("show");
+            });
+        }
+    });
+</script>

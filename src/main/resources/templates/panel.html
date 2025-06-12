@@ -7,9 +7,131 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
 </head>
 <body>
+<style>
+    /* Estilo del contenedor del modal */
+    #statsModal, #downloadStatsModal {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.7);
+        overflow: hidden; /* Evitar que el contenido se desborde fuera de la pantalla */
+    }
+
+    /* Estilo del contenido dentro del modal */
+    #statsModal .modal-content, #downloadStatsModal .modal-content {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh; /* Ajuste para evitar que el modal sea demasiado grande */
+        overflow-y: auto; /* Permitir el desplazamiento si el contenido excede el tamaño */
+        position: relative;
+    }
+
+    /* Títulos dentro del modal */
+    h2 {
+        text-align: center;
+        font-family: var(--fuente-titulo);
+        font-size: 1.5rem;
+        color: var(--color-primario);
+        margin-bottom: 1rem;
+    }
+
+    /* Tabla en el modal */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px 20px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    /* Estilo para los encabezados */
+    th {
+        background-color: rgba(2, 87, 180, 0.69);
+        color: white;
+        font-weight: bold;
+    }
+
+    /* Efecto de hover sobre las filas */
+    tr:hover {
+        background-color: #f1f1f1;
+        cursor: pointer;
+    }
+
+    /* Mejorar la visibilidad de las celdas */
+    td {
+        font-size: 1rem;
+        color: #333;
+    }
+
+    /* Estilo del botón dentro del modal */
+    button {
+        background-color: rgba(2, 87, 180, 0.62);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-size: 1rem;
+        width: 100%;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Asegurarse de que la gráfica se ajuste correctamente */
+    #statsChart, #downloadStatsChart {
+        width: 100% !important; /* Asegura que la gráfica ocupe todo el espacio disponible */
+        height: 250px !important; /* Establece una altura adecuada */
+        margin-top: 1rem;
+        display: block;
+    }
+
+    /* Ajustes para pantallas pequeñas */
+    @media (max-width: 768px) {
+        /* Modal y contenido */
+        #statsModal .modal-content, #downloadStatsModal .modal-content {
+            width: 90%;
+            max-height: 70vh; /* Reducir la altura máxima en pantallas pequeñas */
+        }
+
+        /* Ajustar los tamaños de la tabla */
+        th, td {
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Ajuste de los botones */
+        button {
+            font-size: 0.9rem;
+            padding: 8px 15px;
+        }
+
+        /* Ajustar el título */
+        h2 {
+            font-size: 1.2rem;
+        }
+    }
+
+</style>
 
 <!-- Navbar incluido vía Thymeleaf -->
 <div th:replace="navbar :: navbar"></div>
+<div th:replace="fragments/scripts :: script"></div>
 
 <main class="panel">
     <section>
@@ -26,7 +148,9 @@
 <!-- Modal de Estadísticas -->
 <div id="statsModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:2000;">
     <div style="background:#fff; padding:2rem; border-radius:10px; max-width:600px; width:95%;">
-        <h2>Visitas por Evento</h2>
+        <h2  style="text-align: center;  font-family: var(--fuente-titulo);
+    font-size: 1.5rem;
+    color: var(--color-primario);" >Visitas por Evento</h2>
         <table style="width:100%; border-collapse:collapse;">
             <thead>
                 <tr>
@@ -48,7 +172,9 @@
 <!-- Modal de Estadísticas de Descarga -->
 <div id="downloadStatsModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:2000;">
     <div style="background:#fff; padding:2rem; border-radius:10px; max-width:600px; width:95%;">
-        <h2>Descargas por Álbum</h2>
+        <h2 style="text-align: center;  font-family: var(--fuente-titulo);
+    font-size: 1.5rem;
+    color: var(--color-primario);" >Descargas por Álbum</h2>
         <table style="width:100%; border-collapse:collapse;">
             <thead>
                 <tr>
@@ -251,8 +377,8 @@ document.getElementById('showDownloadStatsBtn').addEventListener('click', async 
                     datasets: [{
                         label: 'Descargas',
                         data: data, // Número de descargas
-                        backgroundColor: 'rgba(255, 159, 64, 0.5)', // Color de fondo de las barras
-                        borderColor: 'rgba(255, 159, 64, 1)', // Color del borde de las barras
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
                         borderWidth: 1
                     }]
                 },
