@@ -34,36 +34,6 @@ body {
     line-height: 1.6;
 }
 
-/* Navbar */
-.navbar {
-    background-color: var(--color-claro);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 5%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-/* Logo y branding */
-.header-left {
-    display: flex;
-    align-items: center;
-}
-
-.logo {
-    max-width: 40px;
-    height: auto;
-}
-
-.branding {
-    margin-left: 0.5rem;
-    font-family: var(--fuente-titulo);
-    font-size: 1.5rem;
-    color: var(--color-primario);
-}
 
 /* Título */
 .site-title {
@@ -72,47 +42,6 @@ body {
     color: var(--color-primario);
     font-weight: 600;
     margin-left: 1rem;
-}
-
-/* Menú */
-.menu {
-    display: flex;
-    list-style: none;
-    gap: 1.5rem;
-}
-
-.menu li {
-    position: relative;
-}
-
-.menu a {
-    font-weight: 400;
-    font-size: 1rem;
-    text-decoration: none;
-    color: var(--color-primario);
-    transition: color 0.3s ease;
-}
-
-.menu a:hover {
-    color: var(--color-acento);
-}
-
-/* Dropdown */
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: var(--color-claro);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 0.5rem 0;
-    border-radius: 6px;
-    list-style: none;
-}
-
-.dropdown:hover .dropdown-menu {
-    display: block;
 }
 
 .dropdown-menu a {
@@ -323,6 +252,10 @@ form#createAlbumForm button:hover {
     form, .panel { padding: 1rem; }
     .sobre-mi .contenedor { grid-template-columns: 1fr; text-align: center; }
     .sobre-mi img { margin-bottom: 2rem; }
+    .event-table th, .event-table td {
+        font-size: 0.9rem;
+        padding: 0.8rem;
+    }
 }
 
 .sobre-mi { padding: 4rem 5%; background: #fff; color: var(--color-gris); }
@@ -663,17 +596,20 @@ nav ul li.dropdown:hover .dropdown-menu { display:block; }
 .event-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 2rem;
 }
 .event-table th, .event-table td {
-    padding: 0.8rem 0.5rem;
-    border-bottom: 1px solid #eaeaea;
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
     text-align: center;
 }
 .event-table th {
     background: #f7f7f7;
     color: #333;
 }
+.event-table td {
+    background-color: #fff;
+}
+
 .event-table tr:last-child td {
     border-bottom: none;
 }
@@ -1585,3 +1521,235 @@ nav ul li.dropdown:hover .dropdown-menu { display:block; }
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: transform 0.3s ease;}
+
+.home-link {
+    text-decoration: none; /* Quita el subrayado del enlace */
+    display: flex; /* Para que el enlace no genere espacio innecesario */
+    align-items: center; /* Asegura que los elementos estén alineados */
+}
+
+.logo {
+    display: block; /* Asegura que la imagen no actúe como un elemento inline */
+}
+
+
+/* Navbar */
+.navbar {
+    background-color: var(--color-claro);
+    display: flex;
+    justify-content: space-between; /* Alinea el contenido entre el logo y el menú */
+    align-items: center;
+    padding: 1rem 5%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+/* Logo y branding */
+.header-left {
+    display: flex;
+    align-items: center;
+    flex: 1; /* Esto asegura que el logo se quede en la izquierda */
+}
+.logo {
+    max-width: 40px;
+    height: auto;
+}
+
+.branding {
+    margin-left: 0.5rem;
+    font-family: var(--fuente-titulo);
+    font-size: 1.5rem;
+    color: var(--color-primario);
+}
+/* Título centrado */
+.navbar-center {
+    text-align: center;
+    flex: 2; /* Esto hace que el título se quede en el centro */
+}
+
+.site-title {
+    font-family: var(--fuente-titulo);
+    font-size: 1.5rem;
+    color: var(--color-primario);
+    font-weight: 600;
+    margin: 0;
+}
+
+
+/* Menú */
+.menu {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+    flex: 1; /* Esto asegura que el menú se quede a la derecha */
+    justify-content: flex-end;
+}
+
+/* Menú en pantallas pequeñas */
+.menu.mobile {
+    display: none; /* Se oculta por defecto en pantallas grandes */
+    list-style: none;
+    gap: 1.5rem;
+    width: 100%;
+    flex-direction: column;
+    background-color: var(--color-claro);
+    position: absolute;
+    top: 60px;
+    left: 0;
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+.menu li {
+    position: relative;
+}
+
+.menu a {
+    font-weight: 400;
+    font-size: 1rem;
+    text-decoration: none;
+    color: var(--color-primario);
+    transition: color 0.3s ease;
+}
+
+.menu a:hover {
+    color: var(--color-acento);
+}
+
+/* Estilo de los enlaces cuando el menú está visible */
+.menu.show {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Botón hamburguesa */
+#menuToggle {
+    display: block; /* Asegura que se muestre solo en pantallas pequeñas */
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: var(--color-primario);
+    cursor: pointer;
+}
+
+/* Dropdown */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-claro);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+    border-radius: 6px;
+    list-style: none;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 768px) {
+    /* Menú en pantallas pequeñas */
+    #menuToggle {
+        display: block;
+    }
+
+    .menu {
+        display: none; /* Se oculta por defecto en pantallas pequeñas */
+    }
+
+    .menu.show {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Estilo para que el menú hamburguesa ocupe toda la pantalla */
+    .menu li {
+        padding: 10px 0;
+        text-align: center;
+    }
+
+    /* Ajuste del logo y el título en pantallas pequeñas */
+    .navbar-center {
+        display: none;
+    }
+
+    .navbar-left {
+        display: flex;
+        flex: 1;
+    }
+
+    .branding {
+        display: none;
+    }
+
+    .menu a {
+        font-size: 1.2rem;
+        padding: 12px;
+    }
+    .acciones-evento {
+        flex-direction: column; /* Organiza los botones en columna */
+        align-items: stretch; /* Alinea los botones de forma que ocupen todo el ancho */
+    }
+
+    .filtros-panel-eventos {
+        flex-direction: column; /* Los filtros se muestran en columna */
+        align-items: center; /* Centra los elementos */
+    }
+
+    .filtros-panel-eventos input[type="text"], .filtros-panel-eventos select {
+        width: 100%; /* Los filtros ocupan todo el ancho disponible */
+        padding: 0.8rem;
+        margin-bottom: 1rem; /* Espacio entre los filtros */
+    }
+
+    .filtros-panel-eventos button {
+        width: 100%; /* El botón ocupa todo el ancho */
+        padding: 0.8rem;
+    }
+}
+
+/* Mensaje de "No hay eventos para mostrar" */
+#no-selection-message {
+    text-align: center;
+    color: #dc3545;
+    margin-top: 1rem;
+}
+/* Ajustes de diseño en pantallas más pequeñas */
+@media (max-width: 480px) {
+    .panel-container {
+        padding: 1rem; /* Menos padding en la pantalla pequeña */
+    }
+
+    .event-table th, .event-table td {
+        font-size: 0.8rem; /* Reducir el tamaño de fuente en tablas en pantallas muy pequeñas */
+    }
+}
+
+/* Menú en pantallas grandes */
+@media (min-width: 768px) {
+    .menu {
+        display: flex; /* Muestra el menú horizontal */
+    }
+
+    .menu.mobile {
+        display: none; /* Oculta el menú en pantallas grandes */
+    }
+
+    #menuToggle {
+        display: none; /* Oculta el botón hamburguesa en pantallas grandes */
+    }
+}
+
+
+/* Footer responsive */
+@media (max-width: 768px) {
+    .footer-social {
+        flex-direction: column; /* Los iconos sociales se alinean verticalmente */
+    }
+}
