@@ -6,13 +6,21 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body>
-<div th:replace="navbar :: navbar"></div>
-<div th:replace="fragments/scripts :: script"></div>
+<div th:replace="~{navbar :: navbar}"></div>
+<div th:replace="~{fragments/scripts :: script}"></div>
 
 <a id="backBtn" href="#">Volver</a>
 
 <div class="panel-container">
     <h1 class="panel-header" th:text="'Álbumes de ' + ${evento.name}">Álbumes del Evento</h1>
+
+    <!-- Mensaje de éxito o error tras borrar fotos -->
+    <div id="mensaje-flash" th:if="${mensaje}" style="color:green; text-align:center; margin-bottom:1rem;">
+        <p th:text="${mensaje}"></p>
+    </div>
+    <div id="mensaje-flash-error" th:if="${message}" style="color:red; text-align:center; margin-bottom:1rem;">
+        <p th:text="${message}"></p>
+    </div>
 
     <div th:if="${#lists.isEmpty(albumes)}">
         <p>No hay álbumes para este evento.</p>
@@ -21,29 +29,27 @@
     <div th:each="album : ${albumes}" class="album-block">
         <div class="album-header" style="display: flex; align-items: center; justify-content: space-between;">
             <h2 th:text="${album.name}" style="flex:1; text-align:center; margin:0;">Nombre del Álbum</h2>
-
-            <form id="borrarEventosForm"  th:action="@{'/panel/albumes/' + ${album.id} + '/borrar'}" method="post" style="display:inline;">
+            <form id="borrarEventosForm" th:action="@{'/panel/albumes/' + ${album.id} + '/borrar'}" method="post" style="display:inline;">
+                <input type="hidden" name="eventoId" th:value="${evento.id}" />
                 <button type="submit" class="btn-borrar" onclick="return confirm('¿Seguro que quieres borrar este álbum?')">Borrar Álbum</button>
             </form>
         </div>
-
         <div th:if="${albumFotosMap != null and albumFotosMap[album.id] != null and not #lists.isEmpty(albumFotosMap[album.id])}">
             <!-- Formulario para borrar fotos seleccionadas -->
-            <form id="borrarFotosForm" action="/panel/fotos/borrar-multiple" method="post">
+            <form id="borrarFotosForm-[[${album.id}]]" th:action="@{/panel/fotos/borrar-multiple}" method="post">
+                <input type="hidden" name="eventoId" th:value="${evento.id}" />
                 <div class="fotos-grid">
                     <div th:each="foto : ${albumFotosMap[album.id]}" class="foto-card">
-                        <!-- Checkbox para seleccionar la foto -->
                         <input type="checkbox" name="fotoIds" th:value="${foto.id}" id="foto-${foto.id}" class="foto-checkbox">
                         <label for="foto-${foto.id}">
-                            <img th:src="${foto.url}" alt="Foto" class="foto-preview"/>
+                            <img th:src="${foto.url}" alt="Foto" class="foto-preview"
+                                 style="width:auto; height:auto; max-width:140px; max-height:140px; border-radius:8px; margin-bottom:5px; display:block;"/>
                         </label>
                     </div>
                 </div>
-                <!-- Solo mostrar el botón si hay fotos -->
                 <button type="submit" class="btn-borrar" onclick="return confirmBorrar()" th:if="${#lists.size(albumFotosMap[album.id]) > 0}">Borrar fotos seleccionadas</button>
             </form>
         </div>
-
         <div th:if="${albumFotosMap == null or albumFotosMap[album.id] == null or #lists.isEmpty(albumFotosMap[album.id])}">
             <p style="color:#888;">No hay fotos en este álbum.</p>
         </div>
@@ -98,9 +104,9 @@
 </div>
 
 <script>
-    let fotos = []; // Lista de imágenes
+    let fotos = [];
     let fotoActualIndex = 0;
-    let fotosSeleccionadas = {}; // Guardará el estado de selección de cada imagen
+    let fotosSeleccionadas = {};
 
     function openModal(imgSrc) {
         fotos = [...document.querySelectorAll('.foto-preview')].map(img => img.src);
@@ -116,40 +122,32 @@
         syncCheckbox();
     }
 
-    // Cerrar el modal
     function closeModal() {
         document.getElementById("photoModal").style.display = "none";
     }
 
-    // Cambiar a la imagen anterior
     function prevImage() {
         fotoActualIndex = (fotoActualIndex - 1 + fotos.length) % fotos.length;
         updateModalImage();
     }
 
-    // Cambiar a la imagen siguiente
     function nextImage() {
         fotoActualIndex = (fotoActualIndex + 1) % fotos.length;
         updateModalImage();
     }
 
-    // Actualizar la imagen en el modal y mantener selección
     function updateModalImage() {
         var modalImage = document.getElementById("modalImage");
-        fotoActualIndex = (fotoActualIndex + fotos.length) % fotos.length; // Índice circular
+        fotoActualIndex = (fotoActualIndex + fotos.length) % fotos.length;
         modalImage.src = fotos[fotoActualIndex];
-        syncCheckbox(); // Sincronizar selección con la imagen actual
+        syncCheckbox();
     }
 
-    // Sincronizar el estado de selección
     function syncCheckbox() {
         var modalImageSrc = document.getElementById("modalImage").src;
-
-        // Mantener el estado de selección sin que se pierda al navegar
         var modalCheckbox = document.getElementById("modalCheckbox");
         modalCheckbox.checked = fotosSeleccionadas[modalImageSrc] || false;
 
-        // También actualizar las imágenes en la galería con el estado actual
         document.querySelectorAll('.foto-card').forEach(card => {
             var imgPreview = card.querySelector('.foto-preview');
             var checkbox = card.querySelector('.foto-checkbox');
@@ -159,118 +157,77 @@
         });
     }
 
-    // Cambiar el estado de la foto al seleccionarla en el modal
-    document.getElementById("modalCheckbox").addEventListener("change", function () {
-        var modalImageSrc = document.getElementById("modalImage").src;
-
-        // Guardar el estado de selección en memoria
-        fotosSeleccionadas[modalImageSrc] = this.checked;
-
-        // Actualizar todas las imágenes en la galería que coincidan con la imagen en el modal
-        document.querySelectorAll('.foto-card').forEach(card => {
-            var imgPreview = card.querySelector('.foto-preview');
-            var checkbox = card.querySelector('.foto-checkbox');
-
-            if (imgPreview.src === modalImageSrc) {
-                checkbox.checked = this.checked;
-            }
-        });
-    });
-
-    // Manejo de teclas izquierda y derecha para cambiar imágenes
-    document.addEventListener("keydown", function(event) {
-        if (document.getElementById("photoModal").style.display === "flex") {
-            if (event.key === "ArrowLeft") {
-                fotoActualIndex = (fotoActualIndex - 1 + fotos.length) % fotos.length;
-                updateModalImage();
-            } else if (event.key === "ArrowRight") {
-                fotoActualIndex = (fotoActualIndex + 1) % fotos.length;
-                updateModalImage();
-            }
-        }
-    });
-
-    // Cerrar el modal con la tecla "Esc"
-    document.addEventListener("keydown", function(event) {
-        if (event.key === "Escape") {
-            closeModal();
-        }
-    });
-
-    // Añadir evento a las imágenes para abrir el modal
-    document.querySelectorAll('.foto-preview').forEach(img => {
-        img.addEventListener('click', function() {
-            openModal(this.src); // Pasa la URL de la imagen al modal
-        });
-    });
-
-    document.getElementById('borrarFotosForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevenir el envío tradicional del formulario
-
-        const form = event.target;
-        const formData = new FormData(form);
-
-        // Enviar la solicitud AJAX para borrar las fotos
-        fetch(form.action, {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Mostrar mensaje de éxito
-                    showFeedbackMessage('Fotos eliminadas correctamente.', 'success');
-
-                    // Eliminar las fotos seleccionadas de la interfaz sin recargar la página
-                    document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-                        checkbox.closest('.foto-card').remove();
-                    });
-                } else {
-                    // Mostrar mensaje de error
-                    showFeedbackMessage(data.message || 'Hubo un error al eliminar las fotos.', 'error');
+    document.addEventListener("DOMContentLoaded", function() {
+        // Modal checkbox sync
+        document.getElementById("modalCheckbox").addEventListener("change", function () {
+            var modalImageSrc = document.getElementById("modalImage").src;
+            fotosSeleccionadas[modalImageSrc] = this.checked;
+            document.querySelectorAll('.foto-card').forEach(card => {
+                var imgPreview = card.querySelector('.foto-preview');
+                var checkbox = card.querySelector('.foto-checkbox');
+                if (imgPreview.src === modalImageSrc) {
+                    checkbox.checked = this.checked;
                 }
-            })
-            .catch(error => {
-                console.error('Error en la solicitud:', error);
-                showFeedbackMessage('Ocurrió un error inesperado al borrar las fotos.', 'error');
             });
-    });
+        });
 
-    // Función para mostrar mensajes de éxito o error
-    function showFeedbackMessage(message, type) {
-        const feedbackMessage = document.getElementById('feedbackMessage');
-        const feedbackText = document.getElementById('feedbackText');
+        // Modal navigation
+        document.querySelectorAll('.foto-preview').forEach(img => {
+            img.addEventListener('click', function() {
+                openModal(this.src);
+            });
+        });
 
-        feedbackText.textContent = message;
-        feedbackMessage.style.backgroundColor = type === 'success' ? '#4CAF50' : '#dc3545';
-        feedbackMessage.style.display = 'block';
+        document.addEventListener("keydown", function(event) {
+            if (document.getElementById("photoModal").style.display === "flex") {
+                if (event.key === "ArrowLeft") {
+                    fotoActualIndex = (fotoActualIndex - 1 + fotos.length) % fotos.length;
+                    updateModalImage();
+                } else if (event.key === "ArrowRight") {
+                    fotoActualIndex = (fotoActualIndex + 1) % fotos.length;
+                    updateModalImage();
+                }
+            }
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
 
+        // Ocultar mensaje de éxito/error tras 3 segundos
         setTimeout(function() {
-            feedbackMessage.style.display = 'none';
-        }, 3000); // Ocultar el mensaje después de 3 segundos
-    }
+            var msg = document.getElementById('mensaje-flash');
+            if (msg) msg.style.display = 'none';
+            var msgErr = document.getElementById('mensaje-flash-error');
+            if (msgErr) msgErr.style.display = 'none';
+        }, 3000);
 
+        // Validación para mostrar mensaje si no hay selección al borrar fotos
+        document.querySelectorAll('form[id^="borrarFotosForm-"]').forEach(function(borrarFotosForm) {
+            borrarFotosForm.addEventListener('submit', function(e) {
+                const checked = borrarFotosForm.querySelectorAll('input[type="checkbox"][name="fotoIds"]:checked');
+                if (checked.length === 0) {
+                    e.preventDefault();
+                    alert('No ha seleccionado ninguna foto.');
+                }
+            });
+        });
 
-    window.addEventListener('DOMContentLoaded', function() {
+        // Botón volver
         const backBtn = document.getElementById('backBtn');
-
-        // Verifica si el historial tiene una página previa
-        if (window.history.length > 1) {
-            // Si hay páginas previas, usar history.back()
-            backBtn.addEventListener('click', function(event) {
-                event.preventDefault(); // Prevenir la navegación predeterminada
-                window.history.back();  // Regresar a la página anterior
-            });
-        } else {
-            // Si no hay páginas previas, redirigir a la página de eventos
-            backBtn.addEventListener('click', function(event) {
-                event.preventDefault();
-                window.location.href = '/panel/eventos'; // Redirigir a la lista de eventos
-            });
+        if (backBtn) {
+            if (window.history.length > 1) {
+                backBtn.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    window.history.back();
+                });
+            } else {
+                backBtn.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    window.location.href = '/panel/eventos';
+                });
+            }
         }
     });
-
 </script>
-
 </body>
 </html>

@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -136,14 +137,20 @@ public class PanelController {
 
     // Borrar álbum
     @PostMapping("/panel/albumes/{albumId}/borrar")
-    public String borrarAlbum(@PathVariable Long albumId, Authentication authentication, Model model) {
+    public String borrarAlbum(@PathVariable Long albumId,
+                              @RequestParam(value = "eventoId", required = false) Long eventoId,
+                              Authentication authentication,
+                              RedirectAttributes redirectAttributes) {
         if (authentication == null || !authentication.isAuthenticated() ||
             authentication.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_PHOTOGRAPHER"))) {
-            model.addAttribute("message", "Acceso solo para fotógrafos.");
-            return "error";
+            redirectAttributes.addFlashAttribute("message", "Acceso solo para fotógrafos.");
+            return "redirect:/panel/eventos";
         }
         albumService.deleteById(albumId);
-        // Redirige a la página anterior o al listado de eventos
+        redirectAttributes.addFlashAttribute("mensaje", "Álbum borrado correctamente.");
+        if (eventoId != null) {
+            return "redirect:/panel/eventos/" + eventoId;
+        }
         return "redirect:/panel/eventos";
     }
 
@@ -197,16 +204,30 @@ public class PanelController {
     // Borrado múltiple de fotos
     @PostMapping("/panel/fotos/borrar-multiple")
     public String borrarFotosMultiple(@RequestParam(value = "fotoIds", required = false) List<Long> fotoIds,
-                                      Authentication authentication, Model model) {
+                                      @RequestParam Map<String, String> params,
+                                      Authentication authentication, RedirectAttributes redirectAttributes) {
         if (authentication == null || !authentication.isAuthenticated() ||
             authentication.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_PHOTOGRAPHER"))) {
-            model.addAttribute("message", "Acceso solo para fotógrafos.");
-            return "error";
+            redirectAttributes.addFlashAttribute("message", "Acceso solo para fotógrafos.");
+            return "redirect:/panel/eventos";
         }
-        if (fotoIds != null) {
+        Long eventoId = null;
+        if (params.containsKey("eventoId")) {
+            try {
+                eventoId = Long.valueOf(params.get("eventoId"));
+            } catch (Exception ignored) {}
+        }
+        if (fotoIds != null && !fotoIds.isEmpty()) {
             for (Long id : fotoIds) {
                 photoService.deleteById(id);
             }
+            redirectAttributes.addFlashAttribute("mensaje", "Fotos borradas correctamente.");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "No se seleccionaron fotos para borrar.");
+        }
+        // Redirige a la misma página de álbumes del evento si hay eventoId, si no a eventos
+        if (eventoId != null) {
+            return "redirect:/panel/eventos/" + eventoId;
         }
         return "redirect:/panel/eventos";
     }
