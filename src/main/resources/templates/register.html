@@ -65,35 +65,5 @@
   </div>
   <button id="close-terms-btn" onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var termsLink = document.getElementById('terms-link');
-    var termsModal = document.getElementById('terms');
-    var closeBtn = document.getElementById('close-terms-btn');
-    var termsContent = document.getElementById('terms-content');
-
-    if (termsLink && termsModal) {
-      termsLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        fetch('/terminos-condiciones.html')
-          .then(response => response.text())
-          .then(data => {
-            termsContent.innerHTML = data;
-            termsModal.style.display = 'block';
-          })
-          .catch(error => {
-            console.error('Error al cargar los términos y condiciones:', error);
-          });
-      });
-    }
-
-    if (closeBtn && termsModal) {
-      closeBtn.addEventListener('click', function() {
-        termsModal.style.display = 'none';
-      });
-    }
-  });
-</script>
 </body>
 </html>
