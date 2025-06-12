@@ -11,4 +11,5 @@ public interface AlbumService {
     Album save(Album album);   // Crea o actualiza un álbum
     void deleteById(Long id);  // Elimina un álbum por ID
     boolean existsById(Long id); // Verifica si un álbum existe
+    Optional<Album> findByNameIgnoreCaseAndEventId(String name, Long eventId);
 }

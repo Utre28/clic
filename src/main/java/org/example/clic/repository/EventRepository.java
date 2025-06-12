@@ -4,6 +4,7 @@ import org.example.clic.model.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 // Repositorio JPA para operaciones CRUD de Event
 public interface EventRepository extends JpaRepository<Event, Long> {
     // Encuentra eventos por categoría
@@ -12,4 +13,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByPrivadoFalse();
     List<Event> findByPrivadoFalseAndCategoryIgnoreCase(String category);
     List<Event> findTop5ByPrivadoFalseOrderByIdDesc();
+    Optional<Event> findByNameIgnoreCase(String name);
 }

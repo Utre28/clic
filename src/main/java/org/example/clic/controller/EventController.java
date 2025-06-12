@@ -91,6 +91,11 @@ public class EventController {
             }
         }
 
+        // Validación de unicidad del nombre del evento
+        if (eventService.findByNameIgnoreCase(dto.getName()).isPresent()) {
+            return ResponseEntity.badRequest().body("Ya existe un evento con ese nombre. Elige otro nombre.");
+        }
+
         Event event = new Event();
         event.setName(dto.getName());
         event.setDate(dto.getDate());

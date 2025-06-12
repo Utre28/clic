@@ -75,4 +75,9 @@ public class EventServiceImpl implements EventService {
     public List<Event> findByPrivadoFalseAndCategory(String category) {
         return eventRepository.findByPrivadoFalseAndCategoryIgnoreCase(category);
     }
+
+    @Override
+    public Optional<Event> findByNameIgnoreCase(String name) {
+        return eventRepository.findByNameIgnoreCase(name);
+    }
 }

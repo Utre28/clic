@@ -19,4 +19,5 @@ public interface EventService {
     List<Event> findByClientId(Long id);
     List<Event> findByPrivadoFalse();
     List<Event> findByPrivadoFalseAndCategory(String category);
+    Optional<Event> findByNameIgnoreCase(String name); // Buscar evento por nombre (unicidad)
 }

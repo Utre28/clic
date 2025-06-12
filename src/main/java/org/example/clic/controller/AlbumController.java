@@ -84,6 +84,10 @@ public class AlbumController {
                     .collect(Collectors.toList());
             return ResponseEntity.badRequest().body(errors);
         }
+        // Validación de unicidad del nombre del álbum para el evento
+        if (albumService.findByNameIgnoreCaseAndEventId(dto.getName(), dto.getEventId()).isPresent()) {
+            return ResponseEntity.badRequest().body("Ya existe un álbum con ese nombre para este evento. Elige otro nombre.");
+        }
         // Obtener la entidad Event o lanzar 404 si no existe
         Event event = eventService.findById(dto.getEventId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento no encontrado"));
