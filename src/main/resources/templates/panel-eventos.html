@@ -13,10 +13,9 @@
         }
 
         .btn-ver, .btn-enviar-mensaje {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             padding: 0.3rem 0.7rem;
-            min-width: 110px;
-            width: 100%;
+            width: auto;
             box-sizing: border-box;
             margin: 0;
             border-radius: 4px;
@@ -96,11 +95,11 @@
         <thead>
             <tr>
                 <th></th>
-                <th>Imagen</th>
-                <th>Nombre</th>
+                <th>Nombre evento</th>
                 <th>Fecha</th>
                 <th>Ubicación</th>
                 <th>Privacidad</th>
+                <th>Cliente</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -112,14 +111,16 @@
             <td>
                 <input type="checkbox" name="eventoIds" th:value="${event.id}" form="borrarEventosForm" />
             </td>
-            <td>
-                <img th:src="@{/img/default-event.jpg}" alt="Imagen de evento" class="event-img" />
-            </td>
+
             <td th:text="${event.name}">Nombre del Evento</td>
             <td th:text="${event.date}">Fecha</td>
             <td th:text="${event.location}">Ubicación</td>
             <td>
                 <span th:text="${event.privado ? 'Privado' : 'Público'}"></span>
+            </td>
+            <td>
+                <!-- Mostrar el nombre del cliente  -->
+                <span th:text="${event.client.name}">Nombre del Cliente</span>
             </td>
             <td>
                 <div class="acciones-evento">

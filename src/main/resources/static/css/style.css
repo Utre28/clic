@@ -735,15 +735,43 @@ nav ul li.dropdown:hover .dropdown-menu { display:block; }
 .upload-card button {
     margin-top: 0.7rem;
 }
-
+/* Centrado del formulario en la página */
 #borrarEventosForm {
-    max-width: 1200px; /* Define un ancho máximo mayor para el formulario */
-    margin: 3rem auto; /* Añade un margen superior e inferior más grande */
-    padding: 2rem; /* Relleno dentro del formulario */
-    background-color: #ffffff; /* Color de fondo del formulario */
-    border-radius: 10px; /* Esquinas redondeadas */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave alrededor del formulario */
+    border: none; /* Eliminar el borde del formulario */
+    background: none; /* Eliminar el fondo */
+    padding: 0; /* Eliminar el relleno dentro del formulario */
+    margin: 0 auto; /* Centrar el formulario */
+    box-shadow: none; /* Eliminar la sombra del formulario */
+    width: auto; /* Asegurar que el formulario no tenga un ancho fijo */
+    box-sizing: border-box; /* Asegurar que el tamaño del formulario se calcule correctamente */
+    /* Establecer un contenedor flexible para el formulario */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+/* Centrado del botón dentro del formulario */
+#borrarEventosForm button {
+    border: none; /* Eliminar el borde del botón */
+    background: #dc3545; /* Color de fondo del botón */
+    color: white; /* Color del texto */
+    padding: 0.3rem 0.7rem;/* Reducir el relleno dentro del botón */
+    font-size: 0.9rem; /* Reducir el tamaño de la fuente */
+    cursor: pointer; /* Cambiar el cursor cuando el ratón pasa por el botón */
+    border-radius: 5px; /* Esquinas redondeadas */
+    transition: background-color 0.3s ease; /* Efecto al pasar el ratón */
+    margin-top: 10px; /* Espacio entre el botón y el formulario */
+    width: auto; /* Ajustar el tamaño del botón al contenido */
+    text-align: center; /* Asegurar que el texto esté centrado dentro del botón */
+}
+
+/* Efecto hover sobre el botón */
+#borrarEventosForm button:hover {
+    background-color: #a10512; /* Cambio de color al pasar el ratón */
+}
+
+
+
 
 
  .perfil-container {
@@ -1556,4 +1584,4 @@ nav ul li.dropdown:hover .dropdown-menu { display:block; }
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease;}

@@ -20,12 +20,12 @@
         <div class="album-header" style="display: flex; align-items: center; justify-content: space-between;">
             <h2 th:text="${album.name}" style="flex:1; text-align:center; margin:0;">Nombre del Álbum</h2>
 
-            <form th:action="@{'/panel/albumes/' + ${album.id} + '/borrar'}" method="post" style="display:inline;">
+            <form id="borrarEventosForm"  th:action="@{'/panel/albumes/' + ${album.id} + '/borrar'}" method="post" style="display:inline;">
                 <button type="submit" class="btn-borrar" onclick="return confirm('¿Seguro que quieres borrar este álbum?')">Borrar Álbum</button>
             </form>
         </div>
 
-        <div th:if="${albumFotosMap != null and albumFotosMap[album.id] != null}">
+        <div th:if="${albumFotosMap != null and albumFotosMap[album.id] != null and not #lists.isEmpty(albumFotosMap[album.id])}">
             <!-- Formulario para borrar fotos seleccionadas -->
             <form id="borrarFotosForm" action="/panel/fotos/borrar-multiple" method="post">
                 <div class="fotos-grid">
@@ -37,7 +37,8 @@
                         </label>
                     </div>
                 </div>
-                <button type="submit" class="btn-borrar" onclick="return confirmBorrar()">Borrar Seleccionadas</button>
+                <!-- Solo mostrar el botón si hay fotos -->
+                <button type="submit" class="btn-borrar" onclick="return confirmBorrar()" th:if="${#lists.size(albumFotosMap[album.id]) > 0}">Borrar fotos seleccionadas</button>
             </form>
         </div>
 
@@ -201,53 +202,72 @@
         });
     });
 
-    // Función para mostrar el mensaje de éxito o error
+    document.getElementById('borrarFotosForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevenir el envío tradicional del formulario
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        // Enviar la solicitud AJAX para borrar las fotos
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Mostrar mensaje de éxito
+                    showFeedbackMessage('Fotos eliminadas correctamente.', 'success');
+
+                    // Eliminar las fotos seleccionadas de la interfaz sin recargar la página
+                    document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                        checkbox.closest('.foto-card').remove();
+                    });
+                } else {
+                    // Mostrar mensaje de error
+                    showFeedbackMessage(data.message || 'Hubo un error al eliminar las fotos.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error en la solicitud:', error);
+                showFeedbackMessage('Ocurrió un error inesperado al borrar las fotos.', 'error');
+            });
+    });
+
+    // Función para mostrar mensajes de éxito o error
     function showFeedbackMessage(message, type) {
-        var feedbackMessage = document.getElementById("feedbackMessage");
-        var feedbackText = document.getElementById("feedbackText");
+        const feedbackMessage = document.getElementById('feedbackMessage');
+        const feedbackText = document.getElementById('feedbackText');
 
         feedbackText.textContent = message;
+        feedbackMessage.style.backgroundColor = type === 'success' ? '#4CAF50' : '#dc3545';
+        feedbackMessage.style.display = 'block';
 
-        // Eliminar todas las clases previas antes de agregar la nueva
-        feedbackMessage.classList.remove("error", "success");
-
-        // Cambiar el color del fondo dependiendo del tipo (error o éxito)
-        if (type === "error") {
-            feedbackMessage.classList.add("error"); // Rojo para error
-            feedbackMessage.style.backgroundColor = "#dc3545"; // Color rojo
-        } else if (type === "success") {
-            feedbackMessage.classList.add("success"); // Verde para éxito
-            feedbackMessage.style.backgroundColor = "#4CAF50"; // Color verde
-        }
-
-        // Muestra el mensaje
-        feedbackMessage.style.display = "block";
-
-        // Ocultar el mensaje después de 5 segundos
         setTimeout(function() {
-            feedbackMessage.style.display = "none";
-        }, 5000); // El mensaje se oculta después de 5 segundos
+            feedbackMessage.style.display = 'none';
+        }, 3000); // Ocultar el mensaje después de 3 segundos
     }
 
-    function confirmBorrar() {
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-        if (checkboxes.length === 0) {
-            showFeedbackMessage("Por favor, selecciona al menos una foto para borrar.", "error"); // Mostrar mensaje de error
-            return false; // Prevenir el envío del formulario si no hay fotos seleccionadas
-        }
-        // Si se seleccionaron fotos, mostrar mensaje de éxito
-        showFeedbackMessage(checkboxes.length + " fotos seleccionadas para borrar.", "success"); // Mostrar mensaje de éxito
-        return true; // Permitir el envío si hay fotos seleccionadas
-    }
+
     window.addEventListener('DOMContentLoaded', function() {
         const backBtn = document.getElementById('backBtn');
 
-        // Usamos history.back() para regresar a la página anterior
-        backBtn.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevenir que el enlace haga la navegación por defecto
-            window.history.back();  // Regresar a la página anterior
-        });
+        // Verifica si el historial tiene una página previa
+        if (window.history.length > 1) {
+            // Si hay páginas previas, usar history.back()
+            backBtn.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevenir la navegación predeterminada
+                window.history.back();  // Regresar a la página anterior
+            });
+        } else {
+            // Si no hay páginas previas, redirigir a la página de eventos
+            backBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                window.location.href = '/panel/eventos'; // Redirigir a la lista de eventos
+            });
+        }
     });
+
 </script>
 
 </body>
