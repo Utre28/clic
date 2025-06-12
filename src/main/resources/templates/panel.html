@@ -16,7 +16,7 @@
         <h2>Bienvenido al Panel de Control fotógrafo/admin</h2>
         <p>Aquí puedes gestionar tus fotos y estadísticas.</p>
         <ul>
-            <li><a th:href="@{/subir-fotos}">Subir Fotos</a></li>
+            <li><a th:href="@{/subir-fotos}">Creación Eventos / Álbums y Subir fotos</a></li>
             <li><a href="#" id="showStatsBtn">Ver Estadísticas</a></li>
             <li><a href="#" id="showDownloadStatsBtn">Ver Estadísticas de Descarga</a></li>
         </ul>
@@ -192,73 +192,93 @@ document.getElementById('showStatsBtn').addEventListener('click', async function
         }
     }
 });
-
 document.getElementById('showDownloadStatsBtn').addEventListener('click', async function(e) {
     e.preventDefault();
+
+    // Elementos DOM
     const modal = document.getElementById('downloadStatsModal');
     const tbody = document.getElementById('downloadStatsTableBody');
     const chartCanvas = document.getElementById('downloadStatsChart');
+
+    // Mostrar mensaje de carga mientras se obtienen los datos
     tbody.innerHTML = '<tr><td colspan="2">Cargando...</td></tr>';
     modal.style.display = 'flex';
+
+    // Inicializar el gráfico
     let chartInstance = null;
+
     try {
+        // Realizar la solicitud para obtener las estadísticas de descarga
         const res = await fetch('/api/albums/download-stats');
         if (!res.ok) throw new Error('Error al cargar estadísticas de descarga');
+
+        // Obtener los datos JSON
         const stats = await res.json();
-        if (!stats.length) {
+
+        // Si no hay datos de descargas, mostrar un mensaje en la tabla
+        if (stats.length === 0) {
             tbody.innerHTML = '<tr><td colspan="2">No hay datos de descargas.</td></tr>';
             if (chartCanvas && chartCanvas.chart) {
-                chartCanvas.chart.destroy();
+                chartCanvas.chart.destroy(); // Eliminar cualquier gráfico existente
             }
         } else {
+            // Si hay datos, limpiar la tabla y preparar los datos para el gráfico
             tbody.innerHTML = '';
             const labels = [];
             const data = [];
+
             stats.forEach(album => {
                 labels.push(album.name);
                 data.push(album.downloads);
+
+                // Llenar la tabla con los nombres de los álbumes y el número de descargas
                 tbody.innerHTML += `<tr>
                     <td>${album.name}</td>
                     <td style="text-align:right;">${album.downloads}</td>
                 </tr>`;
             });
-            // Dibuja la gráfica
+
+            // Crear o actualizar el gráfico si es necesario
             if (chartCanvas.chart) {
-                chartCanvas.chart.destroy();
+                chartCanvas.chart.destroy(); // Eliminar el gráfico previo
             }
+
+            // Crear un nuevo gráfico de barras
             chartCanvas.chart = new Chart(chartCanvas, {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: labels, // Nombres de los álbumes
                     datasets: [{
                         label: 'Descargas',
-                        data: data,
-                        backgroundColor: 'rgba(255, 159, 64, 0.5)',
-                        borderColor: 'rgba(255, 159, 64, 1)',
+                        data: data, // Número de descargas
+                        backgroundColor: 'rgba(255, 159, 64, 0.5)', // Color de fondo de las barras
+                        borderColor: 'rgba(255, 159, 64, 1)', // Color del borde de las barras
                         borderWidth: 1
                     }]
                 },
                 options: {
-                    responsive: true,
+                    responsive: true, // Hacer el gráfico responsivo
                     plugins: {
-                        legend: { display: false }
+                        legend: { display: false } // Desactivar la leyenda
                     },
                     scales: {
                         y: {
-                            beginAtZero: true,
-                            ticks: { precision:0 }
+                            beginAtZero: true, // Asegurarse de que el eje Y comienza en 0
+                            ticks: { precision: 0 } // Eliminar decimales en el eje Y
                         }
                     }
                 }
             });
         }
     } catch (err) {
+        // Si ocurre un error, mostrar mensaje en la tabla y en el gráfico
         tbody.innerHTML = '<tr><td colspan="2">Error al cargar estadísticas de descarga.</td></tr>';
         if (chartCanvas && chartCanvas.chart) {
-            chartCanvas.chart.destroy();
+            chartCanvas.chart.destroy(); // Eliminar cualquier gráfico existente
         }
     }
 });
+
 </script>
 
 </body>

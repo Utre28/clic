@@ -182,5 +182,26 @@ public class AlbumController {
             return 0;
         }
     }
+
+    /**
+     * GET /api/albums/download/{id}
+     * Incrementa las descargas de un álbum
+     * @param id Identificador del álbum
+     */
+    @GetMapping("/download/{id}")
+    public ResponseEntity<?> downloadAlbum(@PathVariable Long id) {
+        // Buscar el álbum
+        Album album = albumService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Álbum no encontrado"));
+
+        // Incrementar el contador de descargas
+        album.incrementDownloads();
+
+        // Guardar el álbum actualizado
+        albumService.save(album);
+
+        // Retornar una respuesta exitosa
+        return ResponseEntity.ok("Descarga registrada y contador actualizado.");
+    }
 }
 

@@ -88,5 +88,9 @@ public class Album {
     public void setDownloads(int downloads) {
         this.downloads = downloads;
     }
+    // Método para incrementar las descargas
+    public void incrementDownloads() {
+        this.downloads++;
+    }
 }
 

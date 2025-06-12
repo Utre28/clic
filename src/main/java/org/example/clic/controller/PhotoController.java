@@ -29,6 +29,8 @@ import org.springframework.security.core.Authentication;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.example.clic.service.AlbumService;
+import org.example.clic.service.PhotoService;
 
 
 @RestController
@@ -36,11 +38,13 @@ import java.util.zip.ZipOutputStream;
 public class PhotoController {
     private final PhotoService photoService; // Servicio de fotos
     private final PhotoMapper photoMapper;// Mapper entre entidad y DTO
+    private final AlbumService albumService;  // Variable para el servicio AlbumService
 
     // Inyección por constructor de servicios y mappers
-    public PhotoController(PhotoService photoService, PhotoMapper photoMapper) {
+    public PhotoController(PhotoService photoService, PhotoMapper photoMapper,AlbumService albumService) {
         this.photoService = photoService;
         this.photoMapper = photoMapper;
+        this.albumService = albumService;
     }
     @Autowired // Inyecta repositorios si los necesitas directamente
     private AlbumRepository albumRepository;
@@ -211,12 +215,26 @@ public class PhotoController {
         // Busca las fotos cuyo álbum está asociado a eventos del usuario
         return photoService.findPhotosByUserEmail(email);
     }
-
     @PostMapping("/download-zip")
     public void downloadPhotosZip(@RequestParam("photoIds") List<Long> photoIds, HttpServletResponse response) {
         try {
+            // Obtener el álbum relacionado con las fotos seleccionadas
+            if (!photoIds.isEmpty()) {
+                var photoOpt = photoService.findById(photoIds.get(0)); // Obtener la primera foto
+                if (photoOpt.isPresent()) {
+                    var photo = photoOpt.get();
+                    var album = photo.getAlbum();  // Obtener el álbum asociado
+
+                    // Incrementar el contador de descargas
+                    album.incrementDownloads();
+                    albumService.save(album); // Guardar el álbum con el contador actualizado
+                }
+            }
+
+            // Configurar la respuesta para descargar el archivo ZIP
             response.setContentType("application/zip");
             response.setHeader("Content-Disposition", "attachment; filename=fotos.zip");
+
             try (ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())) {
                 for (Long id : photoIds) {
                     var photoOpt = photoService.findById(id);
@@ -233,7 +251,9 @@ public class PhotoController {
                 }
             }
         } catch (Exception e) {
-            // Puedes loguear el error si lo deseas
+            // Manejo de errores
+            e.printStackTrace();
         }
     }
 }
+
