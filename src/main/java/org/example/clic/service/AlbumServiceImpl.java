@@ -12,9 +12,11 @@ import java.util.Optional;
 @Transactional // Gestiona transacciones automáticamente
 public class AlbumServiceImpl implements AlbumService {
     private final AlbumRepository albumRepository;
+    private final PhotoService photoService;
 
-    public AlbumServiceImpl(AlbumRepository albumRepository) {
+    public AlbumServiceImpl(AlbumRepository albumRepository, PhotoService photoService) {
         this.albumRepository = albumRepository;
+        this.photoService = photoService;
     }
 
     @Override
@@ -44,7 +46,9 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public List<Album> findByEventId(Long eventId) {
-        return albumRepository.findByEventId(eventId); // Obtiene álbumes de un evento
+        return albumRepository.findByEventId(eventId);
+        // No hagas album.setPhotos(...) aquí, Hibernate gestiona la colección
     }
 
 }
+    

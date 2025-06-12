@@ -27,11 +27,27 @@ public class AlbumViewController {
             return "error";
         }
         var album = albumOpt.get();
-        var fotos = photoService.findByAlbumId(id);
-        model.addAttribute("album", album);
-        model.addAttribute("fotos", fotos);
-        model.addAttribute("eventId", album.getEvent().getId()); // Añade el eventId
-        model.addAttribute("desdeMisEventos", desdeMisEventos); // Añade el flag
-        return "album";
+        if (desdeMisEventos) {
+            // Obtener todos los álbumes del evento
+            var event = album.getEvent();
+            var albumes = albumService.findByEventId(event.getId());
+            // Mapa de fotos por álbum
+            java.util.Map<Long, java.util.List<?>> fotosPorAlbum = new java.util.HashMap<>();
+            for (var alb : albumes) {
+                fotosPorAlbum.put(alb.getId(), photoService.findByAlbumId(alb.getId()));
+            }
+            model.addAttribute("albumes", albumes);
+            model.addAttribute("fotosPorAlbum", fotosPorAlbum);
+            model.addAttribute("evento", event);
+            model.addAttribute("desdeMisEventos", true);
+            return "albumes-por-evento"; // Debes crear/adaptar esta vista
+        } else {
+            var fotos = photoService.findByAlbumId(id);
+            model.addAttribute("album", album);
+            model.addAttribute("fotos", fotos);
+            model.addAttribute("eventId", album.getEvent().getId());
+            model.addAttribute("desdeMisEventos", false);
+            return "album";
+        }
     }
 }

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:text="'Álbumes de ' + ${evento.name}">Álbumes del evento</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
+    <style>
+        .evento-titulo {
+            text-align: center;
+            margin-top: 2.5rem;
+            margin-bottom: 2.5rem;
+            font-size: 2.5rem;
+            color: #1a397b;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px rgba(26,57,123,0.08);
+        }
+        .album-titulo {
+            color: #1a397b;
+            margin: 1rem 0 1rem 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+<div th:replace="fragments/scripts :: script"></div>
+
+<h2 class="evento-titulo" th:text="'Álbumes de ' + ${evento.name}"></h2>
+
+<div th:each="album : ${albumes}" style="margin-bottom:3rem; border-bottom:1px solid #eee; padding-bottom:2rem;">
+    <h3 class="album-titulo" th:text="${album.name}"></h3>
+    <div style="background:#fafbfc; border-radius:12px; padding:2rem; margin:0 2rem;">
+        <form th:action="@{'/api/photos/download-zip'}" method="post" target="_blank">
+            <div style="text-align:center; margin-bottom: 1rem;">
+                <button type="button" class="btn-small" th:onclick="'toggleSelectAll(this,' + ${album.id} + ')'">Seleccionar Todas</button>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:2rem; justify-content:center;">
+                <div th:each="foto : ${fotosPorAlbum[album.id]}" style="display:flex; flex-direction:column; align-items:center;">
+                    <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto" style="max-width:180px; max-height:120px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
+                    <input type="checkbox" name="photoIds" th:value="${foto.id}" th:class="'photo-checkbox-' + ${album.id}" style="margin-top:0.5rem;" />
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:1.5rem;">
+                <input type="hidden" name="albumId" th:value="${album.id}" />
+                <button type="submit" class="btn" style="background:#1a397b; color:white;">Descargar seleccionadas (.zip)</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Permite seleccionar/deseleccionar todas las fotos de un álbum
+    function toggleSelectAll(btn, albumId) {
+        const checkboxes = document.querySelectorAll('.photo-checkbox-' + albumId);
+        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        checkboxes.forEach(cb => cb.checked = !allChecked);
+        btn.textContent = allChecked ? 'Seleccionar Todas' : 'Deseleccionar Todas';
+    }
+</script>
+
+</body>
+</html>
