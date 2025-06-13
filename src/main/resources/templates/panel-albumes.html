@@ -36,14 +36,13 @@
         </div>
         <div th:if="${albumFotosMap != null and albumFotosMap[album.id] != null and not #lists.isEmpty(albumFotosMap[album.id])}">
             <!-- Formulario para borrar fotos seleccionadas -->
-            <form id="borrarFotosForm-[[${album.id}]]" th:action="@{/panel/fotos/borrar-multiple}" method="post">
+            <form id="borrarFotosForm" th:action="@{/panel/fotos/borrar-multiple}" method="post">
                 <input type="hidden" name="eventoId" th:value="${evento.id}" />
                 <div class="fotos-grid">
                     <div th:each="foto : ${albumFotosMap[album.id]}" class="foto-card">
                         <input type="checkbox" name="fotoIds" th:value="${foto.id}" id="foto-${foto.id}" class="foto-checkbox">
                         <label for="foto-${foto.id}">
-                            <img th:src="${foto.url}" alt="Foto" class="foto-preview"
-                                 style="width:auto; height:auto; max-width:140px; max-height:140px; border-radius:8px; margin-bottom:5px; display:block;"/>
+                            <img th:src="${foto.url}" alt="Foto" class="foto-preview"/>
                         </label>
                     </div>
                 </div>
