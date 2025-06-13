@@ -17,7 +17,7 @@
     <!-- Menú principal (solo para pantallas grandes) -->
     <div class="navbar-right">
         <ul class="menu">
-            <li><a th:href="@{/}">Inicio</a></li>
+            <!-- <li><a th:href="@{/}">Inicio</a></li> -->
             <!-- Menú desplegable Portafolio -->
             <li class="dropdown">
                 <a th:href="@{/portafolio}" class="dropdown-toggle">Portafolio ▼</a>
@@ -42,14 +42,13 @@
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/perfil}">Mi perfil</a></li>
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/panel}">Panel</a></li>
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/logout}">Cerrar sesión</a></li>
-            <li><a th:href="@{/contacto}">Contacto</a></li>
+            <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')"><a th:href="@{/contacto}">Contacto</a></li>
         </ul>
     </div>
 
     <!-- Menú hamburguesa en pantallas pequeñas (se muestra cuando el botón hamburguesa es clicado) -->
     <div class="navbar-right">
         <ul class="menu mobile">
-            <li><a th:href="@{/}">Inicio</a></li>
             <li class="dropdown">
                 <a th:href="@{/portafolio}" class="dropdown-toggle">Portafolio ▼</a>
                 <ul class="dropdown-menu">
@@ -73,7 +72,7 @@
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/perfil}">Mi perfil</a></li>
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/panel}">Panel</a></li>
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/logout}">Cerrar sesión</a></li>
-            <li><a th:href="@{/contacto}">Contacto</a></li>
+            <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')"><a th:href="@{/contacto}">Contacto</a></li>
         </ul>
     </div>
 </nav>
