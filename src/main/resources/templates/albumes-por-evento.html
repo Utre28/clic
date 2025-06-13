@@ -31,15 +31,15 @@
 <h2 class="evento-titulo" th:text="'Álbumes de ' + ${evento.name}"></h2>
 
 <div th:each="album : ${albumes}" style="margin-bottom:3rem; border-bottom:1px solid #eee; padding-bottom:2rem;">
-    <h3 class="album-titulo" th:text="${album.name}"></h3>
+    <h3 class="album-titulo" th:text="${album.name}" style="text-align:center;"></h3>
     <div style="background:#fafbfc; border-radius:12px; padding:2rem; margin:0 2rem;">
         <form th:action="@{'/api/photos/download-zip'}" method="post" target="_blank">
             <div style="text-align:center; margin-bottom: 1rem;">
                 <button type="button" class="btn-small" th:onclick="'toggleSelectAll(this,' + ${album.id} + ')'">Seleccionar Todas</button>
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:2rem; justify-content:center;">
-                <div th:each="foto : ${fotosPorAlbum[album.id]}" style="display:flex; flex-direction:column; align-items:center;">
-                    <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto" style="max-width:180px; max-height:120px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
+                <div th:each="foto : ${fotosPorAlbum[album.id]}" class="foto-card" style="display:flex; flex-direction:column; align-items:center;">
+                    <img th:src="@{${foto.url}}" th:alt="${foto.description}" alt="Foto" class="foto-preview" style="max-width:180px; max-height:120px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08); cursor:pointer;" />
                     <input type="checkbox" name="photoIds" th:value="${foto.id}" th:class="'photo-checkbox-' + ${album.id}" style="margin-top:0.5rem;" />
                 </div>
             </div>
@@ -59,7 +59,59 @@
         checkboxes.forEach(cb => cb.checked = !allChecked);
         btn.textContent = allChecked ? 'Seleccionar Todas' : 'Deseleccionar Todas';
     }
+
+    // Lightbox
+    let fotos = [];
+    let fotoActualIndex = 0;
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.foto-preview').forEach((img, index) => {
+            fotos.push(img.src);
+            img.addEventListener('click', function() {
+                openModal(this.src);
+                fotoActualIndex = fotos.indexOf(this.src);
+            });
+        });
+    });
+    function openModal(imgSrc) {
+        const modal = document.getElementById('photoModal');
+        const modalImg = document.getElementById('modalImage');
+        modal.style.display = 'flex';
+        modalImg.src = imgSrc;
+    }
+    function closeModal() {
+        document.getElementById('photoModal').style.display = 'none';
+    }
+    function prevImage() {
+        fotoActualIndex = (fotoActualIndex - 1 + fotos.length) % fotos.length;
+        updateModalImage();
+    }
+    function nextImage() {
+        fotoActualIndex = (fotoActualIndex + 1) % fotos.length;
+        updateModalImage();
+    }
+    function updateModalImage() {
+        const modalImg = document.getElementById('modalImage');
+        modalImg.src = fotos[fotoActualIndex];
+    }
+    document.addEventListener('keydown', function(event) {
+        const modal = document.getElementById('photoModal');
+        if (modal && modal.style.display === 'flex') {
+            if (event.key === 'Escape') closeModal();
+            else if (event.key === 'ArrowLeft') prevImage();
+            else if (event.key === 'ArrowRight') nextImage();
+        }
+    });
 </script>
+
+<!-- Modal para ver foto ampliada -->
+<div id="photoModal" class="photo-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); align-items:center; justify-content:center; z-index:9999;">
+    <div class="modal-content" style="position:relative; background:white; border-radius:10px; padding:2rem; display:flex; flex-direction:column; align-items:center;">
+        <span class="close" onclick="closeModal()" style="position:absolute; top:10px; right:20px; font-size:2rem; cursor:pointer;">&times;</span>
+        <button class="prev" onclick="prevImage()" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:2rem; background:none; border:none; color:#1a397b; cursor:pointer;">&#10094;</button>
+        <img id="modalImage" src="" alt="Foto" style="max-width:80vw; max-height:70vh; border-radius:8px; margin:1rem 0;" />
+        <button class="next" onclick="nextImage()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:2rem; background:none; border:none; color:#1a397b; cursor:pointer;">&#10095;</button>
+    </div>
+</div>
 
 </body>
 </html>
