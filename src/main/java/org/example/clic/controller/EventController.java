@@ -1,6 +1,5 @@
 package org.example.clic.controller;
 
-import jakarta.validation.Valid;
 import org.example.clic.dto.EventDTO;
 import org.example.clic.mapper.EventMapper;
 import org.example.clic.model.Event;
@@ -9,10 +8,17 @@ import org.example.clic.service.EventService;
 import org.example.clic.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,8 +36,6 @@ public class EventController {
         this.eventMapper = eventMapper;
         this.userService = userService;
     }
-
-
 
     // Endpoint para obtener todos los eventos, opcionalmente filtrados por categoría
     @GetMapping
@@ -70,47 +74,71 @@ public class EventController {
 
     // Endpoint para crear un nuevo evento
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody EventDTO dto, BindingResult br) {
-        if (br.hasErrors()) {
-            var errors = br.getFieldErrors().stream()
-                    .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
-                    .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errors);
-        }
-
+    public ResponseEntity<?> create(
+            @RequestParam("name") String name,
+            @RequestParam("date") String date,
+            @RequestParam("location") String location,
+            @RequestParam("category") String category,
+            @RequestParam(value = "clientId", required = false) Long clientId,
+            @RequestParam("privado") boolean privado,
+            @RequestParam("type") String type,
+            @RequestParam(value = "eventCover", required = false) MultipartFile eventCover
+    ) {
         List<String> validCategories = List.of("Bodas", "Bautizos", "Comuniones", "Retratos", "Conciertos");
-        if (!validCategories.contains(dto.getCategory())) {
+        if (!validCategories.contains(category)) {
             return ResponseEntity.badRequest().body("Categoría de evento no válida");
         }
 
         Optional<User> clientOpt = Optional.empty();
-        if (dto.getClientId() != null) {
-            clientOpt = userService.findById(dto.getClientId());
+        if (clientId != null) {
+            clientOpt = userService.findById(clientId);
             if (clientOpt.isEmpty()) {
                 return ResponseEntity.badRequest().body("Cliente no encontrado");
             }
         }
 
         // Validación de unicidad del nombre del evento
-        if (eventService.findByNameIgnoreCase(dto.getName()).isPresent()) {
+        if (eventService.findByNameIgnoreCase(name).isPresent()) {
             return ResponseEntity.badRequest().body("Ya existe un evento con ese nombre. Elige otro nombre.");
         }
 
         Event event = new Event();
-        event.setName(dto.getName());
-        event.setDate(dto.getDate());
-        event.setLocation(dto.getLocation());
-        event.setCategory(dto.getCategory());
-        event.setPrivado(dto.isPrivado());
+        event.setName(name);
+        // Convierte el String a LocalDate
+        event.setDate(LocalDate.parse(date));
+        event.setLocation(location);
+        event.setCategory(category);
+        event.setPrivado(privado);
         if (clientOpt.isPresent()) {
-            event.setClient(clientOpt.get()); // Asocia el evento con el cliente
+            event.setClient(clientOpt.get());
         } else {
-            event.setClient(null); // Evento sin cliente (portafolio)
+            event.setClient(null);
         }
 
-        Event saved = eventService.save(event); // Guarda el evento en la base de datos
+        // Guardar la portada si se envía
+        if (eventCover != null && !eventCover.isEmpty()) {
+            try {
+                String uploadsDir = "uploads/event-covers";
+                File dir = new File(uploadsDir);
+                if (!dir.exists()) dir.mkdirs();
+                String original = eventCover.getOriginalFilename();
+                String ext = "";
+                if (original != null && original.lastIndexOf('.') > 0) {
+                    ext = original.substring(original.lastIndexOf('.'));
+                }
+                String filename = "event_" + System.currentTimeMillis() + ext;
+                Path filePath = Paths.get(uploadsDir, filename);
+                Files.copy(eventCover.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                // Usa el método correcto para asignar la URL de portada
+                event.setCoverUrl("event-covers/" + filename); // Cambia 'setCoverUrl' si tu método tiene otro nombre
+            } catch (IOException ex) {
+                return ResponseEntity.internalServerError().body("Error guardando la portada del evento");
+            }
+        }
+
+        Event saved = eventService.save(event);
         return ResponseEntity.created(URI.create("/api/events/" + saved.getId()))
-                .body(eventMapper.toDto(saved)); // Retorna el evento guardado como respuesta
+                .body(eventMapper.toDto(saved));
     }
 
     @GetMapping("/stats")

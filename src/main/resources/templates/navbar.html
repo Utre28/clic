@@ -42,7 +42,8 @@
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/perfil}">Mi perfil</a></li>
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/panel}">Panel</a></li>
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/logout}">Cerrar sesión</a></li>
-            <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')"><a th:href="@{/contacto}">Contacto</a></li>
+            <!-- Botón Contacto siempre visible -->
+            <li><a th:href="@{/contacto}">Contacto</a></li>
         </ul>
     </div>
 
@@ -72,7 +73,8 @@
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/perfil}">Mi perfil</a></li>
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/panel}">Panel</a></li>
             <li sec:authorize="hasRole('PHOTOGRAPHER')"><a th:href="@{/logout}">Cerrar sesión</a></li>
-            <li sec:authorize="hasRole('CLIENT') and !hasRole('PHOTOGRAPHER')"><a th:href="@{/contacto}">Contacto</a></li>
+            <!-- Botón Contacto siempre visible -->
+            <li><a th:href="@{/contacto}">Contacto</a></li>
         </ul>
     </div>
 </nav>
