@@ -47,11 +47,16 @@
   </div>
   <div class="upload-card">
     <h2>Crear nuevo álbum</h2>
-    <form id="createAlbumForm">
+    <form id="createAlbumForm" enctype="multipart/form-data">
       <label for="newAlbum">Nombre del álbum:</label>
       <input type="text" id="newAlbum" required />
       <label for="eventSelect">Seleccionar evento:</label>
       <select id="eventSelect" required></select>
+      <label for="albumCover">Selecciona la foto de portada del álbum:</label>
+      <input type="file" id="albumCover" name="albumCover" accept="image/*" />
+      <div style="margin:1rem 0; text-align:center;">
+        <img id="albumCoverPreview" src="/img/default-event.jpg" alt="Imagen de álbum" style="max-width:120px; max-height:120px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08); display:block; margin:auto;" />
+      </div>
       <button type="submit" id="createAlbumBtn">Crear álbum</button>
     </form>
     <div id="albumMessage"></div>
@@ -114,5 +119,20 @@
 
     // Aquí iría el código para manejar el envío de datos, por ejemplo, una llamada a la API
     console.log({ eventId, date, loc, category, client });
+  });
+
+  // Previsualización de la portada del álbum
+  document.getElementById('albumCover').addEventListener('change', function(e) {
+    const preview = document.getElementById('albumCoverPreview');
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        preview.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = '/img/default-event.jpg';
+    }
   });
 </script>

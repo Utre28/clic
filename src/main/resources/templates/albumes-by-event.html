@@ -27,7 +27,8 @@
     </div>
     <div class="albumes-grid" th:if="${not #lists.isEmpty(albumes)}">
         <div th:each="album : ${albumes}" class="album-card">
-            <img th:src="@{/img/default-event.jpg}" alt="Imagen de álbum" />
+            <img th:if="${album.coverUrl != null and !#strings.isEmpty(album.coverUrl)}" th:src="@{${album.coverUrl}}" alt="Imagen de álbum" />
+            <img th:unless="${album.coverUrl != null and !#strings.isEmpty(album.coverUrl)}" th:src="@{/img/default-event.jpg}" alt="Imagen de álbum" />
             <h3 th:text="${album.name}"></h3>
             <p th:text="${album.createdAt}"></p>
             <a th:href="@{'/album/' + ${album.id}}" class="btn-ver">Ver Fotos</a>

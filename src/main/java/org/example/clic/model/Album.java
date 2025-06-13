@@ -31,6 +31,9 @@ public class Album {
     // Añade este campo (usa Integer o int según tu preferencia)
     private int downloads = 0;
 
+    // Ruta de la imagen de portada del álbum
+    private String coverUrl;
+
     // getters y setters
 
     public Long getId() {
@@ -87,6 +90,14 @@ public class Album {
 
     public void setDownloads(int downloads) {
         this.downloads = downloads;
+    }
+
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
     // Método para incrementar las descargas
     public void incrementDownloads() {

@@ -13,12 +13,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -98,6 +103,45 @@ public class AlbumController {
         album.setCreatedAt(LocalDateTime.now());  // Fecha de creación actual
 
         // Guardar y devolver 201 Created con la ubicación del nuevo recurso
+        Album saved = albumService.save(album);
+        return ResponseEntity.created(URI.create("/api/albums/" + saved.getId()))
+                .body(albumMapper.toDto(saved));
+    }
+    /**
+     * POST /api/albums
+     * Crea un nuevo álbum con portada
+     */
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<?> createAlbumWithCover(
+            @RequestParam("name") String name,
+            @RequestParam("eventId") Long eventId,
+            @RequestParam(value = "albumCover", required = false) MultipartFile albumCover) {
+        // Validación de unicidad del nombre del álbum para el evento
+        if (albumService.findByNameIgnoreCaseAndEventId(name, eventId).isPresent()) {
+            return ResponseEntity.badRequest().body("Ya existe un álbum con ese nombre para este evento. Elige otro nombre.");
+        }
+        // Obtener la entidad Event o lanzar 404 si no existe
+        Event event = eventService.findById(eventId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento no encontrado"));
+        // Crear entidad Album
+        Album album = new Album();
+        album.setName(name);
+        album.setEvent(event);
+        album.setCreatedAt(LocalDateTime.now());
+        // Guardar la portada si se subió
+        if (albumCover != null && !albumCover.isEmpty()) {
+            try {
+                String ext = org.springframework.util.StringUtils.getFilenameExtension(albumCover.getOriginalFilename());
+                String fileName = "album-cover-" + UUID.randomUUID() + (ext != null ? "." + ext : "");
+                Path uploadPath = Paths.get("uploads/album-covers");
+                if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
+                Path filePath = uploadPath.resolve(fileName);
+                albumCover.transferTo(filePath);
+                album.setCoverUrl("/uploads/album-covers/" + fileName);
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar la portada: " + e.getMessage());
+            }
+        }
         Album saved = albumService.save(album);
         return ResponseEntity.created(URI.create("/api/albums/" + saved.getId()))
                 .body(albumMapper.toDto(saved));

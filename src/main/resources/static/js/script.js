@@ -192,15 +192,23 @@ function initCreateAlbum() {
     e.preventDefault();
     const name = form.newAlbum.value;
     const eventId = form.eventSelect.value;
+    // Obtener el input de portada (puede que no exista aún)
+    const coverInput = form.querySelector('input[name="albumCover"]');
     if (!name || !eventId) {
       showNotification('Completa todos los campos obligatorios del álbum', true);
       return;
     }
     try {
+      // Usar FormData para enviar como multipart/form-data
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('eventId', eventId);
+      if (coverInput && coverInput.files.length) {
+        formData.append('albumCover', coverInput.files[0]);
+      }
       const resp = await fetch('/api/albums', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, eventId: Number(eventId) })
+        body: formData
       });
       if (resp.ok) {
         showNotification('Álbum creado con éxito');
