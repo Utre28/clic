@@ -125,13 +125,14 @@ public class PanelController {
 
     // Borrar evento
     @PostMapping("/panel/eventos/{eventoId}/borrar")
-    public String borrarEvento(@PathVariable Long eventoId, Authentication authentication, Model model) {
+    public String borrarEvento(@PathVariable Long eventoId, Authentication authentication, RedirectAttributes redirectAttributes) {
         if (authentication == null || !authentication.isAuthenticated() ||
             authentication.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_PHOTOGRAPHER"))) {
-            model.addAttribute("message", "Acceso solo para fotógrafos.");
-            return "error";
+            redirectAttributes.addFlashAttribute("message", "Acceso solo para fotógrafos.");
+            return "redirect:/panel/eventos";
         }
         eventService.deleteById(eventoId);
+        redirectAttributes.addAttribute("borrado", "Evento borrado correctamente.");
         return "redirect:/panel/eventos";
     }
 
@@ -170,16 +171,17 @@ public class PanelController {
     // Borrado múltiple de eventos
     @PostMapping("/panel/eventos/borrar-multiple")
     public String borrarEventosMultiple(@RequestParam(value = "eventoIds", required = false) List<Long> eventoIds,
-                                        Authentication authentication, Model model) {
+                                        Authentication authentication, RedirectAttributes redirectAttributes) {
         if (authentication == null || !authentication.isAuthenticated() ||
             authentication.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_PHOTOGRAPHER"))) {
-            model.addAttribute("message", "Acceso solo para fotógrafos.");
-            return "error";
+            redirectAttributes.addFlashAttribute("message", "Acceso solo para fotógrafos.");
+            return "redirect:/panel/eventos";
         }
-        if (eventoIds != null) {
+        if (eventoIds != null && !eventoIds.isEmpty()) {
             for (Long id : eventoIds) {
                 eventService.deleteById(id);
             }
+            redirectAttributes.addAttribute("borrado", "Eventos borrados correctamente.");
         }
         return "redirect:/panel/eventos";
     }

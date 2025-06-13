@@ -5,12 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portafolio – Fotógrafo</title>
   <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css" />
-
+  <meta name="description" content="Portafolio de fotografía profesional: bodas, bautizos, comuniones, retratos y conciertos. Descubre eventos públicos y ejemplos de mi trabajo." />
+  <meta property="og:title" content="Portafolio – Fotógrafo" />
+  <meta property="og:description" content="Portafolio de fotografía profesional: bodas, bautizos, comuniones, retratos y conciertos. Descubre eventos públicos y ejemplos de mi trabajo." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/img/default-event.jpg" />
+  <meta property="og:url" content="https://tusitio.com/portafolio" />
 </head>
 <body>
-<div th:replace="~{navbar :: navbar}"></div>
+<nav th:replace="~{navbar :: navbar}"></nav>
 <div th:replace="fragments/scripts :: script"></div>
-
+<main>
 <a id="backBtn"
    th:href="@{/}">Volver</a>
 <div class="panel-container">
@@ -34,7 +39,7 @@
     </div>
     <!-- Solo mostrar eventos si la lista no está vacía -->
     <div th:each="event : ${filteredEvents}" class="categoria" th:if="${!#lists.isEmpty(filteredEvents)}">
-      <img th:src="@{/img/default-event.jpg}" alt="Imagen de evento" />
+      <img th:src="@{/img/default-event.jpg}" alt="Imagen destacada del evento [[${event.name}]]" />
       <h3 th:text="${event.name}">Nombre del Evento</h3>
       <p th:text="${event.date}">Fecha del Evento</p>
       <p th:text="${event.location}">Ubicación del Evento</p>
@@ -66,5 +71,6 @@
   </div>
   <button id="close-terms-btn" onclick="document.getElementById('terms').style.display='none'">Cerrar</button>
 </div>
+</main>
 </body>
 </html>

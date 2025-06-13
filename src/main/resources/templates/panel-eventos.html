@@ -28,8 +28,8 @@
         }
 
         .btn-enviar-mensaje {
-            background: #4caf50;
-            color: #fff;
+            background: #4caf50 !important;
+            color: #fff !important;
         }
 
         .btn-ver:hover {
@@ -61,7 +61,7 @@
     <h1 class="panel-header">Gestión de Eventos</h1>
 
     <!-- Mostrar mensaje de éxito o error -->
-    <div th:if="${param.mensaje}" style="color:green; text-align:center; margin-bottom:1rem;">
+    <div th:if="${param.mensaje}" id="mensaje-exito" style="color:green; text-align:center; margin-bottom:1rem;">
         <p th:text="${param.mensaje}"></p>
     </div>
     <div th:if="${message}" style="color:red;text-align:center;">
@@ -69,6 +69,9 @@
     </div>
     <div id="no-selection-message" style="display:none;color:red;text-align:center;margin-bottom:1rem;">
         No ha seleccionado ningún evento.
+    </div>
+    <div th:if="${param.borrado}" id="mensaje-borrado" style="color:green; text-align:center; margin-bottom:1rem;">
+        <p th:text="${param.borrado}"></p>
     </div>
 
     <!-- Formulario de filtro (GET) -->
@@ -88,53 +91,56 @@
     <div id="feedbackMessage" style="display:none; padding: 10px; background-color: #4CAF50; color: white; text-align: center; border-radius: 5px; margin-top: 10px;">
         <span id="feedbackText"></span>
     </div>
-    <!-- Formulario de borrado múltiple (POST) SOLO para el botón y los checkboxes -->
-    <table class="event-table">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Nombre evento</th>
-                <th>Fecha</th>
-                <th>Ubicación</th>
-                <th>Privacidad</th>
-                <th>Cliente</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${#lists.isEmpty(filteredEvents)}">
-            <td colspan="7" style="text-align:center;">No hay eventos para mostrar.</td>
-        </tr>
-        <tr th:each="event : ${filteredEvents}">
-            <td>
-                <input type="checkbox" name="eventoIds" th:value="${event.id}" form="borrarEventosForm" />
-            </td>
-
-            <td th:text="${event.name}">Nombre del Evento</td>
-            <td th:text="${event.date}">Fecha</td>
-            <td th:text="${event.location}">Ubicación</td>
-            <td>
-                <span th:text="${event.privado ? 'Privado' : 'Público'}"></span>
-            </td>
-            <td>
-                <!-- Mostrar el nombre del cliente  -->
-                <span th:text="${event.client.name}">Nombre del Cliente</span>
-            </td>
-            <td>
-                <div class="acciones-evento">
-                    <a th:href="@{'/panel/eventos/' + ${event.id}}" class="btn-ver">Ver Detalles</a>
-                    <form th:action="@{'/panel/eventos/' + ${event.id} + '/enviar-mensaje'}" method="post">
-                        <button type="submit" class="btn-enviar-mensaje">Enviar mensaje</button>
-                        <span th:if="${param.mensajeId} == ${event.id}" th:text="${param.mensaje}"></span>
-                    </form>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- Formulario de borrado múltiple (POST) AHORA envuelve la tabla y el botón -->
     <form id="borrarEventosForm" th:action="@{/panel/eventos/borrar-multiple}" method="post" style="margin-top:1rem;">
-        <button type="submit" class="btn-borrar" id="btnBorrarSeleccionados">Borrar Eventos seleccionados</button>
+      <table class="event-table">
+          <thead>
+              <tr>
+                  <th></th>
+                  <th>Nombre evento</th>
+                  <th>Fecha</th>
+                  <th>Ubicación</th>
+                  <th>Privacidad</th>
+                  <th>Cliente</th>
+                  <th>Acciones</th>
+              </tr>
+          </thead>
+          <tbody>
+          <tr th:if="${#lists.isEmpty(filteredEvents)}">
+              <td colspan="7" style="text-align:center;">No hay eventos para mostrar.</td>
+          </tr>
+          <tr th:each="event : ${filteredEvents}">
+              <td>
+                  <input type="checkbox" name="eventoIds" th:value="${event.id}" />
+              </td>
+
+              <td th:text="${event.name}">Nombre del Evento</td>
+              <td th:text="${event.date}">Fecha</td>
+              <td th:text="${event.location}">Ubicación</td>
+              <td>
+                  <span th:text="${event.privado ? 'Privado' : 'Público'}"></span>
+              </td>
+              <td>
+                  <!-- Mostrar el nombre del cliente  -->
+                  <span th:text="${event.client.name}">Nombre del Cliente</span>
+              </td>
+              <td>
+                  <div class="acciones-evento">
+                      <a th:href="@{'/panel/eventos/' + ${event.id}}" class="btn-ver">Ver Detalles</a>
+                      <form th:action="@{'/panel/eventos/' + ${event.id} + '/enviar-mensaje'}" method="post">
+                          <button type="submit" class="btn-enviar-mensaje">Enviar mensaje</button>
+                          <span th:if="${param.mensajeId} == ${event.id}" th:text="${param.mensaje}"></span>
+                      </form>
+                  </div>
+              </td>
+          </tr>
+          </tbody>
+      </table>
     </form>
+    <!-- Botón centrado fuera del formulario y tabla, pero asociado por 'form' a los checkboxes -->
+    <div style="width:100%; display:flex; justify-content:center; margin-top:1.5rem;">
+      <button type="submit" class="btn-borrar" id="btnBorrarSeleccionados" form="borrarEventosForm">Borrar Eventos seleccionados</button>
+    </div>
 </div>
 <!-- Footer -->
 <footer>
@@ -175,6 +181,16 @@
                     }
                 }
             });
+        }
+        // Ocultar mensaje de éxito tras unos segundos
+        const mensajeExito = document.getElementById('mensaje-exito');
+        if (mensajeExito) {
+            setTimeout(() => { mensajeExito.style.display = 'none'; }, 3500);
+        }
+        // Ocultar mensaje de borrado tras unos segundos
+        const mensajeBorrado = document.getElementById('mensaje-borrado');
+        if (mensajeBorrado) {
+            setTimeout(() => { mensajeBorrado.style.display = 'none'; }, 3500);
         }
     });
 </script>
