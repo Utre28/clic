@@ -10,8 +10,8 @@
 <div th:replace="~{navbar :: navbar}"></div>
 <div th:replace="fragments/scripts :: script"></div>
 
-<section class="login">
-  <div class="login-container">
+<section class="perfil-container">
+  <div class="perfil-form">
     <h1>Registro de Cliente</h1>
     <form method="post" th:action="@{/register}" th:object="${userDTO}">
       <label for="name">Nombre:</label>

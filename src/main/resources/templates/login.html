@@ -11,9 +11,9 @@
 <div th:replace="~{navbar :: navbar}"></div>
 <div th:replace="fragments/scripts :: script"></div>
 
-<section class="login">
-  <div class="login-container">
-    <h1>Acceso para Clientes</h1>
+<section class="perfil-container">
+  <div class="perfil-form">
+    <h1>Inicio sessión </h1>
     <p>Inicia sesión usando tu cuenta de Google:</p>
     <a th:href="@{/oauth2/authorization/google}" class="google-login-btn">
       <img src="/img/gmail.png" alt="Google logo" class="google-logo" />
