@@ -39,7 +39,7 @@
     </div>
     <!-- Solo mostrar eventos si la lista no está vacía -->
     <div th:each="event : ${filteredEvents}" class="categoria" th:if="${!#lists.isEmpty(filteredEvents)}">
-      <img th:src="@{/img/default-event.jpg}" alt="Imagen destacada del evento [[${event.name}]]" />
+      <img th:src="@{/img/default-event.png}" alt="Imagen destacada del evento [[${event.name}]]" />
       <h3 th:text="${event.name}">Nombre del Evento</h3>
       <p th:text="${event.date}">Fecha del Evento</p>
       <p th:text="${event.location}">Ubicación del Evento</p>
