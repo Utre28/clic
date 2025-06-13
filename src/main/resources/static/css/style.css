@@ -1753,3 +1753,30 @@ nav ul li.dropdown:hover .dropdown-menu { display:block; }
         flex-direction: column; /* Los iconos sociales se alinean verticalmente */
     }
 }
+
+/* Ajustes para la sección "Sobre mí" en móviles */
+@media (max-width: 768px) {
+    /* Ajusta el diseño de la sección "Sobre mí" */
+    .sobre-mi .contenedor {
+        grid-template-columns: 1fr; /* Cambiar de 2 columnas a una sola columna */
+        text-align: center; /* Centra el texto */
+    }
+
+    /* Hace que la imagen sea más pequeña y menos alta */
+    .sobre-mi img {
+        max-width: 60%; /* Reduces aún más el tamaño de la imagen */
+        height: auto; /* Mantener la proporción de la imagen */
+        max-height: 350px; /* Limita la altura máxima de la imagen */
+        margin-bottom: 1.5rem; /* Espacio debajo de la imagen */
+    }
+
+    /* Ajustes para el texto */
+    .sobre-mi h2 {
+        font-size: 1.8rem; /* Tamaño del título un poco más pequeño */
+    }
+
+    .sobre-mi p {
+        font-size: 1rem; /* Reducir el tamaño del texto para que se vea mejor en móviles */
+        line-height: 1.5; /* Mejorar la legibilidad en dispositivos pequeños */
+    }
+}
