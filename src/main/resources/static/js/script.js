@@ -92,6 +92,7 @@ function initCreateEvent() {
     const category = form.eventCategory.value;
     const client = form.eventClientId.value || null;
     const privado = form.eventPrivado.checked;
+    const coverInput = form.querySelector('input[name="eventCover"]');
 
     // Validación de campos
     if (!name || !date || !loc || !category) {
@@ -110,12 +111,21 @@ function initCreateEvent() {
     }
 
     try {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('date', date);
+      formData.append('location', loc);
+      formData.append('category', category);
+      formData.append('privado', privado);
+      formData.append('type', eventType);
+      if (client) formData.append('clientId', client);
+      if (coverInput && coverInput.files.length) {
+        formData.append('eventCover', coverInput.files[0]);
+      }
+
       const resp = await fetch('/api/events', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name, date, location: loc, category, clientId: client ? Number(client) : null, privado, type: eventType
-        })
+        body: formData
       });
 
       if (resp.ok) {

@@ -1,5 +1,6 @@
 package org.example.clic.controller;
 
+import jakarta.validation.Valid;
 import org.example.clic.dto.EventDTO;
 import org.example.clic.mapper.EventMapper;
 import org.example.clic.model.Event;
@@ -8,6 +9,7 @@ import org.example.clic.service.EventService;
 import org.example.clic.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,6 +38,8 @@ public class EventController {
         this.eventMapper = eventMapper;
         this.userService = userService;
     }
+
+
 
     // Endpoint para obtener todos los eventos, opcionalmente filtrados por categoría
     @GetMapping
@@ -97,14 +101,12 @@ public class EventController {
             }
         }
 
-        // Validación de unicidad del nombre del evento
         if (eventService.findByNameIgnoreCase(name).isPresent()) {
             return ResponseEntity.badRequest().body("Ya existe un evento con ese nombre. Elige otro nombre.");
         }
 
         Event event = new Event();
         event.setName(name);
-        // Convierte el String a LocalDate
         event.setDate(LocalDate.parse(date));
         event.setLocation(location);
         event.setCategory(category);
@@ -129,8 +131,7 @@ public class EventController {
                 String filename = "event_" + System.currentTimeMillis() + ext;
                 Path filePath = Paths.get(uploadsDir, filename);
                 Files.copy(eventCover.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                // Usa el método correcto para asignar la URL de portada
-                event.setCoverUrl("event-covers/" + filename); // Cambia 'setCoverUrl' si tu método tiene otro nombre
+                event.setCoverUrl("event-covers/" + filename);
             } catch (IOException ex) {
                 return ResponseEntity.internalServerError().body("Error guardando la portada del evento");
             }

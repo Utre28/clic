@@ -16,7 +16,7 @@ async function loadCategories() {
             const imgSrc = evt.coverUrl ? `/uploads/${evt.coverUrl}` : '/img/default-event.jpg';
             a.href = `/categoria?event=${encodeURIComponent(evt.name)}`;
             a.innerHTML = `
-        <img th:src="@{${imgSrc}}" src="${imgSrc}" alt="${evt.name}">
+        <img src="${imgSrc}" alt="${evt.name}">
         <h3>${evt.name}</h3>
       `;
             cont.appendChild(a);

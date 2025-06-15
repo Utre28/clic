@@ -1,13 +1,12 @@
+# Etapa 1: build
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Etapa 2: run
 FROM eclipse-temurin:17-jdk
-
-# Ruta del archivo .jar generado por Maven
-ARG JAR_FILE=target/*.jar
-
-# Copiar el .jar dentro del contenedor con nombre app.jar
-COPY ${JAR_FILE} app.jar
-
-# Puerto que usará la aplicación Spring Boot
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Comando que ejecuta tu app
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

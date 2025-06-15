@@ -9,8 +9,8 @@
 </head>
 <body>
 <!-- Navbar -->
-<div th:replace="navbar :: navbar"></div>
-<div th:replace="fragments/scripts :: script"></div>
+<div th:replace="~{navbar :: navbar}"></div>
+<div th:replace="~{fragments/scripts :: script}"></div>
 
 <!-- Sección principal: formularios de evento, álbum y subida de fotos -->
 <section class="upload-section">
@@ -41,6 +41,15 @@
       <label for="eventPrivado">
         <input type="checkbox" id="eventPrivado" checked /> Privado (solo el cliente podrá ver el evento)
       </label>
+      <!-- Input para portada del evento -->
+      <label for="eventCover">Selecciona la foto de portada del evento:</label>
+      <input type="file" id="eventCover" name="eventCover" accept="image/*" />
+      <div style="margin:1rem 0; text-align:center;">
+        <img id="eventCoverPreview"
+             src="/img/default-event.jpg"
+             alt="Imagen destacada del evento"
+             style="max-width:120px; max-height:120px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08); display:block; margin:auto;" />
+      </div>
       <button type="submit" id="createEventBtn">Crear evento</button>
     </form>
     <div id="eventMessage"></div>
@@ -124,6 +133,21 @@
   // Previsualización de la portada del álbum
   document.getElementById('albumCover').addEventListener('change', function(e) {
     const preview = document.getElementById('albumCoverPreview');
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        preview.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = '/img/default-event.jpg';
+    }
+  });
+
+  // Previsualización de la portada del evento
+  document.getElementById('eventCover').addEventListener('change', function(e) {
+    const preview = document.getElementById('eventCoverPreview');
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
