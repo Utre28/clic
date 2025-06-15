@@ -13,27 +13,31 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // Clave primaria autogenerada
 
-    private String name;// Nombre del evento
+    private String name; // Nombre del evento
 
-    private LocalDate date;// Fecha del evento
+    private LocalDate date; // Fecha del evento
     private String location; // Ubicación del evento
-    //campo para clasificar el evento
+
     @Column(nullable = true)
-    private String category;
+    private String category; // Campo para clasificar el evento
+
     @ManyToOne(optional = true)
-    @JoinColumn(name = "client_id",nullable = true)
-    private User client;// Cliente organizador
+    @JoinColumn(name = "client_id", nullable = true)
+    private User client; // Cliente organizador
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Album> albums = new ArrayList<>();  // Álbumes asociados
 
     @Column(nullable = false)
     private boolean privado = true; // Campo para controlar la visibilidad del evento
+
     @Column(nullable = false)
     private int visits = 0; // Contador de visitas
 
-    // getters y setters
+    @Column(nullable = true)
+    private String coverUrl; // URL de la portada del evento
 
+    // Getters y setters
     public Long getId() {
         return id;
     }
@@ -106,4 +110,12 @@ public class Event {
         this.visits = visits;
     }
 
+    // Métodos para coverUrl
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+    }
 }
